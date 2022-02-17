@@ -1,8 +1,8 @@
 # CS3217 Problem Set 4
 
-**Name:** Your name
+**Name:** Huang Weijie
 
-**Matric No:** Your matric no
+**Matric No:** A0190270M
 
 ## Tips
 1. CS3217's docs is at https://cs3217.github.io/cs3217-docs. Do visit the docs often, as

@@ -177,7 +177,7 @@ class PeggleGameEngine: PeggleState {
         }
 
         let ballY = mapper.localToExternal(y: ball.center.y)
-        let ballRadius = mapper.localToExternal(y: ball.radius)
+        let ballRadius = mapper.localToExternal(y: ball.radius).magnitude
 
         // Perform an out of bounds check by checking if the ball's center
         // is below the minimum point of the level. We require the ball be
@@ -212,7 +212,8 @@ class PeggleGameEngine: PeggleState {
 
         self.ball = ball
 
-        let rigidBody = rigidBodyForBall(ball, initialVelocity: velocity)
+        let rigidBody = mapper.localToExternal(rigidBody: ball.makeRigidBody(initialVelocity: velocity))
+
         world.addRigidBody(
             rigidBody,
             onUpdate: { body in
@@ -233,7 +234,8 @@ class PeggleGameEngine: PeggleState {
             let peg = Peg(id: i, blueprint: pegBlueprint)
             pegs.append(peg)
 
-            let rigidBody = rigidBodyForPeg(peg)
+            let rigidBody = mapper.localToExternal(rigidBody: peg.makeRigidBody())
+
             world.addRigidBody(
                 rigidBody,
                 onCollide: { _ in
@@ -248,31 +250,6 @@ class PeggleGameEngine: PeggleState {
 
             pegIdToRigidBody[peg.id] = rigidBody
         }
-    }
-
-    private func rigidBodyForBall(_ ball: Ball, initialVelocity: Vector2D) -> RigidBody {
-        let hitBox = mapper.localToExternal(geometry: ball.hitBox)
-        let initialPosition = Vector2D(x: ball.center.x, y: ball.center.y)
-
-        return RigidBody(
-            motion: .dynamic(
-                position: mapper.localToExternal(vector: initialPosition),
-                velocity: mapper.localToExternal(vector: initialVelocity),
-                mass: ball.mass
-            ),
-            hitBoxAt: { center in hitBox.withCenter(center) },
-            material: ball.material
-        )
-    }
-
-    private func rigidBodyForPeg(_ peg: Peg) -> RigidBody {
-        let hitBox = mapper.localToExternal(geometry: peg.hitBox)
-        let initialPosition = Vector2D(x: peg.center.x, y: peg.center.y)
-
-        return RigidBody(
-            motion: .static(position: mapper.localToExternal(vector: initialPosition)),
-            hitBoxAt: { center in hitBox.withCenter(center) }
-        )
     }
 
     private func checkIfBallStuckAndResolve() {

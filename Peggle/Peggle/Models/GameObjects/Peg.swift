@@ -30,4 +30,12 @@ struct Peg: Equatable {
     mutating func remove() {
         removed = true
     }
+
+    func makeRigidBody() -> RigidBody {
+        let initialPosition = Vector2D(x: center.x, y: center.y)
+        return RigidBody(
+            motion: .static(position: initialPosition),
+            hitBoxAt: { center in hitBox.withCenter(center) }
+        )
+    }
 }

@@ -74,6 +74,60 @@ extension CoordinateMapper {
             )
         }
     }
+
+    // motiom
+    func localToExternal(motion: Motion) -> Motion {
+        switch motion {
+        case let .static(position, velocity):
+            return .static(
+                position: localToExternal(vector: position),
+                velocity: localToExternal(vector: velocity)
+            )
+        case let .dynamic(position, velocity, force, mass):
+            return .dynamic(
+                position: localToExternal(vector: position),
+                velocity: localToExternal(vector: velocity),
+                force: localToExternal(vector: force),
+                mass: mass
+            )
+        }
+    }
+
+    func externalToLocal(motion: Motion) -> Motion {
+        switch motion {
+        case let .static(position, velocity):
+            return .static(
+                position: externalToLocal(vector: position),
+                velocity: externalToLocal(vector: velocity)
+            )
+        case let .dynamic(position, velocity, force, mass):
+            return .dynamic(
+                position: externalToLocal(vector: position),
+                velocity: externalToLocal(vector: velocity),
+                force: externalToLocal(vector: force),
+                mass: mass
+            )
+        }
+    }
+
+    // rigidBodies
+    func localToExternal(rigidBody: RigidBody) -> RigidBody {
+        let hitBox = localToExternal(geometry: rigidBody.hitBox)
+        return RigidBody(
+            motion: localToExternal(motion: rigidBody.motion),
+            hitBoxAt: { center in hitBox.withCenter(center) },
+            material: rigidBody.material
+        )
+    }
+
+    func externalToLocal(rigidBody: RigidBody) -> RigidBody {
+        let hitBox = externalToLocal(geometry: rigidBody.hitBox)
+        return RigidBody(
+            motion: externalToLocal(motion: rigidBody.motion),
+            hitBoxAt: { center in hitBox.withCenter(center) },
+            material: rigidBody.material
+        )
+    }
 }
 
 struct IdentityCoordinateMapper: CoordinateMapper {

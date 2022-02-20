@@ -34,6 +34,18 @@ struct Ball {
         self.hitBox = hitBox
     }
 
+    func makeRigidBody(initialVelocity: Vector2D) -> RigidBody {
+        let initialPosition = Vector2D(x: center.x, y: center.y)
+        return RigidBody(
+            motion: .dynamic(
+                position: initialPosition,
+                velocity: initialVelocity,
+                mass: mass
+            ),
+            hitBoxAt: { center in hitBox.withCenter(center) },
+            material: material)
+    }
+
     static func startingPointFor(levelWidth: Double) -> Point {
         let x = levelWidth / 2
         let y = getScaledSize(

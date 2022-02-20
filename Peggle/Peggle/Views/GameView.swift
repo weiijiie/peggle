@@ -45,9 +45,17 @@ struct GameView: View {
                 ForEach(viewModel.pegs, id: \.id) { peg in
                     PegView(peg: peg)
                 }
+
+                GameResultView(
+                    status: viewModel.gameStatus,
+                    levelName: appState.activeLevelName,
+                    playAgainCallback: { viewModel.initializeGame(levelBlueprint: levelBlueprint) }
+                )
+
             } else {
                 Text("No level blueprint loaded!")
             }
+
         }
     }
 

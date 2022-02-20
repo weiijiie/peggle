@@ -24,7 +24,10 @@ struct LevelDesignerView: View {
                 .padding(.horizontal, 15)
 
             Button("Start") {
-                appState.setActiveLevelBlueprint(viewModel.blueprint)
+                appState.setActiveLevelBlueprint(
+                    viewModel.blueprint,
+                    name: viewModel.levelName.isEmpty ? "Custom Level" : viewModel.levelName
+                )
                 navigator.navigateTo(route: .game)
             }
             .buttonStyle(.borderedProminent)

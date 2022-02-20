@@ -5,10 +5,11 @@
 import Foundation
 import Physics
 
-class PeggleGameEngine {
+class PeggleGameEngine: PeggleState {
 
     static let DefaultBallSpeed = 450.0
     static let SpatialHashCellSize = 10.0
+    static let DefaultNumStartingBalls = 5
 
     let width: Double
     let height: Double
@@ -47,6 +48,17 @@ class PeggleGameEngine {
         }
     }
 
+    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls
+
+    private(set) var status = PeggleGameStatus.ongoing {
+        willSet {
+            onUpdateCallback?()
+        }
+    }
+
+    private(set) var winConditions: WinConditions
+    private(set) var loseConditions: LoseConditions
+
     private var pegIdToRigidBody: [Peg.ID: RigidBody] = [:]
 
     private var elapsedTime: Float = 0
@@ -69,7 +81,9 @@ class PeggleGameEngine {
         maxX: Double,
         maxY: Double,
         coordinateMapper: CoordinateMapper = IdentityCoordinateMapper(),
-        onUpdate: (() -> Void)? = nil
+        onUpdate: (() -> Void)? = nil,
+        winConditions: WinConditions = [],
+        loseConditions: LoseConditions = []
     ) {
         self.width = levelBlueprint.width
         self.height = levelBlueprint.height
@@ -92,6 +106,9 @@ class PeggleGameEngine {
             maxY: self.maxY
         )
 
+        self.winConditions = winConditions
+        self.loseConditions = loseConditions
+
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
         initializePegs(levelBlueprint: levelBlueprint)
         onUpdate?()
@@ -111,12 +128,14 @@ class PeggleGameEngine {
             return false
         }
 
-        cannon.fire()
+        guard status == .ongoing && ballsRemaining > 0 else {
+            return false
+        }
 
-        let velocity = Vector2D(
-            x: cos(degrees: Double(angle)) * speed,
-            y: sin(degrees: Double(angle)) * speed
-        )
+        cannon.fire()
+        ballsRemaining -= 1
+
+        let velocity = Vector2D.from(angle: angle, magnitude: speed)
         let startingPos = Ball.startingPointFor(levelWidth: width)
 
         let radius = getScaledSize(
@@ -130,7 +149,12 @@ class PeggleGameEngine {
     }
 
     /// Updates the Peggle game by stepping forward with duration `dt`.
+    /// The function does nothing once the game has either been won or lost.
     func update(dt: Float) {
+        guard status == .ongoing else {
+            return
+        }
+
         elapsedTime += dt
         world.update(dt: dt)
 
@@ -139,6 +163,12 @@ class PeggleGameEngine {
         cannon.stepForwardBy(dt: dt)
 
         checkIfBallStuckAndResolve()
+
+        if winConditions.hasWon(state: self) {
+            status = .won
+        } else if loseConditions.hasLost(state: self) {
+            status = .lost
+        }
     }
 
     func isBallOutOfBounds() -> Bool {
@@ -222,13 +252,11 @@ class PeggleGameEngine {
 
     private func rigidBodyForBall(_ ball: Ball, initialVelocity: Vector2D) -> RigidBody {
         let hitBox = mapper.localToExternal(geometry: ball.hitBox)
+        let initialPosition = Vector2D(x: ball.center.x, y: ball.center.y)
 
         return RigidBody(
             motion: .dynamic(
-                position: Vector2D(
-                    x: mapper.localToExternal(x: ball.center.x),
-                    y: mapper.localToExternal(y: ball.center.y)
-                ),
+                position: mapper.localToExternal(vector: initialPosition),
                 velocity: mapper.localToExternal(vector: initialVelocity),
                 mass: ball.mass
             ),
@@ -239,12 +267,10 @@ class PeggleGameEngine {
 
     private func rigidBodyForPeg(_ peg: Peg) -> RigidBody {
         let hitBox = mapper.localToExternal(geometry: peg.hitBox)
+        let initialPosition = Vector2D(x: peg.center.x, y: peg.center.y)
 
         return RigidBody(
-            motion: .static(position: Vector2D(
-                x: mapper.localToExternal(x: peg.center.x),
-                y: mapper.localToExternal(y: peg.center.y)
-            )),
+            motion: .static(position: mapper.localToExternal(vector: initialPosition)),
             hitBoxAt: { center in hitBox.withCenter(center) }
         )
     }

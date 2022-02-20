@@ -4,7 +4,7 @@
 
 import Physics
 
-struct Peg {
+struct Peg: Equatable {
 
     typealias ID = Int
 

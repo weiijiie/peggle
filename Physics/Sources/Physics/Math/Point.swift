@@ -1,6 +1,6 @@
 //
 //  Point.swift
-//  Peggle
+//  Physics
 
 import SwiftUI
 

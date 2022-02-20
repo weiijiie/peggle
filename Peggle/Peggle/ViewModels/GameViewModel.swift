@@ -27,7 +27,14 @@ class GameViewModel: ObservableObject {
         gameEngine?.pegs ?? []
     }
 
+    var gameStatus: PeggleGameStatus {
+        gameEngine?.status ?? .ongoing
+    }
+
     func initializeGame(levelBlueprint: LevelBlueprint) {
+        // stop any prior running game
+        stopGame()
+
         let scaleFactor = GameViewModel.GameEngineScaleFactor
         let coordinateMapper = ProportionateCoordinateMapper(scale: scaleFactor).withFlippedYAxis()
 
@@ -40,7 +47,9 @@ class GameViewModel: ObservableObject {
             // been mutated. Thus, we use a callback based system to call
             // objectWillChange.send(), which will tell SwiftUI to re-render
             // any views that depend on properties on the observed object.
-            onUpdate: { self.objectWillChange.send() }
+            onUpdate: { self.objectWillChange.send() },
+            winConditions: [ClearAllOrangePegsWinCondition()],
+            loseConditions: [RanOutOfBallsLoseCondition()]
         )
 
         self.gameEngine = gameEngine

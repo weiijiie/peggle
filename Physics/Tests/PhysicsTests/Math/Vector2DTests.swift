@@ -74,6 +74,59 @@ class Vector2DTests: XCTestCase {
         }
     }
 
+    func testFromAngleAndMagnitude() {
+        struct TestCase {
+            var angle: Degrees
+            var magnitude: Double
+            var expected: Vector2D
+        }
+
+        let testCases = [
+            TestCase(
+                angle: 45,
+                magnitude: 2,
+                expected: Vector2D(x: sqrt(2), y: sqrt(2))
+            ),
+            TestCase(
+                angle: 30,
+                magnitude: 10,
+                expected: Vector2D(x: 5 * sqrt(3), y: 5)
+            ),
+            TestCase(
+                angle: 0,
+                magnitude: 3,
+                expected: Vector2D(x: 3, y: 0)
+            ),
+            TestCase(
+                angle: 90,
+                magnitude: 3,
+                expected: Vector2D(x: 0, y: 3)
+            ),
+            // test other quadrants
+            TestCase(
+                angle: 120,
+                magnitude: 10,
+                expected: Vector2D(x: -5, y: 5 * sqrt(3))
+            ),
+            TestCase(
+                angle: 210,
+                magnitude: 10,
+                expected: Vector2D(x: -5 * sqrt(3), y: -5)
+            ),
+            TestCase(
+                angle: 315,
+                magnitude: 2,
+                expected: Vector2D(x: sqrt(2), y: -sqrt(2))
+            )
+        ]
+
+        for testCase in testCases {
+            let vector = Vector2D.from(angle: testCase.angle, magnitude: testCase.magnitude)
+
+            assertVectorsEqual(vector, testCase.expected, accuracy: Epsilon)
+        }
+    }
+
     func testDotProduct() {
         struct TestCase {
             var vector1: Vector2D

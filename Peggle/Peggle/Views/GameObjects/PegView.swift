@@ -8,11 +8,14 @@ import Physics
 struct PegView: View {
     let peg: Peg
 
+    @State var rotationDegrees: Double = 0
+    @State var show = true
+
     var body: some View {
         Image(uiImage: peg.image)
             .resizable()
             .rotation3DEffect(
-                Angle(degrees: peg.removed ? 540 : 0),
+                Angle(degrees: rotationDegrees),
                 axis: (
                     x: peg.id.isMultiple(of: 2) ? 1 : -1,
                     y: peg.id.isMultiple(of: 3) ? 1 : -1,
@@ -21,8 +24,17 @@ struct PegView: View {
             )
             .frame(width: peg.width, height: peg.height)
             .position(peg.center.toCGPoint())
-            .opacity(peg.removed ? 0 : 1)
-            .animation(.easeIn(duration: 1), value: peg.removed)
+            .opacity(show ? 1 : 0)
+            .onChange(of: peg) { newValue in
+                if newValue.removed {
+                    withAnimation(.easeIn(duration: 1)) {
+                        rotationDegrees += 360
+                        show = false
+                    }
+                } else {
+                    show = true
+                }
+            }
     }
 }
 

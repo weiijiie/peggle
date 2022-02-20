@@ -3,6 +3,7 @@
 //  Peggle
 
 import UIKit
+import Physics
 
 extension Cannon: Displayable {
     var width: CGFloat {

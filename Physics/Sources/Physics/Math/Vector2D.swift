@@ -44,6 +44,13 @@ public struct Vector2D: Equatable {
         Vector2D(x: pointB.x - pointA.x, y: pointB.y - pointA.y)
     }
 
+    public static func from(angle: Degrees, magnitude: Double) -> Vector2D {
+        Vector2D(
+            x: cos(degrees: Double(angle)) * magnitude,
+            y: sin(degrees: Double(angle)) * magnitude
+        )
+    }
+
     // Vector addition
     public static func + (left: Vector2D, right: Vector2D) -> Vector2D {
         Vector2D(x: left.x + right.x, y: left.y + right.y)

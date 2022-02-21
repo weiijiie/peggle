@@ -10,38 +10,44 @@ struct LevelDesignerView: View {
     @ObservedObject var appState: AppState
     @StateObject var viewModel = LevelDesignerViewModel(repo: LevelBlueprintFileRepo())
 
+    let errorHandler = ErrorHandler()
+
     // Controls for manipulating the level
     // ie. loading or saving the current level
     var levelControls: some View {
-        HStack(spacing: 15) {
-            Button("Load") { viewModel.loadLevelBlueprint() }
-            Button("Save") { viewModel.saveLevelBlueprint() }
-            Button("Reset", role: .destructive) { viewModel.resetLevelBlueprint() }
+        VStack {
+            HStack {
+                NavigateToMenuButton()
 
-            TextField("Level Name", text: $viewModel.levelName)
-                .border(.secondary)
-                .textFieldStyle(.roundedBorder)
-                .padding(.horizontal, 15)
+                Spacer()
+                Text(viewModel.levelName)
+                    .font(.title)
+                Spacer()
 
-            Button("Start") {
-                appState.setActiveLevelBlueprint(
-                    viewModel.blueprint,
-                    name: viewModel.levelName.isEmpty ? "Custom Level" : viewModel.levelName
-                )
-                navigator.navigateTo(route: .game)
+                Button {
+                    if let blueprint = viewModel.blueprint {
+                        appState.setActiveLevelBlueprint(blueprint, name: viewModel.levelName)
+                        navigator.navigateTo(route: .game)
+                    }
+                } label: {
+                    Label("Start", systemImage: "gamecontroller.fill")
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
+
+            HStack(spacing: 24) {
+                Spacer()
+
+                Group {
+                    Button("Load") { viewModel.showLevelSelect = true }
+                    Button("Save") { viewModel.showSaveDialog = true }
+                    Button("Reset", role: .destructive) { viewModel.resetLevelBlueprint() }
+                }
+
+                Spacer()
+            }
         }
         .padding(.horizontal)
-        .alert(isPresented: $viewModel.presentAlert, error: viewModel.alertError) { error in
-            if let suggestion = error.recoverySuggestion {
-                Button(suggestion) {}
-            }
-        } message: { error in
-            if let failureReason = error.failureReason {
-                Text(failureReason)
-            }
-        }
     }
 
     // Controls for editing the current level
@@ -77,7 +83,7 @@ struct LevelDesignerView: View {
     var levelPreview: some View {
         GeometryReader { geometry in
             ZStack {
-                GameBackground(width: geometry.size.width, height: geometry.size.height)
+                GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
                     .overlay(OnTapView(tappedCallback: viewModel.tapAt))
 
                 ForEach(viewModel.placedPegs, id: \.center) { peg in
@@ -92,8 +98,9 @@ struct LevelDesignerView: View {
                 }
             }
             .onAppear {
-                if let levelBlueprint = appState.activeLevelBlueprint {
+                if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
                     viewModel.blueprint = levelBlueprint
+                    viewModel.blueprintName = levelName
                 } else {
                     viewModel.blueprint = LevelBlueprint(
                         width: Double(geometry.size.width),
@@ -109,12 +116,31 @@ struct LevelDesignerView: View {
             VStack {
                 levelControls
                 editControls
-                    .frame(height: geometry.size.height * 0.1, alignment: .center)
+                    .frame(height: geometry.size.height * 0.075, alignment: .center)
                     .padding(.vertical, 5)
                 levelPreview
             }
         }
         .ignoresSafeArea(.keyboard)
+        .withErrorHandler(errorHandler)
+        .overlay(if: viewModel.showLevelSelect) {
+            LevelSelectionView { blueprint, name in
+                viewModel.blueprint = blueprint
+                viewModel.blueprintName = name
+                viewModel.showLevelSelect = false
+            } onCancel: {
+                viewModel.showLevelSelect = false
+            }
+        }
+        .popup(isPresented: $viewModel.showSaveDialog) {
+            SaveLevelDialog(show: $viewModel.showSaveDialog, name: viewModel.levelName) { name in
+                errorHandler.doWithErrorHandling {
+                    try viewModel.saveLevelBlueprint(name: name)
+                    viewModel.blueprintName = name
+                }
+            }
+        }
+
     }
 
     private func imageForPegColor(_ color: PegColor) -> UIImage {
@@ -124,6 +150,40 @@ struct LevelDesignerView: View {
         case .orange:
             return #imageLiteral(resourceName: "PegOrange")
         }
+    }
+}
+
+struct SaveLevelDialog: View {
+
+    @Binding var show: Bool
+    @State var name: String
+
+    let onSaveCallback: (_ name: String) -> Void
+
+    var body: some View {
+        VStack {
+            TextField("Level Name", text: $name)
+                .border(.secondary)
+                .textFieldStyle(.roundedBorder)
+
+            Spacer()
+
+            HStack(alignment: .center, spacing: 24) {
+                Button("Save") {
+                    print(name)
+                    show = false
+                    onSaveCallback(name)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Cancel") {
+                    show = false
+                }
+            }
+            .padding(.horizontal)
+        }
+        .padding()
+        .frame(maxWidth: 240, maxHeight: 160)
     }
 }
 

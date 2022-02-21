@@ -6,12 +6,15 @@ import SwiftUI
 
 /// Top level view for the Peggle application
 struct AppView: View {
-    let router = Router(initialRoute: PeggleRoute.levelDesigner)
+    let router = Router(initialRoute: PeggleRoute.menu)
 
     @StateObject var appState = AppState()
 
     var body: some View {
         router.provider {
+            router.route(for: .menu) {
+                MenuView(appState: appState)
+            }
             router.route(for: .levelDesigner) {
                 LevelDesignerView(appState: appState)
             }
@@ -22,7 +25,7 @@ struct AppView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct AppView_Previews: PreviewProvider {
     static var previews: some View {
         AppView()
     }

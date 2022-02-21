@@ -28,23 +28,23 @@ class PeggleGameEngine: PeggleState {
 
     private let mapper: CoordinateMapper
 
-    private var onUpdateCallback: (() -> Void)?
+    private var onUpdateCallback: ((PeggleState) -> Void)?
 
     private(set) var cannon: Cannon {
         willSet {
-            onUpdateCallback?()
+            onUpdateCallback?(self)
         }
     }
 
     private(set) var ball: Ball? {
         willSet {
-            onUpdateCallback?()
+            onUpdateCallback?(self)
         }
     }
 
     private(set) var pegs: [Peg] = [] {
         willSet {
-            onUpdateCallback?()
+            onUpdateCallback?(self)
         }
     }
 
@@ -52,7 +52,7 @@ class PeggleGameEngine: PeggleState {
 
     private(set) var status = PeggleGameStatus.ongoing {
         willSet {
-            onUpdateCallback?()
+            onUpdateCallback?(self)
         }
     }
 
@@ -81,7 +81,7 @@ class PeggleGameEngine: PeggleState {
         maxX: Double,
         maxY: Double,
         coordinateMapper: CoordinateMapper = IdentityCoordinateMapper(),
-        onUpdate: (() -> Void)? = nil,
+        onUpdate: ((PeggleState) -> Void)? = nil,
         winConditions: WinConditions = [],
         loseConditions: LoseConditions = []
     ) {
@@ -111,7 +111,7 @@ class PeggleGameEngine: PeggleState {
 
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
         initializePegs(levelBlueprint: levelBlueprint)
-        onUpdate?()
+        onUpdate?(self)
     }
 
     /// Fires the cannon, and adds a ball that has been "fired" to the default location for the balls
@@ -164,11 +164,11 @@ class PeggleGameEngine: PeggleState {
 
         checkIfBallStuckAndResolve()
 
-        if winConditions.hasWon(state: self) {
-            status = .won
-        } else if loseConditions.hasLost(state: self) {
-            status = .lost
-        }
+        status = PeggleGameStatus.getStatusFor(
+            state: self,
+            winConditions: winConditions,
+            loseConditions: loseConditions
+        )
     }
 
     func isBallOutOfBounds() -> Bool {
@@ -259,8 +259,9 @@ class PeggleGameEngine: PeggleState {
                 .filter { $0.hasBeenHit }
                 .randomElement()
 
-            // if randomHitPeg is nil, then there are no pegs anyway so
-            // there is no peg to remove
+            // if randomHitPeg is nil, then there are no pegs that have been
+            // hit, so there is no peg to remove (the scenario where the ball
+            // is stuck yet no pegs have been hit is likely impossible)
             guard let randomHitPeg = randomHitPeg else {
                 return
             }

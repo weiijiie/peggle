@@ -9,4 +9,5 @@ enum LevelBlueprintRepoError: Error {
 protocol LevelBlueprintRepo {
     func saveBlueprint(name: String, blueprint: LevelBlueprint) throws
     func loadBlueprint(name: String) throws -> LevelBlueprint
+    func getAllBlueprintNames() throws -> Set<String>
 }

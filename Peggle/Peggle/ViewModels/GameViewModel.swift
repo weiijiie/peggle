@@ -31,7 +31,28 @@ class GameViewModel: ObservableObject {
         gameEngine?.status ?? .ongoing
     }
 
-    func initializeGame(levelBlueprint: LevelBlueprint) {
+    /// Whether the game loop is running or not. Assigning to this value will cause the
+    /// game loop to start and stop appropriately. This allows for binded variables to
+    /// affect game's paused state.
+    @Published var paused = false {
+        willSet {
+            if newValue {
+                stopGame()
+            } else {
+                startGameLoop()
+            }
+        }
+    }
+
+    @Published var showGameOverScreen = false
+
+    /// Initializes the peggle game engine with the given level blueprint, then starts the game
+    /// loop to start the game. Does nothing if the provided level blueprint is `nil`
+    func initializeGame(blueprint levelBlueprint: LevelBlueprint?) {
+        guard let levelBlueprint = levelBlueprint else {
+            return
+        }
+
         // stop any prior running game
         stopGame()
 
@@ -47,7 +68,10 @@ class GameViewModel: ObservableObject {
             // been mutated. Thus, we use a callback based system to call
             // objectWillChange.send(), which will tell SwiftUI to re-render
             // any views that depend on properties on the observed object.
-            onUpdate: { self.objectWillChange.send() },
+            onUpdate: { state in
+                self.showGameOverScreen = state.status.isGameOver()
+                self.objectWillChange.send()
+            },
             winConditions: [ClearAllOrangePegsWinCondition()],
             loseConditions: [RanOutOfBallsLoseCondition()]
         )
@@ -66,6 +90,10 @@ class GameViewModel: ObservableObject {
     }
 
     private func startGameLoop() {
+        if displayLink != nil {
+            return
+        }
+
         let displaylink = CADisplayLink(target: self, selector: #selector(frame))
         displaylink.add(to: .current, forMode: RunLoop.Mode.default)
 

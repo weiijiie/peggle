@@ -87,11 +87,3 @@ class Router<T: RouteType> {
         Route(route: route, content: content)
     }
 }
-
-class Navigator<T: RouteType>: ObservableObject {
-    @Published var currentRoute: T?
-
-    func navigateTo(route: T) {
-        currentRoute = route
-    }
-}

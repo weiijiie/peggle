@@ -8,15 +8,19 @@ import Physics
 class LevelDesignerViewModel: ObservableObject {
     let editModes = EditMode.allCases
 
+    @Published var showLevelSelect = false
+    @Published var showSaveDialog = false
+
     @Published var selectedMode = EditMode.allCases[0]
-    @Published var levelName = ""
 
     // Must be an optional as the width and height values for the blueprint are not
     // available at initialization.
     @Published var blueprint: LevelBlueprint?
+    @Published var blueprintName: String?
 
-    @Published var presentAlert = false
-    @Published var alertError: LevelDesignerError?
+    var levelName: String {
+        blueprintName ?? "Custom Level"
+    }
 
     private let repo: LevelBlueprintRepo
 
@@ -83,46 +87,45 @@ class LevelDesignerViewModel: ObservableObject {
         blueprint = LevelBlueprint(width: oldBlueprint.width, height: oldBlueprint.height)
     }
 
-    func saveLevelBlueprint() {
-        tryAndSetAlertError {
-            if levelName.isEmpty {
-                throw LevelDesignerError.emptyBlueprintName
-            }
-
-            guard let blueprint = blueprint else {
-                return
-            }
-                try repo.saveBlueprint(name: levelName, blueprint: blueprint)
+    func saveLevelBlueprint(name: String) throws {
+        if name.isEmpty {
+            throw LevelDesignerError.emptyBlueprintName
         }
-    }
 
-    func loadLevelBlueprint() {
-        tryAndSetAlertError {
-            if levelName.isEmpty {
-                throw LevelDesignerError.emptyBlueprintName
-            }
-
-            do {
-                blueprint = try repo.loadBlueprint(name: levelName)
-            } catch LevelBlueprintRepoError.blueprintNotFound(let name) {
-                throw LevelDesignerError.blueprintNotFound(name: name)
-            }
+        guard let blueprint = blueprint else {
+            throw LevelDesignerError.unexpectedIssue(msg: "Blueprint not created")
         }
-    }
 
-    private func tryAndSetAlertError(action: () throws -> Void) {
-        do {
-            try action()
-        } catch let error as LevelDesignerError {
-            presentAlert = true
-            alertError = error
-        } catch {
-            presentAlert = true
-            print(error)
-            alertError = LevelDesignerError.unexpectedIssue(
-                msg: error.localizedDescription)
-        }
+        try repo.saveBlueprint(name: name, blueprint: blueprint)
     }
+//
+//    func loadLevelBlueprint() {
+//        tryAndSetAlertError {
+//            if levelName.isEmpty {
+//                throw LevelDesignerError.emptyBlueprintName
+//            }
+//
+//            do {
+//                blueprint = try repo.loadBlueprint(name: levelName)
+//            } catch let LevelBlueprintRepoError.blueprintNotFound(name) {
+//                throw LevelDesignerError.blueprintNotFound(name: name)
+//            }
+//        }
+//    }
+
+//    private func tryAndSetAlertError(action: () throws -> Void) {
+//        do {
+//            try action()
+//        } catch let error as LevelDesignerError {
+//            presentAlert = true
+//            alertError = error
+//        } catch {
+//            presentAlert = true
+//            print(error)
+//            alertError = LevelDesignerError.unexpectedIssue(
+//                msg: error.localizedDescription)
+//        }
+//    }
 }
 
 enum LevelDesignerError: LocalizedError {

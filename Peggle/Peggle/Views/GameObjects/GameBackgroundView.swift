@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-func GameBackground(width: CGFloat, height: CGFloat) -> some View {
+func GameBackgroundView(width: CGFloat, height: CGFloat) -> some View {
     Image("Background")
         .resizable()
         .clipped()

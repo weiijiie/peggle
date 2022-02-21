@@ -11,4 +11,5 @@ protocol PeggleState {
     var pegs: [Peg] { get }
 
     var ballsRemaining: Int { get }
+    var status: PeggleGameStatus { get }
 }

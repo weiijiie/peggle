@@ -16,6 +16,8 @@ struct Bucket {
     static let EdgeWidthToMidWidthRatio: Double = 1 / 12
     static let HeightToWidthRatio: Double = 9 / 7
 
+    static let DefaultEdgeRestitution = 0.92
+
     let midWidth: Double
     var position: Point
 
@@ -142,7 +144,8 @@ struct Bucket {
                     width: edgeWidth,
                     height: bucketHeight
                 )
-            }
+            },
+            material: .solid(restitution: Bucket.DefaultEdgeRestitution)
         )
     }
 }

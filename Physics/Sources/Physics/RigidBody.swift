@@ -59,6 +59,26 @@ public class RigidBody: CustomStringConvertible {
     func applyImpulse(_ impulse: Vector2D) {
         motion = motion.withAppliedImpulse(impulse)
     }
+    
+    /// Instantaneously moves the rigid body to the given position, without affecting it's velocity
+    func teleport(to newPosition: Vector2D) {
+        switch motion {
+        case let .static(_, velocity):
+            motion = .static(position: newPosition, velocity: velocity)
+            
+        // controlled rigid bodies should not be able to be teleported
+        case .controlled:
+            return
+
+        case let .dynamic(_, velocity, force, mass):
+            motion = .dynamic(
+                position: newPosition,
+                velocity: velocity,
+                force: force,
+                mass: mass
+            )
+        }
+    }
 
     public var description: String {
         """

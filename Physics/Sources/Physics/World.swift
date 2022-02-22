@@ -105,6 +105,14 @@ public class World<
         updateCallbacks.removeValue(forKey: id)
         collisionCallbacks.removeValue(forKey: id)
     }
+    
+    public func teleportRigidBody(_ body: RigidBody, to newPosition: Vector2D) {
+        guard let body = rigidBodies[body.id] else {
+            return
+        }
+        
+        body.teleport(to: newPosition)
+    }
 
     /// Updates the state of the world by stepping forward in time `dt` seconds.
     /// In each timestep, there are roughly 4 tasks to do, in order:

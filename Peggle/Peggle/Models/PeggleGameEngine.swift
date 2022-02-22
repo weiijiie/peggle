@@ -73,6 +73,9 @@ class PeggleGameEngine: PeggleState {
     private(set) var winConditions: WinConditions
     private(set) var loseConditions: LoseConditions
 
+    private(set) var powerupManager: PowerupManager
+    private(set) var selectedPowerup: Powerup
+
     private var pegIdToRigidBody: [Peg.ID: RigidBody] = [:]
 
     private var elapsedTime: Float = 0
@@ -94,6 +97,8 @@ class PeggleGameEngine: PeggleState {
         levelBlueprint: LevelBlueprint,
         maxX: Double,
         maxY: Double,
+        powerupManager: PowerupManager,
+        selectedPowerup: Powerup,
         coordinateMapper: CoordinateMapper = IdentityCoordinateMapper(),
         onUpdate: ((PeggleState) -> Void)? = nil,
         winConditions: WinConditions = [],
@@ -122,6 +127,8 @@ class PeggleGameEngine: PeggleState {
 
         self.winConditions = winConditions
         self.loseConditions = loseConditions
+        self.powerupManager = powerupManager
+        self.selectedPowerup = selectedPowerup
 
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
         self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
@@ -179,13 +186,21 @@ class PeggleGameEngine: PeggleState {
         // we handle it separately
         cannon.stepForwardBy(dt: dt)
 
-        checkIfBallStuckAndResolve()
+        // let the powerups apply their effects
+        powerupManager.update(dt: dt, engine: self)
+
+        // after each update, check if ball is out of bounds
+        if self.isBallOutOfBounds() {
+            self.handleBallOutOfBounds()
+        }
 
         status = PeggleGameStatus.getStatusFor(
             state: self,
             winConditions: winConditions,
             loseConditions: loseConditions
         )
+
+        checkIfBallStuckAndResolve()
     }
 
     func isBallOutOfBounds() -> Bool {
@@ -200,6 +215,21 @@ class PeggleGameEngine: PeggleState {
         // is below the minimum point of the level. We require the ball be
         // below the minimum point by at least its diameter, as a buffer.
         return ballY < minY - (2 * ballRadius)
+    }
+
+    func teleportBall(to point: Point) {
+        guard let ball = ball, let ballRigidBody = ballRigidBody else {
+            return
+        }
+
+        let newHitbox = ball.hitBox.withCenter(point)
+        self.ball?.update(hitBox: newHitbox)
+        
+        let newPosition = Vector2D(x: point.x, y: point.y)
+        world.teleportRigidBody(
+            ballRigidBody,
+            to: mapper.localToExternal(vector: newPosition)
+        )
     }
 
     // MARK: Helper Functions
@@ -243,13 +273,10 @@ class PeggleGameEngine: PeggleState {
         world.addRigidBody(
             rigidBody,
             onUpdate: { body in
+                print(body.velocity)
+                // update ball's hitbox when rigid body moves
                 let hitBox = self.mapper.externalToLocal(geometry: body.hitBox)
                 self.ball?.update(hitBox: hitBox)
-
-                // After each update of the ball's rigid body, check if out of bounds
-                if self.isBallOutOfBounds() {
-                    self.handleBallOutOfBounds()
-                }
             }
         )
     }
@@ -264,18 +291,7 @@ class PeggleGameEngine: PeggleState {
 
             world.addRigidBody(
                 rigidBody,
-                onCollide: { collision in
-                    guard let body = self.ballRigidBody, collision.involvesBody(body) else {
-                        return
-                    }
-
-                    let hasBeenHit = self.pegs[peg.id].hasBeenHit
-
-                    if !hasBeenHit {
-                        self.pegs[peg.id].hit()
-                        self.lastNewPegCollisionTime = self.elapsedTime
-                    }
-                }
+                onCollide: pegCollisionCallback(id: peg.id)
             )
 
             pegIdToRigidBody[peg.id] = rigidBody
@@ -318,6 +334,26 @@ class PeggleGameEngine: PeggleState {
             // refresh the last collision time
             lastNewPegCollisionTime = elapsedTime
             removePeg(randomHitPeg)
+        }
+    }
+
+    private func pegCollisionCallback(id: Int) -> (Collision) -> Void {
+        { collision in
+            guard let body = self.ballRigidBody, collision.involvesBody(body) else {
+                return
+            }
+
+            let hasBeenHit = self.pegs[id].hasBeenHit
+            if hasBeenHit {
+                return
+            }
+
+            self.pegs[id].hit()
+            self.lastNewPegCollisionTime = self.elapsedTime
+
+            if PegType.isPowerup(self.pegs[id].type) {
+                self.powerupManager.activatePowerup(self.selectedPowerup)
+            }
         }
     }
 

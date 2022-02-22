@@ -70,6 +70,8 @@ class GameViewModel: ObservableObject {
             levelBlueprint: levelBlueprint,
             maxX: levelBlueprint.width,
             maxY: 0, // in iOS, the 0 coordinate is towards the top of the screen
+            powerupManager: PowerupManager(),
+            selectedPowerup: SpookyPowerup(),
             coordinateMapper: coordinateMapper,
             // Since the game engine is a class, SwiftUI does not know when it has
             // been mutated. Thus, we use a callback based system to call

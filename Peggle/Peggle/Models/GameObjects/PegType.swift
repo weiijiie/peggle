@@ -6,7 +6,7 @@ enum PegType: CaseIterable, Hashable, Codable {
     case blue
     case orange
     case green
-    
+
     static func isWinCondition(_ type: PegType) -> Bool {
         switch type {
         case .blue:
@@ -17,7 +17,7 @@ enum PegType: CaseIterable, Hashable, Codable {
             return false
         }
     }
-    
+
     static func isPowerup(_ type: PegType) -> Bool {
         switch type {
         case .blue:

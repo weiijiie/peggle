@@ -2,7 +2,7 @@
 //  ImpulseCollisionResolver.swift
 //  Physics
 
-// swiftlint:disable line_length
+// swiftlint:disable line_length fallthrough no_fallthrough_only
 public class ImpulseCollisionResolver: CollisionResolver {
 
     /// Resolves the collisions between the two bodies by applying instantaneous impulses to both
@@ -19,7 +19,7 @@ public class ImpulseCollisionResolver: CollisionResolver {
             fallthrough
         case (_, .passthrough):
             return false
-    
+
         case let (.solid(restitution: restitution1), .solid(restitution: restitution2)):
             let body1 = collision.body1
             let body2 = collision.body2

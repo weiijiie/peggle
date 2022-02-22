@@ -6,9 +6,9 @@ public struct Collision {
     public let body1: RigidBody
     public let body2: RigidBody
     public let info: CollisionInfo
-    
+
     public func involvesBody(_ body: RigidBody) -> Bool {
-        return body1 === body || body2 === body
+        body1 === body || body2 === body
     }
 }
 

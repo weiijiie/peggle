@@ -88,7 +88,8 @@ class LevelDesignerViewModel: ObservableObject {
     }
 
     func saveLevelBlueprint(name: String) throws {
-        if name.isEmpty {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedName.isEmpty {
             throw LevelDesignerError.emptyBlueprintName
         }
 
@@ -96,7 +97,7 @@ class LevelDesignerViewModel: ObservableObject {
             throw LevelDesignerError.unexpectedIssue(msg: "Blueprint not created")
         }
 
-        try repo.saveBlueprint(name: name, blueprint: blueprint)
+        try repo.saveBlueprint(name: trimmedName, blueprint: blueprint)
     }
 //
 //    func loadLevelBlueprint() {

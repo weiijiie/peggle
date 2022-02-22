@@ -10,7 +10,7 @@ struct LevelSelectionView: View {
 
     @State private var selectedName: String?
 
-    let errorHandler = ErrorHandler()
+    let handler = makeErrorHandler()
 
     /// onSelected is a callback that is called with the selected blueprint and the name of the blueprint as a tuple
     /// when a level has been selected
@@ -58,7 +58,7 @@ struct LevelSelectionView: View {
                     return
                 }
 
-                errorHandler.doWithErrorHandling {
+                handler.doWithErrorHandling {
                     let blueprint = try viewModel.loadLevelBlueprint(name: selectedName)
                     if let blueprint = blueprint {
                         onSelected(blueprint, selectedName)
@@ -82,9 +82,9 @@ struct LevelSelectionView: View {
             controls
         }
         .background(.white)
-        .withErrorHandler(errorHandler)
+        .withErrorHandler(handler)
         .onAppear {
-            errorHandler.doWithErrorHandling {
+            handler.doWithErrorHandling {
                 try viewModel.loadLevelNames()
             }
         }

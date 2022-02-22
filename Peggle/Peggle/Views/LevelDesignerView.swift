@@ -10,7 +10,7 @@ struct LevelDesignerView: View {
     @ObservedObject var appState: AppState
     @StateObject var viewModel = LevelDesignerViewModel(repo: LevelBlueprintFileRepo())
 
-    let errorHandler = ErrorHandler()
+    let handler = makeErrorHandler()
 
     // Controls for manipulating the level
     // ie. loading or saving the current level
@@ -122,7 +122,7 @@ struct LevelDesignerView: View {
             }
         }
         .ignoresSafeArea(.keyboard)
-        .withErrorHandler(errorHandler)
+        .withErrorHandler(handler)
         .overlay(if: viewModel.showLevelSelect) {
             LevelSelectionView { blueprint, name in
                 viewModel.blueprint = blueprint
@@ -134,7 +134,7 @@ struct LevelDesignerView: View {
         }
         .popup(isPresented: $viewModel.showSaveDialog) {
             SaveLevelDialog(show: $viewModel.showSaveDialog, name: viewModel.levelName) { name in
-                errorHandler.doWithErrorHandling {
+                handler.doWithErrorHandling {
                     try viewModel.saveLevelBlueprint(name: name)
                     viewModel.blueprintName = name
                 }
@@ -170,7 +170,6 @@ struct SaveLevelDialog: View {
 
             HStack(alignment: .center, spacing: 24) {
                 Button("Save") {
-                    print(name)
                     show = false
                     onSaveCallback(name)
                 }

@@ -2,7 +2,6 @@
 //  Popup.swift
 //  Peggle
 
-import Foundation
 import SwiftUI
 
 /// Based on:  https://www.vadimbulavin.com/swiftui-popup-sheet-popover

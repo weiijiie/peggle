@@ -2,7 +2,7 @@
 //  LevelSelectionViewModel.swift
 //  Peggle
 
-import Foundation
+import SwiftUI
 
 class LevelSelectionViewModel: ObservableObject {
 

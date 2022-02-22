@@ -26,7 +26,9 @@ struct LevelSelectionView: View {
     var selection: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                ForEach(Array(viewModel.levelNames.enumerated()), id: \.element) { index, name in
+                let levelNames = Array(viewModel.levelNames.enumerated()).sorted { $0.element < $1.element }
+
+                ForEach(levelNames, id: \.element) { index, name in
                     let selected = selectedName != nil && name == selectedName
                     Text(name)
                         .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))

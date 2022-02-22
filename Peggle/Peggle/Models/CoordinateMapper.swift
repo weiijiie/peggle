@@ -53,8 +53,8 @@ extension CoordinateMapper {
         case let .axisAlignedRectangle(center, width, height):
             return .axisAlignedRectangle(
                 center: localToExternal(point: center),
-                width: localToExternal(x: width),
-                height: localToExternal(y: height)
+                width: localToExternal(x: width).magnitude,
+                height: localToExternal(y: height).magnitude
             )
         }
     }
@@ -75,7 +75,7 @@ extension CoordinateMapper {
         }
     }
 
-    // motiom
+    // motion
     func localToExternal(motion: Motion) -> Motion {
         switch motion {
         case let .static(position, velocity):
@@ -83,6 +83,15 @@ extension CoordinateMapper {
                 position: localToExternal(vector: position),
                 velocity: localToExternal(vector: velocity)
             )
+
+        case let .controlled(controller: controller):
+            return .controlled(
+                controller: MappedMotionController(
+                    controller: controller,
+                    mapper: localToExternal
+                )
+            )
+
         case let .dynamic(position, velocity, force, mass):
             return .dynamic(
                 position: localToExternal(vector: position),
@@ -100,6 +109,15 @@ extension CoordinateMapper {
                 position: externalToLocal(vector: position),
                 velocity: externalToLocal(vector: velocity)
             )
+
+        case let .controlled(controller: controller):
+            return .controlled(
+                controller: MappedMotionController(
+                    controller: controller,
+                    mapper: externalToLocal
+                )
+            )
+
         case let .dynamic(position, velocity, force, mass):
             return .dynamic(
                 position: externalToLocal(vector: position),
@@ -137,5 +155,32 @@ struct IdentityCoordinateMapper: CoordinateMapper {
 
     func externalToLocal(point: Point) -> Point {
         point
+    }
+}
+
+// Helper struct to help map `Motion` enum types
+struct MappedMotionController: MotionController {
+
+    private let motionController: MotionController
+    private let mapper: (Vector2D) -> Vector2D
+
+    init(controller: MotionController, mapper: @escaping (Vector2D) -> Vector2D) {
+        self.motionController = controller
+        self.mapper = mapper
+    }
+
+    var position: Vector2D {
+        mapper(motionController.position)
+    }
+
+    var velocity: Vector2D {
+        mapper(motionController.velocity)
+    }
+
+    func update(dt: Float) -> MotionController {
+        MappedMotionController(
+            controller: motionController.update(dt: dt),
+            mapper: mapper
+        )
     }
 }

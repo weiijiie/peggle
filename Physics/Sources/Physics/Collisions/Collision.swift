@@ -3,14 +3,18 @@
 //  Peggle
 
 public struct Collision {
-    let body1: RigidBody
-    let body2: RigidBody
-    let info: CollisionInfo
+    public let body1: RigidBody
+    public let body2: RigidBody
+    public let info: CollisionInfo
+    
+    public func involvesBody(_ body: RigidBody) -> Bool {
+        return body1 === body || body2 === body
+    }
 }
 
 public struct CollisionInfo: Equatable {
-    let penetrationDistance: Double
-    let penetrationNormal: Vector2D
+    public let penetrationDistance: Double
+    public let penetrationNormal: Vector2D
 
     func flipped() -> CollisionInfo {
         CollisionInfo(

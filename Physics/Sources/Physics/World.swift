@@ -120,7 +120,7 @@ public class World<
     public func update(dt: Float) {
         let updatedBodies = updateMotion(dt: dt)
         let collisions = detectCollisions()
-        let resolvedCollisions = resolveCollisions(collisions)
+        resolveCollisions(collisions)
 
         for updatedBody in updatedBodies {
             if let callback = updateCallbacks[updatedBody.id] {
@@ -128,7 +128,7 @@ public class World<
             }
         }
 
-        for collision in resolvedCollisions {
+        for collision in collisions {
             if let callback = collisionCallbacks[collision.body1.id] {
                 callback(collision)
             }
@@ -196,17 +196,10 @@ public class World<
         }
     }
 
-    private func resolveCollisions(_ collisions: [Collision]) -> [Collision] {
-        var resolvedCollisions: [Collision] = []
-
+    private func resolveCollisions(_ collisions: [Collision]) {
         for collision in collisions {
-            let resolved = collisionResolver.resolve(collision: collision)
-            if resolved {
-                resolvedCollisions.append(collision)
-            }
+            _ = collisionResolver.resolve(collision: collision)
         }
-
-        return resolvedCollisions
     }
 
     private func addLeftBoundary() {

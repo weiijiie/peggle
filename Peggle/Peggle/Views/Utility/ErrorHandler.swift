@@ -2,8 +2,6 @@
 //  ErrorHandler.swift
 //  Peggle
 
-import Foundation
-
 import SwiftUI
 
 /// View modifier to help with handling errors.

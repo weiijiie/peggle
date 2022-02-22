@@ -2,8 +2,6 @@
 //  Stack.swift
 //  Peggle
 
-import Foundation
-
 /**
  A generic `Stack` class whose elements are last-in, first-out.
 

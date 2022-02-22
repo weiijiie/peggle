@@ -8,6 +8,8 @@ public enum Motion {
     /// Static bodies are not affected by collisions of any kind.
     case `static`(position: Vector2D = Vector2D.Zero, velocity: Vector2D = Vector2D.Zero)
 
+    case controlled(controller: MotionController)
+
     /// Dynamic bodies are bodies which are fully affected by dynamics,
     /// ie. forces and collisions can affect their position and velocity.
     /// The forces will be applied the next time `stepForwardBy` is called.
@@ -18,31 +20,46 @@ public enum Motion {
         mass: Double
     )
 
-    var position: Vector2D {
+    public var position: Vector2D {
         switch self {
         case let .static(position, velocity: _):
             return position
+
+        case let .controlled(controller):
+            return controller.position
+
         case let .dynamic(position, velocity: _, force: _, mass: _):
             return position
+
         }
     }
 
-    var velocity: Vector2D {
+    public var velocity: Vector2D {
         switch self {
         case let .static(position: _, velocity):
             return velocity
+
+        case let .controlled(controller):
+            return controller.velocity
+
         case let .dynamic(position: _, velocity, force: _, mass: _):
             return velocity
+
         }
     }
 
     /// Inverse mass (ie, 1/mass) is often a more useful quantity in physics engines than the actual mass.
-    var inverseMass: Double {
+    public var inverseMass: Double {
         switch self {
         case .static:
             // We treat static bodies as having infinite mass, thus their inverse
             // mass can be approximated as 0.
             return 0
+
+        case .controlled:
+            // Similarly controlled bodies can be treated as having infinite mass.
+            return 0
+
         case let .dynamic(position: _, velocity: _, force: _, mass):
             return 1 / mass
         }
@@ -61,6 +78,13 @@ public enum Motion {
             return (
                 motion: .static(position: newPosition, velocity: velocity),
                 updated: updated
+            )
+
+        case let .controlled(controller):
+            let newController = controller.update(dt: dt)
+            return (
+                motion: .controlled(controller: newController),
+                updated: true
             )
 
         case let .dynamic(position, velocity, force, mass):
@@ -89,6 +113,9 @@ public enum Motion {
         case .static:
             return self
 
+        case .controlled:
+            return self
+
         case let .dynamic(position, velocity, force, mass):
             return .dynamic(
                 position: position,
@@ -105,6 +132,10 @@ public enum Motion {
         switch self {
         case .static:
             return self
+
+        case .controlled:
+            return self
+
         case let .dynamic(position: _, velocity: _, force: _, mass):
             let weight = gravity * mass
             return self.withAppliedForce(weight)
@@ -115,6 +146,10 @@ public enum Motion {
         switch self {
         case .static:
             return self
+
+        case .controlled:
+            return self
+
         case let .dynamic(position, velocity, force, mass):
             let newVelocity = velocity + impulse / mass
             return .dynamic(

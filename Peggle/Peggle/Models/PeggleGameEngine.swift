@@ -30,7 +30,7 @@ class PeggleGameEngine: PeggleState {
 
     private var onUpdateCallback: ((PeggleState) -> Void)?
 
-    private(set) var cannon: Cannon {
+    private(set) var pegs: [Peg] = [] {
         willSet {
             onUpdateCallback?(self)
         }
@@ -42,13 +42,27 @@ class PeggleGameEngine: PeggleState {
         }
     }
 
-    private(set) var pegs: [Peg] = [] {
+    private var ballRigidBody: RigidBody?
+
+    private(set) var cannon: Cannon {
         willSet {
             onUpdateCallback?(self)
         }
     }
 
-    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls
+    private(set) var bucket: Bucket {
+        willSet {
+            onUpdateCallback?(self)
+        }
+    }
+
+    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls {
+        willSet {
+            onUpdateCallback?(self)
+        }
+    }
+
+    private var obtainedBucketBonus = false
 
     private(set) var status = PeggleGameStatus.ongoing {
         willSet {
@@ -110,6 +124,9 @@ class PeggleGameEngine: PeggleState {
         self.loseConditions = loseConditions
 
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
+        self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
+
+        initializeBucket()
         initializePegs(levelBlueprint: levelBlueprint)
         onUpdate?(self)
     }
@@ -187,10 +204,19 @@ class PeggleGameEngine: PeggleState {
 
     // MARK: Helper Functions
 
-    private func handleBallOutOfBounds(ballRigidBody: RigidBody) {
+    private func handleBallOutOfBounds() {
         // remove the current ball
-        world.removeRigidBody(ballRigidBody)
+        if let ballRigidBody = ballRigidBody {
+            world.removeRigidBody(ballRigidBody)
+        }
         ball = nil
+        ballRigidBody = nil
+
+        // add extra ball if ball was shot into bucket
+        if obtainedBucketBonus {
+            obtainedBucketBonus = false
+            ballsRemaining += 1
+        }
 
         // remove all pegs that were hit
         for peg in pegs {
@@ -202,17 +228,17 @@ class PeggleGameEngine: PeggleState {
         }
 
         // reset the cannon to allow players to fire another ball
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(700)) {
             self.cannon.reload()
         }
     }
 
     private func initializeBall(position: Point, velocity: Vector2D, radius: Float) {
         let ball = Ball(center: position, radius: Double(radius))
-
         self.ball = ball
 
         let rigidBody = mapper.localToExternal(rigidBody: ball.makeRigidBody(initialVelocity: velocity))
+        self.ballRigidBody = rigidBody
 
         world.addRigidBody(
             rigidBody,
@@ -222,7 +248,7 @@ class PeggleGameEngine: PeggleState {
 
                 // After each update of the ball's rigid body, check if out of bounds
                 if self.isBallOutOfBounds() {
-                    self.handleBallOutOfBounds(ballRigidBody: rigidBody)
+                    self.handleBallOutOfBounds()
                 }
             }
         )
@@ -238,7 +264,11 @@ class PeggleGameEngine: PeggleState {
 
             world.addRigidBody(
                 rigidBody,
-                onCollide: { _ in
+                onCollide: { collision in
+                    guard let body = self.ballRigidBody, collision.involvesBody(body) else {
+                        return
+                    }
+
                     let hasBeenHit = self.pegs[peg.id].hasBeenHit
 
                     if !hasBeenHit {
@@ -249,6 +279,25 @@ class PeggleGameEngine: PeggleState {
             )
 
             pegIdToRigidBody[peg.id] = rigidBody
+        }
+    }
+
+    private func initializeBucket() {
+        let (leftEdge, rightEdge, inside) = bucket.makeRigidBodies()
+
+        world.addRigidBody(mapper.localToExternal(rigidBody: leftEdge))
+        world.addRigidBody(mapper.localToExternal(rigidBody: rightEdge))
+
+        world.addRigidBody(mapper.localToExternal(rigidBody: inside)) { body in
+            let center = self.mapper.externalToLocal(point: body.hitBox.center)
+            self.bucket.updatePosition(center)
+
+        } onCollide: { collision in
+            guard let body = self.ballRigidBody, collision.involvesBody(body) else {
+                return
+            }
+
+            self.obtainedBucketBonus = true
         }
     }
 

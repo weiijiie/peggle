@@ -5,6 +5,8 @@
 import SwiftUI
 import Physics
 
+typealias GameObjects = (ball: Ball?, pegs: [Peg], cannon: Cannon, bucket: Bucket)
+
 class GameViewModel: ObservableObject {
 
     // Experimentally, this scaling from the view's coordinates to the game
@@ -15,16 +17,21 @@ class GameViewModel: ObservableObject {
 
     private var displayLink: CADisplayLink?
 
-    var cannon: Cannon? {
-        gameEngine?.cannon
+    var gameObjects: GameObjects? {
+        guard let gameEngine = gameEngine else {
+            return nil
+        }
+
+        return (
+            ball: gameEngine.ball,
+            pegs: gameEngine.pegs,
+            cannon: gameEngine.cannon,
+            bucket: gameEngine.bucket
+        )
     }
 
-    var ball: Ball? {
-        gameEngine?.ball
-    }
-
-    var pegs: [Peg] {
-        gameEngine?.pegs ?? []
+    var ballsRemaining: Int {
+        gameEngine?.ballsRemaining ?? 0
     }
 
     var gameStatus: PeggleGameStatus {

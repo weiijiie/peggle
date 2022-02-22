@@ -13,6 +13,7 @@ struct GameView: View {
 
     var topBar: some View {
         HStack(spacing: 15) {
+            Text("\(viewModel.ballsRemaining) balls remaining")
             Spacer()
             Button {
                 viewModel.paused = true
@@ -31,18 +32,20 @@ struct GameView: View {
                 .onAppear { viewModel.initializeGame(blueprint: levelBlueprint) }
                 .onDisappear { viewModel.stopGame() }
 
-            if let ball = viewModel.ball {
-                BallView(ball: ball)
-            }
+            if let (ball, pegs, cannon, bucket) = viewModel.gameObjects {
+                if let ball = ball {
+                    BallView(ball: ball)
+                }
 
-            if let cannon = viewModel.cannon {
+                ForEach(pegs, id: \.id) { peg in
+                    PegView(peg: peg)
+                }
+
                 CannonView(cannon: cannon) { cannon in
                     _ = viewModel.fireBallWith(cannonAngle: cannon.currentAngle)
                 }
-            }
 
-            ForEach(viewModel.pegs, id: \.id) { peg in
-                PegView(peg: peg)
+                BucketView(bucket: bucket)
             }
         }
     }

@@ -6,7 +6,7 @@ import Physics
 
 struct Ball {
     static let DefaultMass = 10.0
-    static let DefaultMaterial = Material(restitution: 0.99)
+    static let DefaultMaterial = Material.solid(restitution: 0.99)
 
     private(set) var hitBox: Geometry
 
@@ -43,7 +43,8 @@ struct Ball {
                 mass: mass
             ),
             hitBoxAt: { center in hitBox.withCenter(center) },
-            material: material)
+            material: material
+        )
     }
 
     static func startingPointFor(levelWidth: Double) -> Point {

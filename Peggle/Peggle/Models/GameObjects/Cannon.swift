@@ -78,6 +78,7 @@ struct Cannon {
 
         self.init(
             size: cannonSize,
+            // cannon should be centered at the same position as the ball
             position: Ball.startingPointFor(levelWidth: levelWidth),
             period: period,
             initialAngle: initialAngle,

@@ -49,3 +49,9 @@ extension Ball: RelativelySized {
         levelWidth * 0.05
     }
 }
+
+extension Bucket: RelativelySized {
+    static var relativeWidth: Float {
+        levelWidth * 0.15
+    }
+}

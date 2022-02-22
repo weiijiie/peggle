@@ -59,6 +59,9 @@
 		6EA7E8A727C2E5E200B40B57 /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8A627C2E5E200B40B57 /* Popup.swift */; };
 		6EA7E8A927C4020B00B40B57 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8A827C4020B00B40B57 /* ErrorHandler.swift */; };
 		6EA7E8AB27C4124400B40B57 /* OverlayIf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8AA27C4124400B40B57 /* OverlayIf.swift */; };
+		6EA7E8AF27C43B0700B40B57 /* Bucket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8AE27C43B0700B40B57 /* Bucket.swift */; };
+		6EA7E8B127C446A100B40B57 /* Bucket+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8B027C446A100B40B57 /* Bucket+Displayable.swift */; };
+		6EA7E8B327C4480900B40B57 /* BucketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8B227C4480900B40B57 /* BucketView.swift */; };
 		6EB924C627C2BC100037CC6D /* LevelSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB924C527C2BC100037CC6D /* LevelSelectionViewModel.swift */; };
 		6EB924C927C2C3BA0037CC6D /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB924C827C2C3BA0037CC6D /* Stack.swift */; };
 		6EB924CC27C2C5BA0037CC6D /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB924CB27C2C5BA0037CC6D /* Navigator.swift */; };
@@ -137,6 +140,9 @@
 		6EA7E8A627C2E5E200B40B57 /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
 		6EA7E8A827C4020B00B40B57 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		6EA7E8AA27C4124400B40B57 /* OverlayIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayIf.swift; sourceTree = "<group>"; };
+		6EA7E8AE27C43B0700B40B57 /* Bucket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bucket.swift; sourceTree = "<group>"; };
+		6EA7E8B027C446A100B40B57 /* Bucket+Displayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bucket+Displayable.swift"; sourceTree = "<group>"; };
+		6EA7E8B227C4480900B40B57 /* BucketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketView.swift; sourceTree = "<group>"; };
 		6EB924C527C2BC100037CC6D /* LevelSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSelectionViewModel.swift; sourceTree = "<group>"; };
 		6EB924C827C2C3BA0037CC6D /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		6EB924CB27C2C5BA0037CC6D /* Navigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
@@ -249,6 +255,7 @@
 				6E6A942527BE4256002DB431 /* Peg.swift */,
 				6E6A942927BE4256002DB431 /* Ball.swift */,
 				6E6A942427BE4256002DB431 /* Cannon.swift */,
+				6EA7E8AE27C43B0700B40B57 /* Bucket.swift */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -277,6 +284,7 @@
 				6E6A944327BE42CF002DB431 /* PegView.swift */,
 				6E6A944427BE42CF002DB431 /* BallView.swift */,
 				6E6A944527BE42CF002DB431 /* CannonView.swift */,
+				6EA7E8B227C4480900B40B57 /* BucketView.swift */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -327,6 +335,7 @@
 				6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */,
 				6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */,
 				6E6A94C027C26BFF002DB431 /* Cannon+Displayable.swift */,
+				6EA7E8B027C446A100B40B57 /* Bucket+Displayable.swift */,
 			);
 			path = GameObjects;
 			sourceTree = "<group>";
@@ -531,6 +540,7 @@
 				6EA7E8A727C2E5E200B40B57 /* Popup.swift in Sources */,
 				6E6A94C927C26BFF002DB431 /* Cannon+Displayable.swift in Sources */,
 				6E6A94C627C26BFF002DB431 /* Ball+Displayable.swift in Sources */,
+				6EA7E8AF27C43B0700B40B57 /* Bucket.swift in Sources */,
 				6E6A944C27BE42D0002DB431 /* OnTapView.swift in Sources */,
 				6EB924C927C2C3BA0037CC6D /* Stack.swift in Sources */,
 				6EA7E8A427C2DF7300B40B57 /* GameMenuView.swift in Sources */,
@@ -553,9 +563,11 @@
 				6E8E0E1627C2A02E00F6F405 /* MenuView.swift in Sources */,
 				6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */,
 				6E6A947527BE43CB002DB431 /* LevelBlueprintRepo.swift in Sources */,
+				6EA7E8B327C4480900B40B57 /* BucketView.swift in Sources */,
 				6EA7E8A227C2CF2400B40B57 /* NavigateToMenuButton.swift in Sources */,
 				6E6A943327BE4257002DB431 /* LevelBlueprint.swift in Sources */,
 				6E6A943427BE4257002DB431 /* Ball.swift in Sources */,
+				6EA7E8B127C446A100B40B57 /* Bucket+Displayable.swift in Sources */,
 				6E6A943227BE4257002DB431 /* PegColor.swift in Sources */,
 				6EB924C627C2BC100037CC6D /* LevelSelectionViewModel.swift in Sources */,
 				6E6A94AB27BE58CD002DB431 /* WinConditions.swift in Sources */,

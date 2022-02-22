@@ -19,7 +19,7 @@ public class RigidBody: CustomStringConvertible {
     public init(
         motion: Motion,
         hitBoxAt: @escaping (_ center: Point) -> Geometry,
-        material: Material = Materials.PerfectlyElastic
+        material: Material = Materials.PerfectlyElasticSolid
     ) {
         self.motion = motion
         self.hitBoxAt = hitBoxAt
@@ -27,11 +27,11 @@ public class RigidBody: CustomStringConvertible {
         self.material = material
     }
 
-    var position: Vector2D {
+    public var position: Vector2D {
         motion.position
     }
 
-    var velocity: Vector2D {
+    public var velocity: Vector2D {
         motion.velocity
     }
 

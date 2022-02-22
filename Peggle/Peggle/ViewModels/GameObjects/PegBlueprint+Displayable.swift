@@ -25,11 +25,13 @@ extension PegBlueprint: Displayable {
     }
 
     var image: UIImage {
-        switch self.color {
+        switch self.type {
         case .blue:
             return #imageLiteral(resourceName: "PegBlue")
         case .orange:
             return #imageLiteral(resourceName: "PegOrange")
+        case .green:
+            return #imageLiteral(resourceName: "PegGreen")
         }
     }
 }

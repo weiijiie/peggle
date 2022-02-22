@@ -5,23 +5,23 @@
 import Physics
 
 struct PegBlueprint {
-    let color: PegColor
+    let type: PegType
     let hitBox: Geometry
     let center: Point
 
-    private init(color: PegColor, hitBox: Geometry) {
-        self.color = color
+    private init(type: PegType, hitBox: Geometry) {
+        self.type = type
         self.hitBox = hitBox
         self.center = hitBox.center
     }
 
-    static func round(color: PegColor, center: Point, radius: Double) -> PegBlueprint {
+    static func round(type: PegType, center: Point, radius: Double) -> PegBlueprint {
         let hitBox = Geometry.circle(center: center, radius: radius)
-        return self.init(color: color, hitBox: hitBox)
+        return self.init(type: type, hitBox: hitBox)
     }
 
     func centeredAt(point newCenter: Point) -> PegBlueprint {
-        PegBlueprint(color: color, hitBox: hitBox.withCenter(newCenter))
+        PegBlueprint(type: type, hitBox: hitBox.withCenter(newCenter))
     }
 }
 

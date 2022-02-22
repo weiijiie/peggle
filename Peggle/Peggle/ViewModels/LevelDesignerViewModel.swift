@@ -36,8 +36,8 @@ class LevelDesignerViewModel: ObservableObject {
     /// Should only be called when tapping on an empty area of the background, ie. no pegs.
     func tapAt(point: CGPoint) {
         switch selectedMode {
-        case let .addPeg(color):
-            blueprint?.addPegBlueprintCenteredAt(point: Point(cgPoint: point), color: color)
+        case let .addPeg(type):
+            blueprint?.addPegBlueprintCenteredAt(point: Point(cgPoint: point), type: type)
 
         // If in remove mode when tapping at a point, then the tap must be at a location
         // where there is no peg (if there was a peg, the peg would be tapped directly and

@@ -4,13 +4,24 @@
 
 import SwiftUI
 
+/// Lightweight set of structs and classes to simplify error handling logic in the view.
+/// Any calls that throw errors can be wrapped with a function to automatically show
+/// the error as an alert.
+///
+/// - Usage:
+/// First, create the `ErrorHandler` in any view as a instance variable. It is a tuple that
+/// includes a view modifier and a function that can wrap any calls that may throw errors.
+/// Next, add the modifier to a view body via `.withErrorHandler(errorHandler)`.
+/// Finally, wrap any statement that throws with `handler.doWithErrorHandling`. Any
+/// error that is thrown will then show up as an alert.
+
 typealias ErrorHandler = (
     modifier: ErrorHandlerModifier,
     doWithErrorHandling: (() throws -> Void) -> Void
 )
 
 func makeErrorHandler(debug: Bool = false) -> ErrorHandler {
-    let errorWrapper = ErrorWrapper()
+    let errorWrapper = ErrorWrapper(debug: debug)
     let modfier = ErrorHandlerModifier(errorWrapper: errorWrapper, debug: debug)
 
     func doWithErrorHandling(action: () throws -> Void) {
@@ -25,12 +36,6 @@ func makeErrorHandler(debug: Bool = false) -> ErrorHandler {
 }
 
 /// View modifier to help with handling errors.
-///
-/// - Usage:
-/// First, create the `ErrorHandler` in any view as a instance variable, then add the modifier to
-/// the view body via `.withErrorHandler(errorHandler)`.
-/// Next, wrap any statement that throws with `errorHandler.doWithErrorHandling`. Any
-/// error that is thrown will then show up as an alert.
 struct ErrorHandlerModifier: ViewModifier {
 
     @ObservedObject fileprivate var errorWrapper: ErrorWrapper
@@ -70,7 +75,7 @@ private class ErrorWrapper: ObservableObject {
 
     let debug: Bool
 
-    init(debug: Bool = true) {
+    init(debug: Bool = false) {
         self.debug = debug
     }
 

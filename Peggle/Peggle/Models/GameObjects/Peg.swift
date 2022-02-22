@@ -10,7 +10,7 @@ struct Peg: Equatable {
 
     let id: ID
     let center: Point
-    let color: PegColor
+    let type: PegType
     let hitBox: Geometry
 
     private(set) var hasBeenHit = false
@@ -19,7 +19,7 @@ struct Peg: Equatable {
     init(id: Int, blueprint: PegBlueprint) {
         self.id = id
         self.center = blueprint.center
-        self.color = blueprint.color
+        self.type = blueprint.type
         self.hitBox = blueprint.hitBox
     }
 

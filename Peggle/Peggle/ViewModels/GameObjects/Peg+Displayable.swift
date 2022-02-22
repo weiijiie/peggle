@@ -25,7 +25,7 @@ extension Peg: Displayable {
     }
 
     var image: UIImage {
-        switch (self.color, self.hasBeenHit) {
+        switch (self.type, self.hasBeenHit) {
         case (.blue, false):
             return #imageLiteral(resourceName: "PegBlue")
         case (.blue, true):
@@ -34,6 +34,10 @@ extension Peg: Displayable {
             return #imageLiteral(resourceName: "PegOrange")
         case (.orange, true):
             return #imageLiteral(resourceName: "PegOrangeGlow")
+        case (.green, false):
+            return #imageLiteral(resourceName: "PegGreen")
+        case (.green, true):
+            return #imageLiteral(resourceName: "PegGreenGlow")
         }
     }
 }

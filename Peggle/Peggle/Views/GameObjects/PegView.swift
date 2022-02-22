@@ -42,7 +42,7 @@ struct PegView_Previews: PreviewProvider {
     static var previews: some View {
         PegView(peg: Peg(
             id: 5,
-            blueprint: PegBlueprint.round(color: .blue,
+            blueprint: PegBlueprint.round(type: .blue,
                                           center: Point(x: 400, y: 200),
                                           radius: 10))
         )

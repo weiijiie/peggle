@@ -36,14 +36,14 @@ struct LevelBlueprint {
         pegBlueprints.append(pegBlueprint)
     }
 
-    mutating func addPegBlueprintCenteredAt(point center: Point, color: PegColor) {
+    mutating func addPegBlueprintCenteredAt(point center: Point, type: PegType) {
         let pegRadius = getScaledSize(
             of: PegBlueprint.relativeWidth,
             relativeTo: LevelBlueprint.relativeWidth,
             withActualSize: Float(width)
         ) / 2
 
-        let peg = PegBlueprint.round(color: color, center: center, radius: Double(pegRadius))
+        let peg = PegBlueprint.round(type: type, center: center, radius: Double(pegRadius))
         addPegBlueprint(peg)
     }
 

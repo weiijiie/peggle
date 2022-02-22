@@ -47,7 +47,7 @@ struct PegBlueprintView: View {
 struct PegBlueprintView_Previews: PreviewProvider {
     static var previews: some View {
         PegBlueprintView(
-            pegBlueprint: PegBlueprint.round(color: .blue, center: Point(x: 250, y: 250), radius: 30),
+            pegBlueprint: PegBlueprint.round(type: .blue, center: Point(x: 250, y: 250), radius: 30),
             onTap: {},
             onLongPress: {},
             onDragEnd: { _ in }

@@ -53,6 +53,6 @@ class LevelBlueprintTests: XCTestCase {
     }
 
     func makeRoundPeg(x: Double, y: Double, radius: Double) -> PegBlueprint {
-        PegBlueprint.round(color: .blue, center: Point(x: x, y: y), radius: radius)
+        PegBlueprint.round(type: .blue, center: Point(x: x, y: y), radius: radius)
     }
 }

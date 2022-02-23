@@ -11,7 +11,7 @@ class GameViewModel: ObservableObject {
 
     // Experimentally, this scaling from the view's coordinates to the game
     // engine's coordinates leads to a more enjoyable simulation.
-    static let GameEngineScaleFactor = 1.0 / 25
+    static let GameEngineScaleFactor = 1.0 / 20
 
     var gameEngine: PeggleGameEngine?
 
@@ -37,6 +37,14 @@ class GameViewModel: ObservableObject {
     var gameStatus: PeggleGameStatus {
         gameEngine?.status ?? .ongoing
     }
+
+    // Powerup selection
+    let availablePowerups = AllPowerups
+
+    // Set the default to be the first powerup in `AllPowerups`
+    // There should always at least be one powerup in that array
+    @Published var selectedPowerup: Powerup = AllPowerups.first!
+    @Published var showSelectPowerupScreen = true
 
     /// Whether the game loop is running or not. Assigning to this value will cause the
     /// game loop to start and stop appropriately. This allows for binded variables to
@@ -66,12 +74,12 @@ class GameViewModel: ObservableObject {
         let scaleFactor = GameViewModel.GameEngineScaleFactor
         let coordinateMapper = ProportionateCoordinateMapper(scale: scaleFactor).withFlippedYAxis()
 
-        let gameEngine = PeggleGameEngine(
+        self.gameEngine = PeggleGameEngine(
             levelBlueprint: levelBlueprint,
             maxX: levelBlueprint.width,
             maxY: 0, // in iOS, the 0 coordinate is towards the top of the screen
             powerupManager: PowerupManager(),
-            selectedPowerup: SpookyPowerup(),
+            selectedPowerup: selectedPowerup,
             coordinateMapper: coordinateMapper,
             // Since the game engine is a class, SwiftUI does not know when it has
             // been mutated. Thus, we use a callback based system to call
@@ -85,7 +93,6 @@ class GameViewModel: ObservableObject {
             loseConditions: [RanOutOfBallsLoseCondition()]
         )
 
-        self.gameEngine = gameEngine
         startGameLoop()
     }
 

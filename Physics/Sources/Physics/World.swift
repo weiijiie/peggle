@@ -105,12 +105,12 @@ public class World<
         updateCallbacks.removeValue(forKey: id)
         collisionCallbacks.removeValue(forKey: id)
     }
-    
+
     public func teleportRigidBody(_ body: RigidBody, to newPosition: Vector2D) {
         guard let body = rigidBodies[body.id] else {
             return
         }
-        
+
         body.teleport(to: newPosition)
     }
 

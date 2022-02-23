@@ -29,8 +29,6 @@ struct GameView: View {
     func game(blueprint levelBlueprint: LevelBlueprint) -> some View {
         ZStack {
             GameBackgroundView(width: levelBlueprint.width, height: levelBlueprint.height)
-                .onAppear { viewModel.initializeGame(blueprint: levelBlueprint) }
-                .onDisappear { viewModel.stopGame() }
 
             if let (ball, pegs, cannon, bucket) = viewModel.gameObjects {
                 if let ball = ball {
@@ -41,44 +39,53 @@ struct GameView: View {
                     PegView(peg: peg)
                 }
 
+                BucketView(bucket: bucket)
+
                 CannonView(cannon: cannon) { cannon in
                     _ = viewModel.fireBallWith(cannonAngle: cannon.currentAngle)
                 }
-
-                BucketView(bucket: bucket)
+                .onDisappear { viewModel.stopGame() }
             }
         }
     }
 
     var body: some View {
-        ZStack {
-            if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
-                VStack {
-                    topBar
-                    game(blueprint: levelBlueprint)
-                }
-                .ignoresSafeArea(.keyboard)
-                .popup(isPresented: $viewModel.paused) {
-                    GameMenuView(show: $viewModel.paused, restartCallback: {
+        if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
+            VStack {
+                topBar
+                game(blueprint: levelBlueprint)
+            }
+            .ignoresSafeArea(.keyboard)
+            .popup(isPresented: $viewModel.showSelectPowerupScreen) {
+                PowerupSelectionView(
+                    availablePowerups: viewModel.availablePowerups,
+                    powerupSelectedCallback: { powerup in
+                        viewModel.selectedPowerup = powerup
+                        viewModel.showSelectPowerupScreen = false
                         viewModel.initializeGame(blueprint: levelBlueprint)
-                    })
-                }
-                .popup(isPresented: $viewModel.showGameOverScreen, tapOutsideToDismiss: false) {
-                    GameOverView(
-                        status: viewModel.gameStatus,
-                        levelName: levelName,
-                        playAgainCallback: {
-                            viewModel.initializeGame(blueprint: levelBlueprint)
-                        }
-                    )
-                }
+                    }
+                )
+            }
+            .popup(isPresented: $viewModel.paused) {
+                GameMenuView(show: $viewModel.paused, restartCallback: {
+                    viewModel.initializeGame(blueprint: levelBlueprint)
+                })
+            }
+            .popup(isPresented: $viewModel.showGameOverScreen, tapOutsideToDismiss: false) {
+                GameOverView(
+                    status: viewModel.gameStatus,
+                    levelName: levelName,
+                    playAgainCallback: {
+                        viewModel.initializeGame(blueprint: levelBlueprint)
+                    }
+                )
+            }
 
-            } else {
-                LevelSelectionView { blueprint, name in
-                    appState.setActiveLevelBlueprint(blueprint, name: name)
-                } onCancel: {
-                    navigator.navigateBack()
-                }
+        } else {
+            LevelSelectionView { blueprint, name in
+                appState.setActiveLevelBlueprint(blueprint, name: name)
+            } onCancel: {
+                navigator.navigateBack()
             }
         }
     }

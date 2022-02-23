@@ -49,13 +49,13 @@ struct ErrorHandlerModifier: ViewModifier {
     func body(content: Content) -> some View {
         let error = errorWrapper.error
         content
-            .alert(error?.localizedDescription ?? "Error", isPresented: $errorWrapper.presentAlert) {
+            .alert(error?.localizedFailureReason ?? "Error", isPresented: $errorWrapper.presentAlert) {
                 if let suggestion = error?.localizedRecoverySuggestion {
                     Button(suggestion) {}
                 }
             } message: {
-                if let failureReason = error?.localizedFailureReason {
-                    Text(failureReason)
+                if let description = error?.localizedDescription {
+                    Text(description)
                 }
             }
     }

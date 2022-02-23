@@ -24,30 +24,11 @@ struct LevelSelectionView: View {
     }
 
     var selection: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                let levelNames = Array(viewModel.levelNames.enumerated()).sorted { $0.element < $1.element }
-
-                ForEach(levelNames, id: \.element) { index, name in
-                    let selected = selectedName != nil && name == selectedName
-                    Text(name)
-                        .padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(selected ? Color(.systemGray4) : .white)
-                        .onTapGesture { selectedName = name }
-
-                    // only display dividers between elements
-                    if index != viewModel.levelNames.count - 1 {
-                        Divider()
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.white)
-            .cornerRadius(12)
-        }
-        .padding()
-        .background(Color(.systemGray6))
+        Selection(
+            selectionItems: viewModel.levelNames.sorted(by: <),
+            id: \.self,
+            selectedItem: $selectedName
+        )
     }
 
     var controls: some View {

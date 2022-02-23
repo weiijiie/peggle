@@ -11,3 +11,5 @@ protocol Powerup {
 
     func apply(to engine: PeggleGameEngine)
 }
+
+let AllPowerups: [Powerup] = [SpookyPowerup()]

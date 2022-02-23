@@ -27,47 +27,34 @@ class PeggleGameEngine: PeggleState {
     private let world: World<SpatialHash<RigidBody>, ImpulseCollisionResolver>
 
     private let mapper: CoordinateMapper
-
     private var onUpdateCallback: ((PeggleState) -> Void)?
 
     private(set) var pegs: [Peg] = [] {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private(set) var ball: Ball? {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private var ballRigidBody: RigidBody?
 
     private(set) var cannon: Cannon {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private(set) var bucket: Bucket {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private var obtainedBucketBonus = false
 
     private(set) var status = PeggleGameStatus.ongoing {
-        willSet {
-            onUpdateCallback?(self)
-        }
+        willSet { onUpdateCallback?(self) }
     }
 
     private(set) var winConditions: WinConditions
@@ -224,7 +211,7 @@ class PeggleGameEngine: PeggleState {
 
         let newHitbox = ball.hitBox.withCenter(point)
         self.ball?.update(hitBox: newHitbox)
-        
+
         let newPosition = Vector2D(x: point.x, y: point.y)
         world.teleportRigidBody(
             ballRigidBody,
@@ -273,7 +260,6 @@ class PeggleGameEngine: PeggleState {
         world.addRigidBody(
             rigidBody,
             onUpdate: { body in
-                print(body.velocity)
                 // update ball's hitbox when rigid body moves
                 let hitBox = self.mapper.externalToLocal(geometry: body.hitBox)
                 self.ball?.update(hitBox: hitBox)

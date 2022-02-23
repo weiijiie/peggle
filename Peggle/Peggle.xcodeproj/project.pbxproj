@@ -55,6 +55,8 @@
 		6E6E5CD627C5831800D147E6 /* Powerup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6E5CD527C5831800D147E6 /* Powerup.swift */; };
 		6E6E5CD927C583AB00D147E6 /* PowerupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6E5CD827C583AB00D147E6 /* PowerupManager.swift */; };
 		6E6E5CDB27C58AAF00D147E6 /* SpookyPowerup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6E5CDA27C58AAF00D147E6 /* SpookyPowerup.swift */; };
+		6E6E5CDD27C61D8900D147E6 /* PowerupSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6E5CDC27C61D8900D147E6 /* PowerupSelectionView.swift */; };
+		6E6E5CDF27C61E0000D147E6 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6E5CDE27C61E0000D147E6 /* Selection.swift */; };
 		6E8E0E1627C2A02E00F6F405 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E0E1527C2A02E00F6F405 /* MenuView.swift */; };
 		6E8E0E1827C2B81D00F6F405 /* LevelSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8E0E1727C2B81D00F6F405 /* LevelSelectionView.swift */; };
 		6EA7E8A227C2CF2400B40B57 /* NavigateToMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA7E8A127C2CF2400B40B57 /* NavigateToMenuButton.swift */; };
@@ -139,6 +141,8 @@
 		6E6E5CD527C5831800D147E6 /* Powerup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Powerup.swift; sourceTree = "<group>"; };
 		6E6E5CD827C583AB00D147E6 /* PowerupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerupManager.swift; sourceTree = "<group>"; };
 		6E6E5CDA27C58AAF00D147E6 /* SpookyPowerup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpookyPowerup.swift; sourceTree = "<group>"; };
+		6E6E5CDC27C61D8900D147E6 /* PowerupSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerupSelectionView.swift; sourceTree = "<group>"; };
+		6E6E5CDE27C61E0000D147E6 /* Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selection.swift; sourceTree = "<group>"; };
 		6E8E0E1527C2A02E00F6F405 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		6E8E0E1727C2B81D00F6F405 /* LevelSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSelectionView.swift; sourceTree = "<group>"; };
 		6EA7E8A127C2CF2400B40B57 /* NavigateToMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToMenuButton.swift; sourceTree = "<group>"; };
@@ -278,6 +282,7 @@
 				6E6A94B227C2572F002DB431 /* GameOverView.swift */,
 				6E8E0E1727C2B81D00F6F405 /* LevelSelectionView.swift */,
 				6E6A944727BE42D0002DB431 /* LevelDesignerView.swift */,
+				6E6E5CDC27C61D8900D147E6 /* PowerupSelectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -373,6 +378,7 @@
 				6EA7E8A827C4020B00B40B57 /* ErrorHandler.swift */,
 				6EA7E8A127C2CF2400B40B57 /* NavigateToMenuButton.swift */,
 				6EA7E8AA27C4124400B40B57 /* OverlayIf.swift */,
+				6E6E5CDE27C61E0000D147E6 /* Selection.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -569,6 +575,7 @@
 				6E6E5CD927C583AB00D147E6 /* PowerupManager.swift in Sources */,
 				6E6A944C27BE42D0002DB431 /* OnTapView.swift in Sources */,
 				6EB924C927C2C3BA0037CC6D /* Stack.swift in Sources */,
+				6E6E5CDD27C61D8900D147E6 /* PowerupSelectionView.swift in Sources */,
 				6EA7E8A427C2DF7300B40B57 /* GameMenuView.swift in Sources */,
 				6E6A94C827C26BFF002DB431 /* Peg+Displayable.swift in Sources */,
 				6E6A94A927BE586C002DB431 /* PegglePredicate.swift in Sources */,
@@ -588,6 +595,7 @@
 				6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */,
 				6E8E0E1627C2A02E00F6F405 /* MenuView.swift in Sources */,
 				6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */,
+				6E6E5CDF27C61E0000D147E6 /* Selection.swift in Sources */,
 				6E6A947527BE43CB002DB431 /* LevelBlueprintRepo.swift in Sources */,
 				6EA7E8B327C4480900B40B57 /* BucketView.swift in Sources */,
 				6EA7E8A227C2CF2400B40B57 /* NavigateToMenuButton.swift in Sources */,

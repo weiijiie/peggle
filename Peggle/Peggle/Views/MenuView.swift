@@ -31,7 +31,9 @@ struct MenuView: View {
                 .frame(height: 0.5 * geometry.size.height, alignment: .center)
             }
             .onAppear {
+                print("wjat")
                 appState.unsetActiveLevelBlueprint()
+                print(appState.activeLevelBlueprint)
             }
         }
     }

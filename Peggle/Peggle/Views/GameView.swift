@@ -48,7 +48,10 @@ struct GameView: View {
                 CannonView(cannon: cannon) { cannon in
                     _ = viewModel.fireBallWith(cannonAngle: cannon.currentAngle)
                 }
-                .onDisappear { viewModel.stopGame() }
+                .onDisappear {
+                    viewModel.stopGame()
+                    appState.unsetActiveLevelBlueprint()
+                }
             }
         }
     }

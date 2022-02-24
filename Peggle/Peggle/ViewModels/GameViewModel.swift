@@ -59,7 +59,7 @@ class GameViewModel: ObservableObject {
     @Published var paused = false {
         willSet {
             if newValue {
-                stopGame()
+                stopGameLoop()
             } else {
                 startGameLoop()
             }
@@ -76,7 +76,7 @@ class GameViewModel: ObservableObject {
         }
 
         // stop any prior running game
-        stopGame()
+        stopGameLoop()
 
         let scaleFactor = GameViewModel.GameEngineScaleFactor
         let coordinateMapper = ProportionateCoordinateMapper(scale: scaleFactor).withFlippedYAxis()
@@ -112,6 +112,15 @@ class GameViewModel: ObservableObject {
         return true
     }
 
+    func stopGame() {
+        gameEngine = nil
+        selectedPowerup = AllPowerups.first!
+        showSelectPowerupScreen = true
+        paused = false
+        showGameOverScreen = false
+        stopGameLoop()
+    }
+
     private func startGameLoop() {
         if displayLink != nil {
             return
@@ -123,7 +132,7 @@ class GameViewModel: ObservableObject {
         self.displayLink = displaylink
     }
 
-    func stopGame() {
+    private func stopGameLoop() {
         displayLink?.invalidate()
         displayLink = nil
     }

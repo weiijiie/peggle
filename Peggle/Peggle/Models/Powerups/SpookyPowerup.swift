@@ -9,7 +9,7 @@ struct SpookyPowerup: Powerup {
 
     let duration: Float = 8 // 8 seconds
 
-    func apply(to engine: PeggleGameEngine) {
+    func apply(to engine: PeggleGameEngine, hitPeg: Peg) {
         if !engine.isBallOutOfBounds() {
             return
         }

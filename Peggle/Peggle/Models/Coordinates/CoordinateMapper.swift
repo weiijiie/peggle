@@ -130,21 +130,26 @@ extension CoordinateMapper {
 
     // rigidBodies
     func localToExternal(rigidBody: RigidBody) -> RigidBody {
-        let hitBox = localToExternal(geometry: rigidBody.hitBox)
-        return RigidBody(
+        RigidBody(
             motion: localToExternal(motion: rigidBody.motion),
-            hitBoxAt: { center in hitBox.withCenter(center) },
+            hitBoxAt: { center, elapsedTime in
+                localToExternal(geometry: rigidBody.hitBoxAt(center, elapsedTime))
+                    .withCenter(center)
+            },
             material: rigidBody.material
         )
     }
 
     func externalToLocal(rigidBody: RigidBody) -> RigidBody {
-        let hitBox = externalToLocal(geometry: rigidBody.hitBox)
-        return RigidBody(
+        RigidBody(
             motion: externalToLocal(motion: rigidBody.motion),
-            hitBoxAt: { center in hitBox.withCenter(center) },
+            hitBoxAt: { center, elapsedTime in
+                externalToLocal(geometry: rigidBody.hitBoxAt(center, elapsedTime))
+                    .withCenter(center)
+            },
             material: rigidBody.material
         )
+
     }
 }
 

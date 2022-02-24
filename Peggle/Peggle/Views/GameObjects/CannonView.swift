@@ -19,8 +19,7 @@ struct CannonView: View {
         Image(uiImage: cannon.image)
             .resizable()
             .rotationEffect(SwiftUI.Angle(degrees: Double(cannon.imageRotation)), anchor: .center)
-            .frame(width: cannon.width, height: cannon.height)
-            .position(x: cannon.position.x, y: cannon.position.y)
+            .atPositionFor(cannon)
             .opacity(cannon.isActive ? 1 : 0.2)
             .animation(.easeIn(duration: 0.4), value: cannon.isActive)
             .onTapGesture {

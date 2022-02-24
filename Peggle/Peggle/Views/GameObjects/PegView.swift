@@ -22,8 +22,7 @@ struct PegView: View {
                     z: peg.id.isMultiple(of: 5) ? 1 : -1
                 )
             )
-            .frame(width: peg.width, height: peg.height)
-            .position(peg.center.toCGPoint())
+            .atPositionFor(peg)
             .opacity(show ? 1 : 0)
             .onChange(of: peg) { newValue in
                 if newValue.removed {

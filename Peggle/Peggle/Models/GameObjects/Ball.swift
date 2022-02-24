@@ -42,7 +42,7 @@ struct Ball {
                 velocity: initialVelocity,
                 mass: mass
             ),
-            hitBoxAt: { center in hitBox.withCenter(center) },
+            hitBoxAt: { center, _ in hitBox.withCenter(center) },
             material: material
         )
     }

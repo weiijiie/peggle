@@ -2,16 +2,20 @@
 //  Bucket+Displayable.swift
 //  Peggle
 
-import SwiftUI
+import UIKit
 
 extension Bucket: Displayable {
-    var width: CGFloat {
-        // should use the top width for displaying, since it is the largest
-        topWidth
+    var viewCenter: CGPoint {
+        self.position.toCGPoint()
     }
 
-    var height: CGFloat {
-        bucketHeight
+    var viewWidth: CGFloat {
+        // should use the top width for displaying, since it is the largest
+        self.topWidth
+    }
+
+    var viewHeight: CGFloat {
+        self.bucketHeight
     }
 
     var image: UIImage {

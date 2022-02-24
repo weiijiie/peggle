@@ -30,13 +30,17 @@ struct GameView: View {
         ZStack {
             GameBackgroundView(width: levelBlueprint.width, height: levelBlueprint.height)
 
-            if let (ball, pegs, cannon, bucket) = viewModel.gameObjects {
+            if let (ball, pegs, cannon, bucket, explosions) = viewModel.gameObjects {
                 if let ball = ball {
                     BallView(ball: ball)
                 }
 
                 ForEach(pegs, id: \.id) { peg in
                     PegView(peg: peg)
+                }
+
+                ForEach(explosions, id: \.key) { explosion in
+                    ExplosionView(explosion: explosion)
                 }
 
                 BucketView(bucket: bucket)
@@ -65,6 +69,7 @@ struct GameView: View {
                         viewModel.initializeGame(blueprint: levelBlueprint)
                     }
                 )
+            } onDismiss: { viewModel.initializeGame(blueprint: levelBlueprint)
             }
             .popup(isPresented: $viewModel.paused) {
                 GameMenuView(show: $viewModel.paused, restartCallback: {

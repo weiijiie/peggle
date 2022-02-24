@@ -9,7 +9,12 @@ protocol Powerup {
     // duration that the powerup should last for, in seconds
     var duration: Float { get }
 
-    func apply(to engine: PeggleGameEngine)
+    /// Applies the powerup to the given `PeggleGameEngine`. Is also passed
+    /// the peg that waas hit as a parameter.
+    func apply(to engine: PeggleGameEngine, hitPeg: Peg)
 }
 
-let AllPowerups: [Powerup] = [SpookyPowerup()]
+let AllPowerups: [Powerup] = [
+    SpookyPowerup(),
+    KaboomPowerup()
+]

@@ -214,7 +214,7 @@ public class World<
         if let minX = minX {
             let leftBoundary = RigidBody(
                 motion: .static(position: Vector2D(x: (-MaxDouble / 2) - minX.magnitude)),
-                hitBoxAt: { center in
+                hitBoxAt: { center, _ in
                     .axisAlignedRectangle(
                         center: center,
                         width: MaxDouble,
@@ -231,7 +231,7 @@ public class World<
         if let maxX = maxX {
             let rightBoundary = RigidBody(
                 motion: .static(position: Vector2D(x: (MaxDouble / 2) + maxX.magnitude)),
-                hitBoxAt: { center in
+                hitBoxAt: { center, _ in
                         .axisAlignedRectangle(
                         center: center,
                         width: MaxDouble,
@@ -248,7 +248,7 @@ public class World<
         if let minY = minY {
             let bottomBoundary = RigidBody(
                 motion: .static(position: Vector2D(y: (-MaxDouble / 2) - minY.magnitude)),
-                hitBoxAt: { center in
+                hitBoxAt: { center, _ in
                     .axisAlignedRectangle(
                         center: center,
                         width: Double.infinity,
@@ -265,7 +265,7 @@ public class World<
         if let maxY = maxY {
             let topBoundary = RigidBody(
                 motion: .static(position: Vector2D(y: (MaxDouble / 2) + maxY.magnitude)),
-                hitBoxAt: { center in
+                hitBoxAt: { center, _ in
                     .axisAlignedRectangle(
                         center: center,
                         width: Double.infinity,

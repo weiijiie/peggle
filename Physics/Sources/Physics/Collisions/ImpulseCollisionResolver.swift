@@ -32,9 +32,9 @@ public class ImpulseCollisionResolver: CollisionResolver {
                 return false
             }
 
-            // Taking the minimum of the coefficient of restitutions for 2 materials leads to
+            // Taking the average of the coefficient of restitutions for 2 materials leads to
             // intuitive results when simulating.
-            let restitution = min(restitution1, restitution2)
+            let restitution = (restitution1 + restitution2) / 2
 
             let impulseMagnitude = (-(1 + restitution) * velocityAlongNormal) /
                 (body1.motion.inverseMass + body2.motion.inverseMass)

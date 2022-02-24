@@ -9,10 +9,7 @@ struct BallView: View {
     let ball: Ball
 
     var body: some View {
-        Image(uiImage: ball.image)
-            .resizable()
-            .frame(width: ball.width, height: ball.height)
-            .position(ball.center.toCGPoint())
+        DisplayableView(displayable: ball)
     }
 }
 

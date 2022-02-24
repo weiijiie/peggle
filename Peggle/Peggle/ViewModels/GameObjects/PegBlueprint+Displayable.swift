@@ -6,7 +6,11 @@ import UIKit
 
 extension PegBlueprint: Displayable {
 
-    var width: CGFloat {
+    var viewCenter: CGPoint {
+        self.center.toCGPoint()
+    }
+
+    var viewWidth: CGFloat {
         switch self.hitBox {
         case let .circle(center: _, radius: radius):
             return CGFloat(radius * 2)
@@ -15,7 +19,7 @@ extension PegBlueprint: Displayable {
         }
     }
 
-    var height: CGFloat {
+    var viewHeight: CGFloat {
         switch self.hitBox {
         case let .circle(center: _, radius: radius):
             return CGFloat(radius * 2)

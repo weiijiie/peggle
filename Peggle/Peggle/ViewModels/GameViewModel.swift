@@ -5,7 +5,13 @@
 import SwiftUI
 import Physics
 
-typealias GameObjects = (ball: Ball?, pegs: [Peg], cannon: Cannon, bucket: Bucket)
+typealias GameObjects = (
+    ball: Ball?,
+    pegs: [Peg],
+    cannon: Cannon,
+    bucket: Bucket,
+    explosions: [Explosion]
+)
 
 class GameViewModel: ObservableObject {
 
@@ -26,7 +32,8 @@ class GameViewModel: ObservableObject {
             ball: gameEngine.ball,
             pegs: gameEngine.pegs,
             cannon: gameEngine.cannon,
-            bucket: gameEngine.bucket
+            bucket: gameEngine.bucket,
+            explosions: Array(gameEngine.activeExplosions.values)
         )
     }
 

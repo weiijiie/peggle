@@ -51,6 +51,10 @@ class PeggleGameEngine: PeggleState {
         willSet { onUpdateCallback?(self) }
     }
 
+    private(set) var activeExplosions: [Explosion.Key: Explosion] = [:] {
+        willSet { onUpdateCallback?(self) }
+    }
+
     private var obtainedBucketBonus = false
 
     private(set) var status = PeggleGameStatus.ongoing {
@@ -64,6 +68,7 @@ class PeggleGameEngine: PeggleState {
     private(set) var selectedPowerup: Powerup
 
     private var pegIdToRigidBody: [Peg.ID: RigidBody] = [:]
+    private var explosionRigidBodyIDs: Set<RigidBody.ID> = []
 
     private var elapsedTime: Float = 0
     private var lastNewPegCollisionTime: Float = 0
@@ -219,6 +224,35 @@ class PeggleGameEngine: PeggleState {
         )
     }
 
+    func startExplosion(_ explosion: Explosion) {
+        self.activeExplosions[explosion.key] = explosion
+        let rigidBody = mapper.localToExternal(rigidBody: explosion.makeRigidBody())
+
+        world.addRigidBody(rigidBody, onUpdate: { body in
+            if body.elapsedTime > explosion.duration {
+                // remove the explosion after its duration is up
+                self.activeExplosions.removeValue(forKey: explosion.key)
+                self.world.removeRigidBody(rigidBody)
+                self.explosionRigidBodyIDs.remove(rigidBody.id)
+            } else {
+                // otherwise update the explosion struct
+                let radius = self.mapper.externalToLocal(x: body.hitBox.width / 2).magnitude
+                self.activeExplosions[explosion.key]?.radius = radius
+            }
+        })
+        explosionRigidBodyIDs.insert(rigidBody.id)
+    }
+
+    func removePeg(_ peg: Peg) {
+        pegs[peg.id].remove()
+
+        guard let rigidBody = pegIdToRigidBody[peg.id] else {
+            return
+        }
+
+        world.removeRigidBody(rigidBody)
+    }
+
     // MARK: Helper Functions
 
     private func handleBallOutOfBounds() {
@@ -304,52 +338,73 @@ class PeggleGameEngine: PeggleState {
     }
 
     private func checkIfBallStuckAndResolve() {
-        // no new peg has been hit for the past 10 seconds
-        if lastNewPegCollisionTime < elapsedTime - 10 {
-            let randomHitPeg = pegs
-                .filter { $0.hasBeenHit }
-                .randomElement()
-
-            // if randomHitPeg is nil, then there are no pegs that have been
-            // hit, so there is no peg to remove (the scenario where the ball
-            // is stuck yet no pegs have been hit is likely impossible)
-            guard let randomHitPeg = randomHitPeg else {
-                return
-            }
-
-            // refresh the last collision time
-            lastNewPegCollisionTime = elapsedTime
-            removePeg(randomHitPeg)
+        if lastNewPegCollisionTime > elapsedTime - 10 {
+            return
         }
+
+        // no new peg has been hit for the past 10 seconds, so we consider
+        // the ball as stuck. to remedy, we remove a randomly chosen peg
+        // that has already been hit, hopefully giving a route for the ball
+        // to be unstuck
+        let randomHitPeg = pegs
+            .filter { $0.hasBeenHit }
+            .randomElement()
+
+        // if randomHitPeg is nil, then there are no pegs that have been
+        // hit, so there is no peg to remove (the scenario where the ball
+        // is stuck yet no pegs have been hit is likely impossible)
+        guard let randomHitPeg = randomHitPeg else {
+            return
+        }
+
+        lastNewPegCollisionTime = elapsedTime
+        removePeg(randomHitPeg)
     }
 
     private func pegCollisionCallback(id: Int) -> (Collision) -> Void {
         { collision in
-            guard let body = self.ballRigidBody, collision.involvesBody(body) else {
+            /// A collision is only a valid collision if one of the bodies is either a ball or an explosion.
+            /// We don't consider buckets and other pegs.
+            let (isBallCollision, isExplosionCollision) = self.isBallOrExplosionCollision(collision)
+            if !(isBallCollision || isExplosionCollision) {
                 return
             }
 
-            let hasBeenHit = self.pegs[id].hasBeenHit
-            if hasBeenHit {
-                return
+            if !self.pegs[id].hasBeenHit {
+                self.lastNewPegCollisionTime = self.elapsedTime
             }
 
             self.pegs[id].hit()
-            self.lastNewPegCollisionTime = self.elapsedTime
 
+            // activate powerup if powerup peg was hit
             if PegType.isPowerup(self.pegs[id].type) {
-                self.powerupManager.activatePowerup(self.selectedPowerup)
+                self.powerupManager.activatePowerup(
+                    self.selectedPowerup,
+                    hitPeg: self.pegs[id]
+                )
+            }
+
+            if isExplosionCollision {
+                self.removePeg(self.pegs[id])
             }
         }
     }
 
-    private func removePeg(_ peg: Peg) {
-        pegs[peg.id].remove()
+    private func isBallOrExplosionCollision(
+        _ collision: Collision
+    ) -> (isBallCollision: Bool, isExplosionCollision: Bool) {
+        var isBallCollision = false
+        var isExplosionCollision = false
 
-        guard let rigidBody = pegIdToRigidBody[peg.id] else {
-            return
+        if let body = self.ballRigidBody, collision.involvesBody(body) {
+            isBallCollision = true
         }
 
-        world.removeRigidBody(rigidBody)
+        if self.explosionRigidBodyIDs.contains(collision.body1.id) ||
+            self.explosionRigidBodyIDs.contains(collision.body2.id) {
+            isExplosionCollision = true
+        }
+
+        return (isBallCollision, isExplosionCollision)
     }
 }

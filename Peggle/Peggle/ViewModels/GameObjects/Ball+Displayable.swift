@@ -6,11 +6,15 @@ import UIKit
 
 extension Ball: Displayable {
 
-    var width: CGFloat {
+    var viewCenter: CGPoint {
+        self.center.toCGPoint()
+    }
+
+    var viewWidth: CGFloat {
         self.radius * 2
     }
 
-    var height: CGFloat {
+    var viewHeight: CGFloat {
         self.radius * 2
     }
 

@@ -116,7 +116,7 @@ struct Bucket {
     private func makeInsideRigidBody(initialPosition: Vector2D) -> RigidBody {
         RigidBody(
             motion: makeBucketMotion(initialPosition: initialPosition),
-            hitBoxAt: { center in
+            hitBoxAt: { center, _ in
                 .axisAlignedRectangle(
                     center: center,
                     // insides should span the top width, but not include the 2 edges
@@ -138,7 +138,7 @@ struct Bucket {
 
         return RigidBody(
             motion: makeBucketMotion(initialPosition: adjustedPosition),
-            hitBoxAt: { center in
+            hitBoxAt: { center, _ in
                 .axisAlignedRectangle(
                     center: Point(x: center.x + horizontalOffset, y: center.y),
                     width: edgeWidth,

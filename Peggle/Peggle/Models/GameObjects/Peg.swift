@@ -35,7 +35,7 @@ struct Peg: Equatable {
         let initialPosition = Vector2D(x: center.x, y: center.y)
         return RigidBody(
             motion: .static(position: initialPosition),
-            hitBoxAt: { center in hitBox.withCenter(center) }
+            hitBoxAt: { center, _ in hitBox.withCenter(center) }
         )
     }
 }

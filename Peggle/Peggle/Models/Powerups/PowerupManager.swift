@@ -6,14 +6,17 @@ class PowerupManager {
 
     class ActivatedPowerup {
         let powerup: Powerup
+        let hitPeg: Peg
+
         var timeSinceActivated: Float = 0
 
-        init(powerup: Powerup) {
+        init(powerup: Powerup, hitPeg: Peg) {
             self.powerup = powerup
+            self.hitPeg = hitPeg
         }
 
         func apply(to engine: PeggleGameEngine) {
-            powerup.apply(to: engine)
+            powerup.apply(to: engine, hitPeg: hitPeg)
         }
 
         func expired() -> Bool {
@@ -23,8 +26,8 @@ class PowerupManager {
 
     var activatedPowerups: [ActivatedPowerup] = []
 
-    func activatePowerup(_ powerup: Powerup) {
-        let activatedPowerup = ActivatedPowerup(powerup: powerup)
+    func activatePowerup(_ powerup: Powerup, hitPeg: Peg) {
+        let activatedPowerup = ActivatedPowerup(powerup: powerup, hitPeg: hitPeg)
         activatedPowerups.append(activatedPowerup)
     }
 

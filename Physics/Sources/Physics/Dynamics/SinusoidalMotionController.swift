@@ -7,7 +7,7 @@ public struct SinusoidalMotionController: MotionController {
     private let positionOffset: Vector2D
     public let velocity: Vector2D
 
-    private let timeElapsed: Float
+    private let elapsedTime: Float
 
     public let period: Float
     public let horizontalRange: Double
@@ -23,7 +23,7 @@ public struct SinusoidalMotionController: MotionController {
             initialPosition: position,
             positionOffset: Vector2D.Zero,
             velocity: Vector2D.Zero,
-            timeElapsed: 0,
+            elapsedTime: 0,
             period: period,
             horizontalRange: horizontalRange,
             verticalRange: verticalRange
@@ -34,7 +34,7 @@ public struct SinusoidalMotionController: MotionController {
          initialPosition: Vector2D,
          positionOffset: Vector2D,
          velocity: Vector2D,
-         timeElapsed: Float,
+         elapsedTime: Float,
          period: Float,
          horizontalRange: Double,
          verticalRange: Double
@@ -42,7 +42,7 @@ public struct SinusoidalMotionController: MotionController {
         self.initialPosition = initialPosition
         self.positionOffset = positionOffset
         self.velocity = velocity
-        self.timeElapsed = timeElapsed
+        self.elapsedTime = elapsedTime
 
         self.period = period
         self.horizontalRange = horizontalRange
@@ -57,9 +57,9 @@ public struct SinusoidalMotionController: MotionController {
     }
 
     public func update(dt: Float) -> MotionController {
-        let newTimeElapsed = timeElapsed + dt
+        let newElapsedTime = elapsedTime + dt
         // compute the new offset factor
-        let factor = sinusoidalFn(time: timeElapsed)
+        let factor = sinusoidalFn(time: elapsedTime)
 
         // scale the factor by the appropriate ranges
         let horizontalOffset = factor * horizontalRange / 2
@@ -75,7 +75,7 @@ public struct SinusoidalMotionController: MotionController {
             initialPosition: initialPosition,
             positionOffset: newPositionOffset,
             velocity: newVelocity,
-            timeElapsed: newTimeElapsed,
+            elapsedTime: newElapsedTime,
             period: period,
             horizontalRange: horizontalRange,
             verticalRange: verticalRange

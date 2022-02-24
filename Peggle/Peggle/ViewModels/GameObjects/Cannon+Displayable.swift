@@ -6,11 +6,16 @@ import UIKit
 import Physics
 
 extension Cannon: Displayable {
-    var width: CGFloat {
+
+    var viewCenter: CGPoint {
+        self.position.toCGPoint()
+    }
+
+    var viewWidth: CGFloat {
         CGFloat(self.size)
     }
 
-    var height: CGFloat {
+    var viewHeight: CGFloat {
         CGFloat(self.size)
     }
 

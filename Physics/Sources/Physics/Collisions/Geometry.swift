@@ -17,6 +17,24 @@ public enum Geometry {
     // An `axisAlignedRectangle` is one where the edges of the rectangle are aligned with
     // the coordinate axes.
     case axisAlignedRectangle(center: Point, width: Double, height: Double)
+    
+    public var width: Double {
+        switch self {
+        case let .circle(_, radius):
+            return radius * 2
+        case let .axisAlignedRectangle(_, width, _):
+            return width
+        }
+    }
+    
+    public var height: Double {
+        switch self {
+        case let .circle(_, radius):
+            return radius * 2
+        case let .axisAlignedRectangle(_, _, height):
+            return height
+        }
+    }
 
     public var center: Point {
         switch self {

@@ -9,10 +9,7 @@ struct BucketView: View {
     let bucket: Bucket
 
     var body: some View {
-        Image(uiImage: bucket.image)
-            .resizable()
-            .frame(width: bucket.width, height: bucket.height)
-            .position(x: bucket.position.x, y: bucket.position.y)
+        DisplayableView(displayable: bucket)
     }
 }
 

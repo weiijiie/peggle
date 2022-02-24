@@ -7,23 +7,28 @@
 /// classes.
 public class RigidBody: CustomStringConvertible {
 
+    public typealias HitBoxFunc = (_ center: Point, _ elapsedTime: Float) -> Geometry
+
     public private(set) var motion: Motion
     public private(set) var hitBox: Geometry
 
-    private let hitBoxAt: (_ center: Point) -> Geometry
+    public let hitBoxAt: HitBoxFunc
     public let material: Material
+
+    /// Tracks the amount of time this rigid body has been simulated
+    public private(set) var elapsedTime: Float = 0
 
     /// Initializes a rigid body with given motion, hitbox, and material. The hitbox paramter is actually
     /// a closure that takes in the current center of the `RigidBody`, and returns the hitbox centered
     /// at that point. This allows the hitbox to move along with the object's motion.
     public init(
         motion: Motion,
-        hitBoxAt: @escaping (_ center: Point) -> Geometry,
+        hitBoxAt: @escaping HitBoxFunc,
         material: Material = Materials.PerfectlyElasticSolid
     ) {
         self.motion = motion
         self.hitBoxAt = hitBoxAt
-        self.hitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y))
+        self.hitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y), 0)
         self.material = material
     }
 
@@ -35,17 +40,21 @@ public class RigidBody: CustomStringConvertible {
         motion.velocity
     }
 
-    /// Advances the motion of the rigid body by a step of the given time interval `dt`.
-    /// Returns true if the body's motion was updated, and false otherwise
+    /// Advances the motion and hitbox of the rigid body by a step of the given time interval `dt`.
+    /// Returns true if the body motion was updated, and false otherwise
     func stepForwardBy(time dt: Float) -> Bool {
-        let (motion: newMotion, updated) = motion.stepForwardBy(time: dt)
+        elapsedTime += dt
+        let (motion: newMotion, updated: motionUpdated) = motion.stepForwardBy(time: dt)
 
         motion = newMotion
-        if updated {
-            hitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y))
-        }
 
-        return updated
+        // update hitbox
+        let newHitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y), elapsedTime)
+        let hitboxUpdated = newHitBox != hitBox
+
+        hitBox = newHitBox
+
+        return motionUpdated || hitboxUpdated
     }
 
     func applyForce(_ force: Vector2D) {

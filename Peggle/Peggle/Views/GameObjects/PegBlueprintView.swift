@@ -15,10 +15,7 @@ struct PegBlueprintView: View {
     @GestureState var dragLocation: CGPoint?
 
     var body: some View {
-        Image(uiImage: pegBlueprint.image)
-            .resizable()
-            .frame(width: pegBlueprint.width, height: pegBlueprint.height)
-            .position(pegBlueprint.center.toCGPoint())
+        DisplayableView(displayable: pegBlueprint)
             // hide the actual peg while dragging so only the preview is seen
             .opacity(dragLocation == nil ? 1 : 0)
             .onTapGesture(perform: onTap)
@@ -36,7 +33,7 @@ struct PegBlueprintView: View {
         if let dragLocation = dragLocation {
             Image(uiImage: pegBlueprint.image)
                 .resizable()
-                .frame(width: pegBlueprint.width, height: pegBlueprint.height)
+                .frame(width: pegBlueprint.viewWidth, height: pegBlueprint.viewHeight)
                 .position(dragLocation)
                 .opacity(0.5)
                 .zIndex(1) // show this preview above other pegs

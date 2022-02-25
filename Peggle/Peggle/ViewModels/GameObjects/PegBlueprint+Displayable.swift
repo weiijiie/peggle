@@ -11,21 +11,11 @@ extension PegBlueprint: Displayable {
     }
 
     var viewWidth: CGFloat {
-        switch self.hitBox {
-        case let .circle(center: _, radius: radius):
-            return CGFloat(radius * 2)
-        case let .axisAlignedRectangle(center: _, width: width, height: _):
-            return CGFloat(width)
-        }
+        CGFloat(self.hitBox.width)
     }
 
     var viewHeight: CGFloat {
-        switch self.hitBox {
-        case let .circle(center: _, radius: radius):
-            return CGFloat(radius * 2)
-        case let .axisAlignedRectangle(center: _, width: _, height: height):
-            return CGFloat(height)
-        }
+        CGFloat(self.hitBox.height)
     }
 
     var image: UIImage {

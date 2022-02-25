@@ -50,11 +50,19 @@ extension CoordinateMapper {
                 center: localToExternal(point: center),
                 radius: localToExternal(x: radius).magnitude
             )
+
         case let .axisAlignedRectangle(center, width, height):
             return .axisAlignedRectangle(
                 center: localToExternal(point: center),
                 width: localToExternal(x: width).magnitude,
                 height: localToExternal(y: height).magnitude
+            )
+
+        case let .triangle(a, b, c):
+            return .triangle(
+                localToExternal(point: a),
+                localToExternal(point: b),
+                localToExternal(point: c)
             )
         }
     }
@@ -66,11 +74,19 @@ extension CoordinateMapper {
                 center: externalToLocal(point: center),
                 radius: externalToLocal(x: radius).magnitude
             )
+
         case let .axisAlignedRectangle(center, width, height):
             return .axisAlignedRectangle(
                 center: externalToLocal(point: center),
                 width: externalToLocal(x: width).magnitude,
                 height: externalToLocal(y: height).magnitude
+            )
+
+        case let .triangle(a, b, c):
+            return .triangle(
+                externalToLocal(point: a),
+                externalToLocal(point: b),
+                externalToLocal(point: c)
             )
         }
     }

@@ -30,6 +30,8 @@ struct KaboomPowerup: Powerup {
             return radius * scaleFactor
         case let .axisAlignedRectangle(_, width, height):
             return (width + height) / 4 * scaleFactor
+        case .triangle:
+            return (hitBox.width + hitBox.height) / 8 * scaleFactor
         }
     }
 }

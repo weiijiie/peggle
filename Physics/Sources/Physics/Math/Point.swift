@@ -18,6 +18,10 @@ public struct Point {
         let yDiff = otherPoint.y - self.y
         return sqrt(xDiff * xDiff + yDiff * yDiff)
     }
+
+    public func addVector(_ vector: Vector2D) -> Point {
+        Point(x: x + vector.x, y: y + vector.y)
+    }
 }
 
 extension Point {

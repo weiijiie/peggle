@@ -20,6 +20,14 @@ extension RigidBody: BroadPhaseObject {
                 minY: center.y - height / 2,
                 maxY: center.y + height / 2
             )
+
+        case .triangle:
+            return (
+                minX: hitBox.center.x - hitBox.width / 2,
+                maxX: hitBox.center.x + hitBox.width / 2,
+                minY: hitBox.center.y - hitBox.height / 2,
+                maxY: hitBox.center.y + hitBox.height / 2
+            )
         }
     }
 }

@@ -167,6 +167,7 @@ public class World<
 
     private func detectCollisions() -> [Collision] {
         let candidateCollisionGroups = broadPhaseCollisionDetector.getCandidateCollisionGroups()
+        // TODO: may want to consider deduplicating collisions from different candidate groups
         let rigidBodyCollisions = candidateCollisionGroups.flatMap(bruteForceDetectCollisions)
         let boundaryCollisions = detectBoundaryCollisions()
 

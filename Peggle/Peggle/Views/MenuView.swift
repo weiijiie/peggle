@@ -29,6 +29,12 @@ struct MenuView: View {
                 }
                 .padding()
                 .frame(height: 0.5 * geometry.size.height, alignment: .center)
+//                Image(uiImage: #imageLiteral(resourceName: "BlockBlue"))
+//                    .frame(width: 200, height: 200, alignment: .center)
+//                    .transformEffect(CGAffineTransform(a: 1, b: 0, c: 0.3, d: 1, tx: 0, ty: 0))
+//                Image(uiImage: #imageLiteral(resourceName: "BlockBlue"))
+//                    .opacity(0.5)
+//                    .frame(width: 200, height: 200, alignment: .center)
             }
             .onAppear {
                 appState.unsetActiveLevelBlueprint()

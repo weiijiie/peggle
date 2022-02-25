@@ -189,7 +189,7 @@ class WorldTests: XCTestCase {
 
     func testBouncingBall() {
         let world = World(
-            broadPhaseCollisionDetector: SpatialHash(cellSize: 10),
+            broadPhaseCollisionDetector: SpatialHash(cellSize: 8),
             // use the actual resolver as we need to test collisions
             collisionResolver: ImpulseCollisionResolver(),
             minY: 0
@@ -214,7 +214,7 @@ class WorldTests: XCTestCase {
         // check if the call collides with it.
         let block = RigidBody(
             motion: .static(position: Vector2D(x: 30, y: 46.9)),
-            hitBoxAt: { center in
+            hitBoxAt: { center, _ in
                 .axisAlignedRectangle(center: center, width: 5, height: 1)
             }
         )
@@ -243,11 +243,11 @@ class WorldTests: XCTestCase {
 func makeCircleRigidBody(
     motion: Motion,
     radius: Double = 5,
-    material: Material = Materials.PerfectlyElastic
+    material: Material = Materials.PerfectlyElasticSolid
 ) -> RigidBody {
     RigidBody(
         motion: motion,
-        hitBoxAt: { center in .circle(center: center, radius: radius) },
+        hitBoxAt: { center, _ in .circle(center: center, radius: radius) },
         material: material
     )
 }

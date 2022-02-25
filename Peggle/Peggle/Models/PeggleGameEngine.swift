@@ -8,7 +8,7 @@ import Physics
 class PeggleGameEngine: PeggleState {
 
     static let DefaultBallStartingSpeed = 450.0
-    static let SpatialHashCellSize = 10.0
+    static let SpatialHashCellSize = 8.0
     static let DefaultNumStartingBalls = 5
 
     let width: Double

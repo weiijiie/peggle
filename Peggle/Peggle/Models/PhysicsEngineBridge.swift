@@ -4,6 +4,9 @@
 
 import Physics
 
+/// Acts as a bridge between the peggle game engine and the physics engine. In charge of
+/// mapping the coordinates between the two, and keeping track of the rigid bodies added
+/// and removed.
 class PhysicsEngineBridge {
 
     let world: World<SpatialHash<RigidBody>, ImpulseCollisionResolver>

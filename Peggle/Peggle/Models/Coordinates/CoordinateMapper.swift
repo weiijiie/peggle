@@ -99,6 +99,16 @@ extension CoordinateMapper {
                 force: localToExternal(vector: force),
                 mass: mass
             )
+
+        case let .constrained(motion, constraints):
+            return .constrained(
+                localToExternal(motion: motion),
+                constraints: mapMotionConstraints(
+                    constraint: constraints,
+                    xMapper: localToExternal(x:),
+                    yMapper: localToExternal(y:)
+                )
+            )
         }
     }
 
@@ -125,7 +135,38 @@ extension CoordinateMapper {
                 force: externalToLocal(vector: force),
                 mass: mass
             )
+
+        case let .constrained(motion, constraints):
+            return .constrained(
+                externalToLocal(motion: motion),
+                constraints: mapMotionConstraints(
+                    constraint: constraints,
+                    xMapper: externalToLocal(x:),
+                    yMapper: externalToLocal(y:)
+                )
+            )
         }
+    }
+
+    private func mapMotionConstraints(
+        constraint: MotionConstraints,
+        xMapper: @escaping (Double) -> Double,
+        yMapper: @escaping (Double) -> Double
+    ) -> MotionConstraints {
+        let nullableXMapper = { (x: Double?) in
+            x != nil ? xMapper(x!) : nil
+        }
+
+        let nullableYMapper = { (y: Double?) in
+            y != nil ? yMapper(y!) : nil
+        }
+
+        return MotionConstraints(
+            positionXMagnitude: nullableXMapper(constraint.positionXMagnitude),
+            positionYMagnitude: nullableYMapper(constraint.positionYMagnitude),
+            velocityXMagnitude: nullableXMapper(constraint.velocityXMagnitude),
+            velocityYMagnitude: nullableYMapper(constraint.velocityYMagnitude)
+        )
     }
 
     // rigidBodies

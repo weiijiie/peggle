@@ -7,7 +7,7 @@ import Physics
 
 class PeggleGameEngine: PeggleState {
 
-    static let DefaultBallSpeed = 450.0
+    static let DefaultBallStartingSpeed = 450.0
     static let SpatialHashCellSize = 10.0
     static let DefaultNumStartingBalls = 5
 
@@ -138,7 +138,10 @@ class PeggleGameEngine: PeggleState {
     /// towards the left. If the angle is not between 0 and 180, the ball is not fired.
     ///
     /// - Returns: `true` if the ball was fired, and `false` otherwise.
-    func fireBallWith(angle: Degrees, speed: Double = PeggleGameEngine.DefaultBallSpeed) -> Bool {
+    func fireBallWith(
+        angle: Degrees,
+        speed: Double = PeggleGameEngine.DefaultBallStartingSpeed
+    ) -> Bool {
         guard angle >= 0 && angle <= 180 else {
             return false
         }
@@ -185,11 +188,15 @@ class PeggleGameEngine: PeggleState {
             self.handleBallOutOfBounds()
         }
 
-        status = PeggleGameStatus.getStatusFor(
+        let newStatus = PeggleGameStatus.getStatusFor(
             state: self,
             winConditions: winConditions,
             loseConditions: loseConditions
         )
+
+        if status != newStatus {
+            status = newStatus
+        }
 
         checkIfBallStuckAndResolve()
     }
@@ -258,7 +265,7 @@ class PeggleGameEngine: PeggleState {
             ballsRemaining += 1
         }
 
-        // remove all pegs that were hit
+        // remove all pegs that were hit and not yet removed
         for peg in pegs.values {
             if !peg.hasBeenHit || peg.removed {
                 continue
@@ -281,6 +288,7 @@ class PeggleGameEngine: PeggleState {
             ball,
             initialVelocity: velocity,
             onUpdate: { body in
+                print(body.velocity)
                 self.ball?.update(hitBox: body.hitBox)
             })
     }

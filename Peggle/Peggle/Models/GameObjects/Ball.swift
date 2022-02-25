@@ -37,10 +37,16 @@ struct Ball {
     func makeRigidBody(initialVelocity: Vector2D) -> RigidBody {
         let initialPosition = Vector2D(x: center.x, y: center.y)
         return RigidBody(
-            motion: .dynamic(
-                position: initialPosition,
-                velocity: initialVelocity,
-                mass: mass
+            motion: .constrained(
+                .dynamic(
+                    position: initialPosition,
+                    velocity: initialVelocity,
+                    mass: mass
+                ),
+                constraints: MotionConstraints(
+                    velocityXMagnitude: 750,
+                    velocityYMagnitude: 750
+                )
             ),
             hitBoxAt: { center, _ in hitBox.withCenter(center) },
             material: material

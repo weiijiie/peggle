@@ -10,7 +10,7 @@ import Foundation
 public class RigidBody: Identifiable, CustomStringConvertible {
 
     public typealias HitBoxFunc = (_ center: Point, _ elapsedTime: Float) -> Geometry
-    
+
     public let id: UUID
 
     public private(set) var motion: Motion
@@ -79,21 +79,28 @@ public class RigidBody: Identifiable, CustomStringConvertible {
 
     /// Instantaneously moves the rigid body to the given position, without affecting it's velocity
     func teleport(to newPosition: Vector2D) {
+        motion = getMotionTeleported(motion, to: newPosition)
+    }
+
+    private func getMotionTeleported(_ motion: Motion, to newPosition: Vector2D) -> Motion {
         switch motion {
         case let .static(_, velocity):
-            motion = .static(position: newPosition, velocity: velocity)
+            return .static(position: newPosition, velocity: velocity)
 
         // controlled rigid bodies should not be able to be teleported
         case .controlled:
-            return
+            return motion
 
         case let .dynamic(_, velocity, force, mass):
-            motion = .dynamic(
+            return .dynamic(
                 position: newPosition,
                 velocity: velocity,
                 force: force,
                 mass: mass
             )
+
+        case let .constrained(motion, constraints):
+            return .constrained(getMotionTeleported(motion, to: newPosition), constraints: constraints)
         }
     }
 

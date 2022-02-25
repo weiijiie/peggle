@@ -32,9 +32,6 @@ class PowerupManager {
     }
 
     func update(dt: Float, engine: PeggleGameEngine) {
-        if !activatedPowerups.isEmpty {
-        print(activatedPowerups)
-        }
         for powerup in activatedPowerups {
             powerup.apply(to: engine)
             powerup.timeSinceActivated += dt

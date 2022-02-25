@@ -20,6 +20,8 @@ public enum Motion {
         mass: Double
     )
 
+    indirect case constrained(Motion, constraints: MotionConstraints)
+
     public var position: Vector2D {
         switch self {
         case let .static(position, velocity: _):
@@ -31,6 +33,19 @@ public enum Motion {
         case let .dynamic(position, velocity: _, force: _, mass: _):
             return position
 
+        case let .constrained(motion, constraints):
+            return Vector2D(
+                x: clamp(
+                    value: motion.position.x,
+                    min: constraints.positionMinX,
+                    max: constraints.positionMaxX
+                ),
+                y: clamp(
+                    value: motion.position.y,
+                    min: constraints.positionMinY,
+                    max: constraints.positionMaxY
+                )
+            )
         }
     }
 
@@ -45,6 +60,19 @@ public enum Motion {
         case let .dynamic(position: _, velocity, force: _, mass: _):
             return velocity
 
+        case let .constrained(motion, constraints):
+            return Vector2D(
+                x: clamp(
+                    value: motion.velocity.x,
+                    min: constraints.velocityMinX,
+                    max: constraints.velocityMaxX
+                ),
+                y: clamp(
+                    value: motion.velocity.y,
+                    min: constraints.velocityMinY,
+                    max: constraints.velocityMaxY
+                )
+            )
         }
     }
 
@@ -62,6 +90,8 @@ public enum Motion {
 
         case let .dynamic(position: _, velocity: _, force: _, mass):
             return 1 / mass
+        case let .constrained(motion, _):
+            return motion.inverseMass
         }
     }
 
@@ -102,6 +132,12 @@ public enum Motion {
                 ),
                 updated: updated
             )
+        case let .constrained(motion, constraints):
+            let (newMotion, updated) = motion.stepForwardBy(time: dt)
+            return (
+                motion: .constrained(newMotion, constraints: constraints),
+                updated: updated
+            )
         }
     }
 
@@ -123,6 +159,9 @@ public enum Motion {
                 force: force + newForce,
                 mass: mass
             )
+
+        case let .constrained(motion, constraints):
+            return .constrained(motion.withAppliedForce(newForce), constraints: constraints)
         }
     }
 
@@ -139,6 +178,9 @@ public enum Motion {
         case let .dynamic(position: _, velocity: _, force: _, mass):
             let weight = gravity * mass
             return self.withAppliedForce(weight)
+
+        case let .constrained(motion, constraints):
+            return .constrained(motion.withAppliedGravity(gravity), constraints: constraints)
         }
     }
 
@@ -158,6 +200,9 @@ public enum Motion {
                 force: force,
                 mass: mass
             )
+
+        case let .constrained(motion, constraints):
+            return .constrained(motion.withAppliedImpulse(impulse), constraints: constraints)
         }
     }
 }

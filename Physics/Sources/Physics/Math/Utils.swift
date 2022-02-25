@@ -18,3 +18,15 @@ func clamp<T: Comparable>(value: T, min: T, max: T) -> T {
 
     return value
 }
+
+func clamp<T: Comparable>(value: T, min: T?, max: T?) -> T {
+    if let min = min, value <= min {
+        return min
+    }
+
+    if let max = max, value >= max {
+        return max
+    }
+
+    return value
+}

@@ -9,7 +9,7 @@ import Foundation
 /// in that time.
 struct Explosion: Identifiable {
 
-    static let DefaultDuration: Float = 0.3
+    static let DefaultDuration: Float = 0.4
 
     let id = UUID()
 
@@ -47,12 +47,29 @@ struct Explosion: Identifiable {
             motion: .static(position: Vector2D(x: center.x, y: center.y)),
             hitBoxAt: { center, elapsedTime in
                 // scale the radius of the explosion linearly with the time elapsed
-                let radius = min(maxRadius, Double(elapsedTime / duration) * radiusRange + initialRadius)
+                let radius = getExplosionRadiusForTime(elapsedTime)
                 return .circle(center: center, radius: radius)
             },
             // use a restitution over 1 to simulate the explosive force when in contact
             // with another rigid body
             material: .solid(restitution: 1.7)
         )
+    }
+
+    /// The size of an explosion increases from the minimum radius at time 0:`initialRadius`
+    /// to the maximum radius at time `duration`: `maxRadius`.
+    /// This function returns the appropriate radius for the given time.
+    private func getExplosionRadiusForTime(_ elapsedTime: Float) -> Double {
+        // beyond the min and max time values, the size of the explosion should not change
+        let time = clamp(value: elapsedTime, min: 0, max: duration)
+
+        let elapsedFraction = time / duration
+        return Double(easeOutCirc(x: elapsedFraction)) * radiusRange + initialRadius
+    }
+
+    /// Easing function for the speed of the explosion's growth. More information here:
+    /// https://easings.net/#easeOutCirc
+    private func easeOutCirc(x: Float) -> Float {
+        sqrt(1 - pow(x - 1, 2))
     }
 }

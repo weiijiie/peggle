@@ -43,9 +43,10 @@ struct Ball {
                     velocity: initialVelocity,
                     mass: mass
                 ),
+                // limit the maximum velocity of the ball in either direction
                 constraints: MotionConstraints(
-                    velocityXMagnitude: 750,
-                    velocityYMagnitude: 750
+                    velocityXMagnitude: 700,
+                    velocityYMagnitude: 700
                 )
             ),
             hitBoxAt: { center, _ in hitBox.withCenter(center) },

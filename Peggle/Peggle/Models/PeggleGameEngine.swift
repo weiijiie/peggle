@@ -288,7 +288,6 @@ class PeggleGameEngine: PeggleState {
             ball,
             initialVelocity: velocity,
             onUpdate: { body in
-                print(body.velocity)
                 self.ball?.update(hitBox: body.hitBox)
             })
     }

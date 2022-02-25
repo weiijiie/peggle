@@ -7,7 +7,7 @@
 /// - Returns: `value` if it is between `min` or `max`.
 ///            `min` if `value` is smaller than `min`.
 ///            `max` if `value` is larger than `max`
-func clamp<T: Comparable>(value: T, min: T, max: T) -> T {
+public func clamp<T: Comparable>(value: T, min: T, max: T) -> T {
     if value <= min {
         return min
     }
@@ -19,7 +19,7 @@ func clamp<T: Comparable>(value: T, min: T, max: T) -> T {
     return value
 }
 
-func clamp<T: Comparable>(value: T, min: T?, max: T?) -> T {
+public func clamp<T: Comparable>(value: T, min: T? = nil, max: T? = nil) -> T {
     if let min = min, value <= min {
         return min
     }

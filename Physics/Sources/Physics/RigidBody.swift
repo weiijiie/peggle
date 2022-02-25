@@ -2,12 +2,16 @@
 //  RigidBody2D.swift
 //  Peggle
 
+import Foundation
+
 /// RigidBody is the main object that the Physics engine simulates. It is mostly a container for
 /// other physics constructs like motion and geometry, and delegates most of its logic to those
 /// classes.
-public class RigidBody: CustomStringConvertible {
+public class RigidBody: Identifiable, CustomStringConvertible {
 
     public typealias HitBoxFunc = (_ center: Point, _ elapsedTime: Float) -> Geometry
+    
+    public let id: UUID
 
     public private(set) var motion: Motion
     public private(set) var hitBox: Geometry
@@ -16,7 +20,7 @@ public class RigidBody: CustomStringConvertible {
     public let material: Material
 
     /// Tracks the amount of time this rigid body has been simulated
-    public private(set) var elapsedTime: Float = 0
+    public private(set) var elapsedTime: Float
 
     /// Initializes a rigid body with given motion, hitbox, and material. The hitbox paramter is actually
     /// a closure that takes in the current center of the `RigidBody`, and returns the hitbox centered
@@ -24,12 +28,16 @@ public class RigidBody: CustomStringConvertible {
     public init(
         motion: Motion,
         hitBoxAt: @escaping HitBoxFunc,
-        material: Material = Materials.PerfectlyElasticSolid
+        material: Material = Materials.PerfectlyElasticSolid,
+        elapsedTime: Float = 0,
+        id: UUID = UUID()
     ) {
         self.motion = motion
         self.hitBoxAt = hitBoxAt
-        self.hitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y), 0)
+        self.hitBox = hitBoxAt(Point(x: motion.position.x, y: motion.position.y), elapsedTime)
         self.material = material
+        self.elapsedTime = elapsedTime
+        self.id = id
     }
 
     public var position: Vector2D {
@@ -92,10 +100,12 @@ public class RigidBody: CustomStringConvertible {
     public var description: String {
         """
         RigidBody(
+            id: \(id),
             position: \(position),
             velocity: \(velocity),
             hitBox: \(hitBox),
-            material: \(material)
+            material: \(material),
+            elapsedTime: \(elapsedTime)
         }
         """
     }

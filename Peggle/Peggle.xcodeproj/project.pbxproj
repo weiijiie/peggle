@@ -76,6 +76,7 @@
 		6EC4024927C6436F00102210 /* Explosion+Positionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024827C6436F00102210 /* Explosion+Positionable.swift */; };
 		6EC4024B27C64D2F00102210 /* DisplayableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024A27C64D2F00102210 /* DisplayableView.swift */; };
 		6EC4024D27C83F8D00102210 /* ExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024C27C83F8D00102210 /* ExplosionView.swift */; };
+		6EC4024F27C8521900102210 /* PhysicsEngineBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +168,7 @@
 		6EC4024827C6436F00102210 /* Explosion+Positionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Explosion+Positionable.swift"; sourceTree = "<group>"; };
 		6EC4024A27C64D2F00102210 /* DisplayableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayableView.swift; sourceTree = "<group>"; };
 		6EC4024C27C83F8D00102210 /* ExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplosionView.swift; sourceTree = "<group>"; };
+		6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsEngineBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +259,7 @@
 				6E6A942327BE4256002DB431 /* GameObjects */,
 				6E6A942B27BE4256002DB431 /* RelativelySized.swift */,
 				6E6A942E27BE4257002DB431 /* PeggleGameEngine.swift */,
+				6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */,
 				6E6A94A427BE5607002DB431 /* PeggleState.swift */,
 				6E6A94AE27BE60A6002DB431 /* PeggleGameStatus.swift */,
 				6E6A94A827BE586C002DB431 /* PegglePredicate.swift */,
@@ -632,6 +635,7 @@
 				6E6A94A527BE5608002DB431 /* PeggleState.swift in Sources */,
 				6E6A944B27BE42D0002DB431 /* GameView.swift in Sources */,
 				6EA7E8AB27C4124400B40B57 /* OverlayIf.swift in Sources */,
+				6EC4024F27C8521900102210 /* PhysicsEngineBridge.swift in Sources */,
 				6E6A944927BE42D0002DB431 /* PeggleRoute.swift in Sources */,
 				6E6E5CD627C5831800D147E6 /* Powerup.swift in Sources */,
 				6E6A94CA27C26BFF002DB431 /* EditMode.swift in Sources */,

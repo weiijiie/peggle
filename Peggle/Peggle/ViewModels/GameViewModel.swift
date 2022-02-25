@@ -30,7 +30,7 @@ class GameViewModel: ObservableObject {
 
         return (
             ball: gameEngine.ball,
-            pegs: gameEngine.pegs,
+            pegs: Array(gameEngine.pegs.values),
             cannon: gameEngine.cannon,
             bucket: gameEngine.bucket,
             explosions: Array(gameEngine.activeExplosions.values)

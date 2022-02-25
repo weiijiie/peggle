@@ -14,7 +14,10 @@ import Physics
 /// - Every `Peg` in b must be fully inside the rectangle defined by the maximum height and width,
 ///   referred to as the "boundary" of the level.
 struct LevelBlueprint {
-    private(set) var pegBlueprints: [PegBlueprint]
+
+    private(set) var pegBlueprints: [PegBlueprint] = []
+//    private(set) var blockBlueprints: [BlockBlueprint] = []
+
     let width: Double
     let height: Double
     let center: Point

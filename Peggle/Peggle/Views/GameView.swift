@@ -39,7 +39,7 @@ struct GameView: View {
                     PegView(peg: peg)
                 }
 
-                ForEach(explosions, id: \.key) { explosion in
+                ForEach(explosions, id: \.id) { explosion in
                     ExplosionView(explosion: explosion)
                 }
 

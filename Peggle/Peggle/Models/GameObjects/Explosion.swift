@@ -3,12 +3,15 @@
 //  Peggle
 
 import Physics
+import Foundation
 
 /// An explosion will last for `duration`, and will expand from a radius of 0 to `maxRadius`
 /// in that time.
-struct Explosion {
+struct Explosion: Identifiable {
 
     static let DefaultDuration: Float = 0.3
+
+    let id = UUID()
 
     let center: Point
     let initialRadius: Double
@@ -51,24 +54,5 @@ struct Explosion {
             // with another rigid body
             material: .solid(restitution: 1.7)
         )
-    }
-
-    var key: Key {
-        Key(
-            center: center,
-            initialRadius: initialRadius,
-            maxRadius: maxRadius,
-            duration: duration
-        )
-    }
-
-    // since explosions need to be added to a dictionary, we make a hashable key out
-    // of the immutable properties of an explosion. since no 2 explosions can have the
-    // same center, this key can uniquely identify an explosion
-    struct Key: Hashable {
-        let center: Point
-        let initialRadius: Double
-        let maxRadius: Double
-        let duration: Float
     }
 }

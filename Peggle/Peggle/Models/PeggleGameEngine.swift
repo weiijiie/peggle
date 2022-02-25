@@ -24,20 +24,18 @@ class PeggleGameEngine: PeggleState {
     private let minY: Double
     private let maxY: Double
 
-    private let world: World<SpatialHash<RigidBody>, ImpulseCollisionResolver>
+//    private let world: World<SpatialHash<RigidBody>, ImpulseCollisionResolver>
 
     private let mapper: CoordinateMapper
     private var onUpdateCallback: ((PeggleState) -> Void)?
 
-    private(set) var pegs: [Peg] = [] {
+    private(set) var pegs: [Peg.ID: Peg] = [:] {
         willSet { onUpdateCallback?(self) }
     }
 
     private(set) var ball: Ball? {
         willSet { onUpdateCallback?(self) }
     }
-
-    private var ballRigidBody: RigidBody?
 
     private(set) var cannon: Cannon {
         willSet { onUpdateCallback?(self) }
@@ -47,11 +45,11 @@ class PeggleGameEngine: PeggleState {
         willSet { onUpdateCallback?(self) }
     }
 
-    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls {
+    private(set) var activeExplosions: [Explosion.ID: Explosion] = [:] {
         willSet { onUpdateCallback?(self) }
     }
 
-    private(set) var activeExplosions: [Explosion.Key: Explosion] = [:] {
+    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls {
         willSet { onUpdateCallback?(self) }
     }
 
@@ -67,11 +65,10 @@ class PeggleGameEngine: PeggleState {
     private(set) var powerupManager: PowerupManager
     private(set) var selectedPowerup: Powerup
 
-    private var pegIdToRigidBody: [Peg.ID: RigidBody] = [:]
-    private var explosionRigidBodyIDs: Set<RigidBody.ID> = []
-
     private var elapsedTime: Float = 0
     private var lastNewPegCollisionTime: Float = 0
+
+    private var bridge: PhysicsEngineBridge
 
     /// Initializes the Peggle game engine based on the given level blueprint. To ensure
     /// the game engine can work with multiple coordinate systems, clients are also required
@@ -109,7 +106,12 @@ class PeggleGameEngine: PeggleState {
 
         self.onUpdateCallback = onUpdate
 
-        self.world = World(
+        self.winConditions = winConditions
+        self.loseConditions = loseConditions
+        self.powerupManager = powerupManager
+        self.selectedPowerup = selectedPowerup
+
+        let world = World(
             broadPhaseCollisionDetector: SpatialHash(cellSize: PeggleGameEngine.SpatialHashCellSize),
             collisionResolver: ImpulseCollisionResolver(),
             minX: self.minX,
@@ -117,10 +119,7 @@ class PeggleGameEngine: PeggleState {
             maxY: self.maxY
         )
 
-        self.winConditions = winConditions
-        self.loseConditions = loseConditions
-        self.powerupManager = powerupManager
-        self.selectedPowerup = selectedPowerup
+        self.bridge = PhysicsEngineBridge(world: world, coordinateMapper: mapper)
 
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
         self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
@@ -172,7 +171,7 @@ class PeggleGameEngine: PeggleState {
         }
 
         elapsedTime += dt
-        world.update(dt: dt)
+        bridge.world.update(dt: dt)
 
         // the cannon's rotation is not handled by the physics engine, so
         // we handle it separately
@@ -210,7 +209,7 @@ class PeggleGameEngine: PeggleState {
     }
 
     func teleportBall(to point: Point) {
-        guard let ball = ball, let ballRigidBody = ballRigidBody else {
+        guard let ball = ball, let ballRigidBody = bridge.ballRigidBody else {
             return
         }
 
@@ -218,50 +217,40 @@ class PeggleGameEngine: PeggleState {
         self.ball?.update(hitBox: newHitbox)
 
         let newPosition = Vector2D(x: point.x, y: point.y)
-        world.teleportRigidBody(
+        bridge.world.teleportRigidBody(
             ballRigidBody,
             to: mapper.localToExternal(vector: newPosition)
         )
     }
 
     func startExplosion(_ explosion: Explosion) {
-        self.activeExplosions[explosion.key] = explosion
-        let rigidBody = mapper.localToExternal(rigidBody: explosion.makeRigidBody())
+        self.activeExplosions[explosion.id] = explosion
 
-        world.addRigidBody(rigidBody, onUpdate: { body in
+        bridge.addExplosion(explosion, onUpdate: { body in
+
             if body.elapsedTime > explosion.duration {
                 // remove the explosion after its duration is up
-                self.activeExplosions.removeValue(forKey: explosion.key)
-                self.world.removeRigidBody(rigidBody)
-                self.explosionRigidBodyIDs.remove(rigidBody.id)
+                self.activeExplosions.removeValue(forKey: explosion.id)
+                self.bridge.removeExplosion(explosion)
             } else {
                 // otherwise update the explosion struct
-                let radius = self.mapper.externalToLocal(x: body.hitBox.width / 2).magnitude
-                self.activeExplosions[explosion.key]?.radius = radius
+                let radius = body.hitBox.width / 2
+                self.activeExplosions[explosion.id]?.radius = radius
             }
         })
-        explosionRigidBodyIDs.insert(rigidBody.id)
     }
 
     func removePeg(_ peg: Peg) {
-        pegs[peg.id].remove()
-
-        guard let rigidBody = pegIdToRigidBody[peg.id] else {
-            return
-        }
-
-        world.removeRigidBody(rigidBody)
+        pegs[peg.id]?.remove()
+        bridge.removePeg(peg)
     }
 
     // MARK: Helper Functions
 
     private func handleBallOutOfBounds() {
         // remove the current ball
-        if let ballRigidBody = ballRigidBody {
-            world.removeRigidBody(ballRigidBody)
-        }
         ball = nil
-        ballRigidBody = nil
+        bridge.removeBall()
 
         // add extra ball if ball was shot into bucket
         if obtainedBucketBonus {
@@ -270,7 +259,7 @@ class PeggleGameEngine: PeggleState {
         }
 
         // remove all pegs that were hit
-        for peg in pegs {
+        for peg in pegs.values {
             if !peg.hasBeenHit || peg.removed {
                 continue
             }
@@ -288,53 +277,37 @@ class PeggleGameEngine: PeggleState {
         let ball = Ball(center: position, radius: Double(radius))
         self.ball = ball
 
-        let rigidBody = mapper.localToExternal(rigidBody: ball.makeRigidBody(initialVelocity: velocity))
-        self.ballRigidBody = rigidBody
-
-        world.addRigidBody(
-            rigidBody,
+        bridge.addBall(
+            ball,
+            initialVelocity: velocity,
             onUpdate: { body in
-                // update ball's hitbox when rigid body moves
-                let hitBox = self.mapper.externalToLocal(geometry: body.hitBox)
-                self.ball?.update(hitBox: hitBox)
-            }
-        )
+                self.ball?.update(hitBox: body.hitBox)
+            })
     }
 
     private func initializePegs(levelBlueprint: LevelBlueprint) {
-        for (i, pegBlueprint) in levelBlueprint.pegBlueprints.enumerated() {
-            // we let the peg's ID be their index in the pegs array
-            let peg = Peg(id: i, blueprint: pegBlueprint)
-            pegs.append(peg)
+        for pegBlueprint in levelBlueprint.pegBlueprints {
+            let peg = Peg(blueprint: pegBlueprint)
+            pegs[peg.id] = peg
 
-            let rigidBody = mapper.localToExternal(rigidBody: peg.makeRigidBody())
-
-            world.addRigidBody(
-                rigidBody,
-                onCollide: pegCollisionCallback(id: peg.id)
-            )
-
-            pegIdToRigidBody[peg.id] = rigidBody
+            bridge.addPeg(peg, onCollide: pegCollisionCallback(id: peg.id))
         }
     }
 
     private func initializeBucket() {
-        let (leftEdge, rightEdge, inside) = bucket.makeRigidBodies()
+        bridge.addBucket(
+            bucket,
+            onUpdate: { body in
+                self.bucket.updatePosition(body.hitBox.center)
+            },
+            onCollideWithInside: { collision in
+                guard let body = self.bridge.ballRigidBody, collision.involvesBody(body) else {
+                    return
+                }
 
-        world.addRigidBody(mapper.localToExternal(rigidBody: leftEdge))
-        world.addRigidBody(mapper.localToExternal(rigidBody: rightEdge))
-
-        world.addRigidBody(mapper.localToExternal(rigidBody: inside)) { body in
-            let center = self.mapper.externalToLocal(point: body.hitBox.center)
-            self.bucket.updatePosition(center)
-
-        } onCollide: { collision in
-            guard let body = self.ballRigidBody, collision.involvesBody(body) else {
-                return
+                self.obtainedBucketBonus = true
             }
-
-            self.obtainedBucketBonus = true
-        }
+        )
     }
 
     private func checkIfBallStuckAndResolve() {
@@ -347,6 +320,7 @@ class PeggleGameEngine: PeggleState {
         // that has already been hit, hopefully giving a route for the ball
         // to be unstuck
         let randomHitPeg = pegs
+            .values
             .filter { $0.hasBeenHit }
             .randomElement()
 
@@ -361,50 +335,41 @@ class PeggleGameEngine: PeggleState {
         removePeg(randomHitPeg)
     }
 
-    private func pegCollisionCallback(id: Int) -> (Collision) -> Void {
+    private func pegCollisionCallback(id: Peg.ID) -> (Collision) -> Void {
         { collision in
+            guard let peg = self.pegs[id] else {
+                return
+            }
+
             /// A collision is only a valid collision if one of the bodies is either a ball or an explosion.
             /// We don't consider buckets and other pegs.
-            let (isBallCollision, isExplosionCollision) = self.isBallOrExplosionCollision(collision)
+            let (isBallCollision, isExplosionCollision) = self.bridge.isBallOrExplosionCollision(collision)
             if !(isBallCollision || isExplosionCollision) {
                 return
             }
 
-            if !self.pegs[id].hasBeenHit {
+            let hasBeenHit = peg.hasBeenHit
+            // we need to access the peg directly from the dictionary, otherwise
+            // we will only mutate the copy
+            self.pegs[id]?.hit()
+
+            // we need to specially consider the case where the peg has been
+            // hit for the first time
+            if !hasBeenHit {
                 self.lastNewPegCollisionTime = self.elapsedTime
-            }
 
-            self.pegs[id].hit()
-
-            // activate powerup if powerup peg was hit
-            if PegType.isPowerup(self.pegs[id].type) {
-                self.powerupManager.activatePowerup(
-                    self.selectedPowerup,
-                    hitPeg: self.pegs[id]
-                )
+                // activate powerup if powerup peg was hit for the first time
+                if PegType.isPowerup(peg.type) {
+                    self.powerupManager.activatePowerup(
+                        self.selectedPowerup,
+                        hitPeg: peg
+                    )
+                }
             }
 
             if isExplosionCollision {
-                self.removePeg(self.pegs[id])
+                self.removePeg(peg)
             }
         }
-    }
-
-    private func isBallOrExplosionCollision(
-        _ collision: Collision
-    ) -> (isBallCollision: Bool, isExplosionCollision: Bool) {
-        var isBallCollision = false
-        var isExplosionCollision = false
-
-        if let body = self.ballRigidBody, collision.involvesBody(body) {
-            isBallCollision = true
-        }
-
-        if self.explosionRigidBodyIDs.contains(collision.body1.id) ||
-            self.explosionRigidBodyIDs.contains(collision.body2.id) {
-            isExplosionCollision = true
-        }
-
-        return (isBallCollision, isExplosionCollision)
     }
 }

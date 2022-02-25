@@ -136,7 +136,9 @@ extension CoordinateMapper {
                 localToExternal(geometry: rigidBody.hitBoxAt(center, elapsedTime))
                     .withCenter(center)
             },
-            material: rigidBody.material
+            material: rigidBody.material,
+            elapsedTime: rigidBody.elapsedTime,
+            id: rigidBody.id // preserve the id of the rigid body
         )
     }
 
@@ -147,7 +149,9 @@ extension CoordinateMapper {
                 externalToLocal(geometry: rigidBody.hitBoxAt(center, elapsedTime))
                     .withCenter(center)
             },
-            material: rigidBody.material
+            material: rigidBody.material,
+            elapsedTime: rigidBody.elapsedTime,
+            id: rigidBody.id // preserve the id of the rigid body
         )
 
     }

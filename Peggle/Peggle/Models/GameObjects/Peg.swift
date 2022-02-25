@@ -3,12 +3,12 @@
 //  Peggle
 
 import Physics
+import Foundation
 
-struct Peg: Equatable {
+struct Peg: Equatable, Identifiable {
 
-    typealias ID = Int
+    let id = UUID()
 
-    let id: ID
     let center: Point
     let type: PegType
     let hitBox: Geometry
@@ -16,8 +16,7 @@ struct Peg: Equatable {
     private(set) var hasBeenHit = false
     private(set) var removed = false
 
-    init(id: Int, blueprint: PegBlueprint) {
-        self.id = id
+    init(blueprint: PegBlueprint) {
         self.center = blueprint.center
         self.type = blueprint.type
         self.hitBox = blueprint.hitBox

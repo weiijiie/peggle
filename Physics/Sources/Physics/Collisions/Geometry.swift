@@ -16,7 +16,7 @@ public enum Geometry {
     // the coordinate axes.
     case axisAlignedRectangle(center: Point, width: Double, height: Double)
 
-    // A triangle is represented by the points of each of its vertices
+    // A triangle is represented by the points of each of its vertices.
     case triangle(Point, Point, Point)
 
     public var width: Double {

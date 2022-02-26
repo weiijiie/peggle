@@ -60,8 +60,8 @@ struct LevelDesignerView: View {
                     viewModel.selectedMode = mode
                 } label: {
                     switch mode {
-                    case let .addPeg(pegType):
-                        Image(uiImage: imageForPegType(pegType))
+                    case let .addPeg(pegType, isInteractive):
+                        Image(uiImage: imageForPegType(pegType, isInteractive: isInteractive))
                             .resizable()
                             .scaledToFit()
                             .opacity(opacity)
@@ -143,14 +143,20 @@ struct LevelDesignerView: View {
 
     }
 
-    private func imageForPegType(_ type: PegType) -> UIImage {
-        switch type {
-        case .blue:
+    private func imageForPegType(_ type: PegType, isInteractive: Bool) -> UIImage {
+        switch (type, isInteractive) {
+        case (.blue, true):
             return #imageLiteral(resourceName: "PegBlue")
-        case .orange:
+        case (.orange, true):
             return #imageLiteral(resourceName: "PegOrange")
-        case .green:
+        case (.green, true):
             return #imageLiteral(resourceName: "PegGreen")
+        case (.blue, false):
+            return #imageLiteral(resourceName: "BlockBlue")
+        case (.orange, false):
+            return #imageLiteral(resourceName: "BlockOrange")
+        case (.green, false):
+            return #imageLiteral(resourceName: "BlockGreen")
         }
     }
 }

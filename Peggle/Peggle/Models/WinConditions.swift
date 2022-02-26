@@ -15,6 +15,6 @@ extension WinConditions {
 struct ClearAllOrangePegsWinCondition: WinCondition {
     func test(state: PeggleState) -> Bool {
         // checks if there are no pegs that are orange and not removed
-        !state.pegs.values.contains { PegType.isWinCondition($0.type) && !$0.removed }
+        !state.pegs.values.contains { $0.type.isWinCondition() && !$0.removed }
     }
 }

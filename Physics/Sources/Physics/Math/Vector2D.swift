@@ -93,4 +93,12 @@ public struct Vector2D: Equatable {
     public static func dotProduct(_ vector1: Vector2D, _ vector2: Vector2D) -> Double {
         vector1.x * vector2.x + vector1.y * vector2.y
     }
+
+    /// We use the definition that the cross product of a 2D vector is the magnitude of the vector that results
+    /// after a normal 3D cross product of the input vectors, treating their z-axis values as 0. This 3D cross
+    /// product vector will be perpendicular to the 2D plane, and thus have a real numbered z-axis and 0 for
+    /// x and y axes. The return value is the z-axis value of that vector.
+    public static func crossProduct(_ vector1: Vector2D, _ vector2: Vector2D) -> Double {
+        (vector1.x * vector2.y) - (vector1.y * vector2.x)
+    }
 }

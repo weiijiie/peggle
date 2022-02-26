@@ -1,13 +1,14 @@
 //
-//  NearestPointOnTriangleTest.swift
+//  NearestPointOnTriangleTests.swift
 
 import XCTest
 @testable import Physics
 
-class NearestPointOnTriangleTest: XCTestCase {
+// swiftlint:disable function_body_length
+class NearestPointOnTriangleTests: XCTestCase {
 
     func testNearestPointOnTriangle() {
-        struct testCase {
+        struct TestCase {
             var a: Point
             var b: Point
             var c: Point
@@ -17,49 +18,49 @@ class NearestPointOnTriangleTest: XCTestCase {
         }
 
         let testCases = [
-            testCase(
+            TestCase(
                 a: Point(x: 0, y: 0),
                 b: Point(x: 1, y: 2),
                 c: Point(x: 2, y: 0),
                 point: Point(x: 1, y: 1),
                 expectedNearestPoint: Point(x: 1, y: 1)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: -3, y: 0),
                 b: Point(x: -1, y: 1),
                 c: Point(x: 3, y: 0),
                 point: Point(x: -4, y: -1),
                 expectedNearestPoint: Point(x: -3, y: 0)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: 3, y: 3),
                 b: Point(x: 4.5, y: 6),
                 c: Point(x: 6, y: 3),
                 point: Point(x: 7, y: 8),
                 expectedNearestPoint: Point(x: 4.5, y: 6)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: 0, y: 0),
                 b: Point(x: 0, y: 5),
                 c: Point(x: 4, y: 0),
                 point: Point(x: 5, y: -1),
                 expectedNearestPoint: Point(x: 4, y: 0)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: 0, y: 0),
                 b: Point(x: -4, y: 3),
                 c: Point(x: 4, y: 3),
                 point: Point(x: 2, y: 5),
                 expectedNearestPoint: Point(x: 2, y: 3)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: 3, y: 3),
                 b: Point(x: 4.5, y: 6),
                 c: Point(x: 6, y: 3),
                 point: Point(x: 7, y: 8),
                 expectedNearestPoint: Point(x: 4.5, y: 6)
             ),
-            testCase(
+            TestCase(
                 a: Point(x: 0, y: 0),
                 b: Point(x: 0, y: 6),
                 c: Point(x: 6, y: 0),

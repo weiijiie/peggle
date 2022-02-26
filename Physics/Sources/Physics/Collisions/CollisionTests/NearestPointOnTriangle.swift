@@ -6,7 +6,8 @@
 /// is inside the triangle, then the returned point is the same as `point`.
 /// The triangle is represented as the points of each of its 3 vertices.
 ///
-/// Method taken from: https://2dengine.com/?p=intersections
+/// Method taken from: https://2dengine.com/?p=intersections , using
+/// Barycentric coordinates.
 func nearestPointOnTriangle(
     to point: Point,
     a: Point, b: Point, c: Point

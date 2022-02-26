@@ -19,13 +19,19 @@ extension PegBlueprint: Displayable {
     }
 
     var image: UIImage {
-        switch self.type {
-        case .blue:
+        switch (self.type, self.isInteractive) {
+        case (.blue, true):
             return #imageLiteral(resourceName: "PegBlue")
-        case .orange:
+        case (.orange, true):
             return #imageLiteral(resourceName: "PegOrange")
-        case .green:
+        case (.green, true):
             return #imageLiteral(resourceName: "PegGreen")
+        case (.blue, false):
+            return #imageLiteral(resourceName: "BlockBlue")
+        case (.orange, false):
+            return #imageLiteral(resourceName: "BlockOrange")
+        case (.green, false):
+            return #imageLiteral(resourceName: "BlockGreen")
         }
     }
 }

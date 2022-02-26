@@ -166,6 +166,44 @@ class Vector2DTests: XCTestCase {
         }
     }
 
+    func testCrossProduct() {
+        struct TestCase {
+            var vector1: Vector2D
+            var vector2: Vector2D
+            var expected: Double
+        }
+
+        let testCases = [
+            TestCase(
+                vector1: Vector2D(x: 5, y: -6),
+                vector2: Vector2D(x: -7, y: 3),
+                expected: -27
+            ),
+            TestCase(
+                vector1: Vector2D(x: 10, y: 0),
+                vector2: Vector2D(x: -2, y: 4),
+                expected: 40
+            ),
+            TestCase(
+                vector1: Vector2D(x: 10, y: 0),
+                vector2: Vector2D(x: -3, y: -5),
+                expected: -50
+            ),
+            TestCase(
+                vector1: Vector2D(x: 55, y: 7),
+                vector2: Vector2D.Zero,
+                expected: 0
+            )
+        ]
+
+        for testCase in testCases {
+            let crossProduct = Vector2D.crossProduct(testCase.vector1, testCase.vector2)
+
+            XCTAssertEqual(crossProduct, testCase.expected,
+                           "Expected cross product to equal \(testCase.expected), got \(crossProduct)")
+        }
+    }
+
     func assertVectorsEqual(_ vector1: Vector2D, _ vector2: Vector2D, accuracy: Double) {
         XCTAssertEqual(vector1.x, vector2.x, accuracy: accuracy,
                        "Expected x-component of vectors to be equal")

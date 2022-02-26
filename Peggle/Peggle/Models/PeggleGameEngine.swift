@@ -366,7 +366,7 @@ class PeggleGameEngine: PeggleState {
                 self.lastNewPegCollisionTime = self.elapsedTime
 
                 // activate powerup if powerup peg was hit for the first time
-                if PegType.isPowerup(peg.type) {
+                if peg.type.isPowerup() {
                     self.powerupManager.activatePowerup(
                         self.selectedPowerup,
                         hitPeg: peg

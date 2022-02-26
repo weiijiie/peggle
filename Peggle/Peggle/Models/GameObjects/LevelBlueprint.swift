@@ -39,15 +39,30 @@ struct LevelBlueprint {
         pegBlueprints.append(pegBlueprint)
     }
 
-    mutating func addPegBlueprintCenteredAt(point center: Point, type: PegType) {
-        let pegRadius = getScaledSize(
+    mutating func addPegBlueprintCenteredAt(
+        point center: Point,
+        type: PegType,
+        isInteractive: Bool
+    ) {
+        let scaledWidth = getScaledSize(
             of: PegBlueprint.relativeWidth,
             relativeTo: LevelBlueprint.relativeWidth,
             withActualSize: Float(width)
-        ) / 2
+        )
 
-        let peg = PegBlueprint.round(type: type, center: center, radius: Double(pegRadius))
-        addPegBlueprint(peg)
+        if isInteractive {
+            let pegRadius = scaledWidth / 2
+            let peg = PegBlueprint.round(type: type, center: center, radius: Double(pegRadius))
+            addPegBlueprint(peg)
+
+        } else {
+            let peg = PegBlueprint.equilateralTriangle(
+                type: type,
+                center: center,
+                sideLength: Double(scaledWidth)
+            )
+            addPegBlueprint(peg)
+        }
     }
 
     /// Removes the given peg blueprint from the level blueprint.
@@ -79,10 +94,10 @@ struct LevelBlueprint {
     /// running parallel along the axes.
     private var boundaryEdges: [Geometry] {
         [
-            .axisAlignedRectangle(center: Point(x: 0, y: height / 2), width: 0, height: height),
-            .axisAlignedRectangle(center: Point(x: width, y: height / 2), width: 0, height: height),
-            .axisAlignedRectangle(center: Point(x: width / 2, y: 0), width: width, height: 0),
-            .axisAlignedRectangle(center: Point(x: width / 2, y: height), width: width, height: 0)
+            .axisAlignedRectangle(center: Point(x: 0, y: height / 2), width: 0.1, height: height),
+            .axisAlignedRectangle(center: Point(x: width, y: height / 2), width: 0.1, height: height),
+            .axisAlignedRectangle(center: Point(x: width / 2, y: 0), width: width, height: 0.1),
+            .axisAlignedRectangle(center: Point(x: width / 2, y: height), width: width, height: 0.1)
         ]
     }
 
@@ -91,7 +106,7 @@ struct LevelBlueprint {
     /// and not overlap with any of the edges of the boundary.
     private func fullyInsideBoundary(_ pegBlueprint: PegBlueprint) -> Bool {
         Geometry.overlaps(boundary, pegBlueprint.hitBox)
-            && !boundaryEdges.contains { Geometry.overlaps($0, pegBlueprint.hitBox) }
+             && !boundaryEdges.contains { Geometry.overlaps($0, pegBlueprint.hitBox) }
     }
 }
 

@@ -17,7 +17,7 @@ class GameViewModel: ObservableObject {
 
     // Experimentally, this scaling from the view's coordinates to the game
     // engine's coordinates leads to a more enjoyable simulation.
-    static let GameEngineScaleFactor = 1.0 / 20
+    static let GameEngineScaleFactor = 1.0 / 25
 
     var gameEngine: PeggleGameEngine?
 

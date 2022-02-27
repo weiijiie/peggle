@@ -12,6 +12,14 @@ public func sin(degrees: Double) -> Double {
     __sinpi(degrees / 180.0)
 }
 
+public func sin(degrees: Float) -> Float {
+    Float(__sinpi(Double(degrees / 180.0)))
+}
+
 public func cos(degrees: Double) -> Double {
     __cospi(degrees / 180.0)
+}
+
+public func cos(degrees: Float) -> Float {
+    Float(__cospi(Double(degrees / 180.0)))
 }

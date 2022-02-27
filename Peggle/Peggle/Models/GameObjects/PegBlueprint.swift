@@ -7,15 +7,24 @@ import Foundation
 
 /// Represents the blueprint of a peg in the level designer
 struct PegBlueprint {
-    let hitBox: Geometry
-    let center: Point
 
     let color: PegColor
     let interactive: Bool
 
+    let initialHitBox: Geometry
+    var hitBox: Geometry
+    let center: Point
+
+    var rotation: Degrees = 0 {
+        didSet {
+            hitBox = initialHitBox.withRotation(rotation)
+        }
+    }
+
     private init(color: PegColor, interactive: Bool, hitBox: Geometry) {
         self.color = color
         self.interactive = interactive
+        self.initialHitBox = hitBox
         self.hitBox = hitBox
         self.center = hitBox.center
     }

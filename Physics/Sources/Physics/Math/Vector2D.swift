@@ -37,6 +37,18 @@ public struct Vector2D: Equatable {
     public var yComponent: Vector2D {
         Vector2D(x: 0, y: y)
     }
+    
+    /// Returns a new `Vector2D` that is the original vector but rotated by the given degrees
+    /// anti-clockwise around the origin.
+    public func rotateAboutOrigin(degrees: Degrees) -> Vector2D {
+        let cosDegrees = Double(cos(degrees: degrees))
+        let sinDegrees = Double(sin(degrees: degrees))
+
+        return Vector2D(
+            x: x * cosDegrees - y * sinDegrees,
+            y: y * cosDegrees + x * sinDegrees
+        )
+    }
 
     public static let Zero = Vector2D(x: 0, y: 0)
 

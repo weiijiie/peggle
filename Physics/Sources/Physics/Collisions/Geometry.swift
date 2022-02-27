@@ -83,6 +83,35 @@ public enum Geometry {
 
         }
     }
+    
+    /// Returns a new geometry which is the old geometry rotated anticlockwise by the given degrees.
+    public func withRotation(_ degrees: Degrees) -> Geometry {
+        switch self {
+        case .circle:
+            return self
+
+        case .axisAlignedRectangle:
+            // we don't support rotations for axis aligned rectangles
+            return self
+
+        case let .triangle(a, b, c):
+            // we simulate centering the triangle at the origin then rotating
+            // it about the origin for easier math
+            let centerToA = Vector2D.from(center, to: a)
+            let centerToB = Vector2D.from(center, to: b)
+            let centerToC = Vector2D.from(center, to: c)
+            
+            let aRotated = centerToA.rotateAboutOrigin(degrees: degrees)
+            let bRotated = centerToB.rotateAboutOrigin(degrees: degrees)
+            let cRotated = centerToC.rotateAboutOrigin(degrees: degrees)
+            
+            return .triangle(
+                center.addVector(aRotated),
+                center.addVector(bRotated),
+                center.addVector(cRotated)
+            )
+        }
+    }
 
     /// Checks if there is any any collision between the two given geometries. Edges/corners that are touching
     /// do not count as colliding.

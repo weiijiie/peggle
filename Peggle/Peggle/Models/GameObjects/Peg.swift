@@ -9,15 +9,16 @@ struct Peg: Equatable, Identifiable {
 
     let id = UUID()
 
-    let color: ObstacleColor
+    let color: PegColor
     let hitBox: Geometry
 
+    /// Blocks are just pegs that are not interactive
     let interactive: Bool
 
     private(set) var hasBeenHit = false
     private(set) var removed = false
 
-    init(blueprint: ObstacleBlueprint, interactive: Bool) {
+    init(blueprint: PegBlueprint, interactive: Bool) {
         self.color = blueprint.color
         self.hitBox = blueprint.hitBox
         self.interactive = interactive

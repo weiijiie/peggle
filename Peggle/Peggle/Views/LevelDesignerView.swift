@@ -60,13 +60,13 @@ struct LevelDesignerView: View {
                     viewModel.selectedMode = mode
                 } label: {
                     switch mode {
-                    case let .addObstacle(color, interactive):
+                    case let .addPeg(color, interactive):
                         Image(uiImage: imageForColor(color, interactive: interactive))
                             .resizable()
                             .scaledToFit()
                             .opacity(opacity)
 
-                    case .removeObstacle:
+                    case .removePeg:
                         Spacer()
                         Image("DeleteButton")
                             .resizable()
@@ -86,13 +86,13 @@ struct LevelDesignerView: View {
                 GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
                     .overlay(OnTapView(tappedCallback: viewModel.tapAt))
 
-                ForEach(viewModel.placedObstacles, id: \.center) { obstacle in
-                    ObstacleBlueprintView(
-                        obstacleBlueprint: obstacle,
-                        onTap: { viewModel.tapAt(obstacle: obstacle) },
-                        onLongPress: { viewModel.removeObstacle(obstacle) },
+                ForEach(viewModel.placedPegs, id: \.center) { peg in
+                    PegBlueprintView(
+                        pegBlueprint: peg,
+                        onTap: { viewModel.tapAt(peg: peg) },
+                        onLongPress: { viewModel.removePeg(peg) },
                         onDragEnd: { location in
-                            viewModel.tryMoveObstacle(obstacle, newLocation: location)
+                            viewModel.tryMovePeg(peg, newLocation: location)
                         }
                     )
                 }
@@ -143,7 +143,7 @@ struct LevelDesignerView: View {
 
     }
 
-    private func imageForColor(_ color: ObstacleColor, interactive: Bool) -> UIImage {
+    private func imageForColor(_ color: PegColor, interactive: Bool) -> UIImage {
         switch (color, interactive) {
         case (.blue, true):
             return #imageLiteral(resourceName: "PegBlue")

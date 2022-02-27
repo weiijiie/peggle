@@ -4,7 +4,7 @@
 
 import UIKit
 
-extension ObstacleBlueprint: Displayable {
+extension PegBlueprint: Displayable {
 
     var viewCenter: CGPoint {
         // we need to handle the case of a triangle specially, as the center of

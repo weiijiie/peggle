@@ -1,52 +1,48 @@
 //
-// ObstacleBlueprint.swift
+// PegBlueprint.swift
 //  Peggle
 
 import Physics
 import Foundation
 
-/// Obstacles are game objects that can be placed on levels to obstruct the movement of the ball.
-/// They include both pegs (which have other gameplay effects), and blocks, which only serve to
-/// obstruct the ball.
-struct ObstacleBlueprint {
+/// Represents the blueprint of a peg in the level designer
+struct PegBlueprint {
     let hitBox: Geometry
     let center: Point
 
-    let color: ObstacleColor
+    let color: PegColor
     let interactive: Bool
 
-    private init(color: ObstacleColor, interactive: Bool, hitBox: Geometry) {
+    private init(color: PegColor, interactive: Bool, hitBox: Geometry) {
         self.color = color
         self.interactive = interactive
         self.hitBox = hitBox
         self.center = hitBox.center
     }
 
-    /// Round obstacles are considered to be interactive
-    static func round(color: ObstacleColor, center: Point, radius: Double) -> ObstacleBlueprint {
+    static func round(color: PegColor, center: Point, radius: Double) -> PegBlueprint {
         let hitBox = Geometry.circle(center: center, radius: radius)
         return self.init(color: color, interactive: true, hitBox: hitBox)
     }
 
-    /// Triangular obstacles are consiered to not be interactive
     static func triangle(
-        color: ObstacleColor,
+        color: PegColor,
         a: Point, b: Point, c: Point
-    ) -> ObstacleBlueprint {
+    ) -> PegBlueprint {
         let hitBox = Geometry.triangle(a, b, c)
         return self.init(color: color, interactive: false, hitBox: hitBox)
     }
 
-    static func equilateralTriangle(color: ObstacleColor, center: Point, sideLength: Double) -> ObstacleBlueprint {
+    static func equilateralTriangle(color: PegColor, center: Point, sideLength: Double) -> PegBlueprint {
         let a = Point(x: center.x, y: center.y - (sqrt(3) / 3) * sideLength)
         let b = Point(x: center.x - sideLength / 2, y: center.y + (sqrt(3) / 6) * sideLength)
         let c = Point(x: center.x + sideLength / 2, y: center.y + (sqrt(3) / 6) * sideLength)
 
-        return ObstacleBlueprint.triangle(color: color, a: a, b: b, c: c)
+        return PegBlueprint.triangle(color: color, a: a, b: b, c: c)
     }
 
-    func centeredAt(point newCenter: Point) -> ObstacleBlueprint {
-        ObstacleBlueprint(
+    func centeredAt(point newCenter: Point) -> PegBlueprint {
+        PegBlueprint(
             color: color,
             interactive: interactive,
             hitBox: hitBox.withCenter(newCenter)
@@ -54,4 +50,4 @@ struct ObstacleBlueprint {
     }
 }
 
-extension ObstacleBlueprint: Equatable, Codable {}
+extension PegBlueprint: Equatable, Codable {}

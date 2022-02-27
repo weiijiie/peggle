@@ -3,13 +3,13 @@
 //  Peggle
 
 enum EditMode: CaseIterable, Hashable {
-    case addObstacle(color: ObstacleColor, interactive: Bool)
-    case removeObstacle
+    case addPeg(color: PegColor, interactive: Bool)
+    case removePeg
 
     static var allCases: [EditMode] {
-        var cases = ObstacleColor.allCases.map { addObstacle(color: $0, interactive: true) } +
-            ObstacleColor.allCases.map { addObstacle(color: $0, interactive: false) }
-        cases.append(self.removeObstacle)
+        var cases = PegColor.allCases.map { addPeg(color: $0, interactive: true) } +
+            PegColor.allCases.map { addPeg(color: $0, interactive: false) }
+        cases.append(self.removePeg)
         return cases
     }
 }

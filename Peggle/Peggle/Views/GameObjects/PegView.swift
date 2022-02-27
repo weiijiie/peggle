@@ -41,7 +41,7 @@ struct PegView: View {
 struct PegView_Previews: PreviewProvider {
     static var previews: some View {
         PegView(peg: Peg(
-            blueprint: ObstacleBlueprint.round(color: .blue,
+            blueprint: PegBlueprint.round(color: .blue,
                                                center: Point(x: 400, y: 200),
                                                radius: 10),
             interactive: false

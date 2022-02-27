@@ -45,7 +45,7 @@
 		6E6A94B327C2572F002DB431 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94B227C2572F002DB431 /* GameOverView.swift */; };
 		6E6A94C327C26BFF002DB431 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94B927C26BFF002DB431 /* AppState.swift */; };
 		6E6A94C427C26BFF002DB431 /* LevelDesignerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BA27C26BFF002DB431 /* LevelDesignerViewModel.swift */; };
-		6E6A94C527C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */; };
+		6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */; };
 		6E6A94C627C26BFF002DB431 /* Ball+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */; };
 		6E6A94C727C26BFF002DB431 /* Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BE27C26BFF002DB431 /* Displayable.swift */; };
 		6E6A94C827C26BFF002DB431 /* Peg+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */; };
@@ -137,7 +137,7 @@
 		6E6A94B227C2572F002DB431 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		6E6A94B927C26BFF002DB431 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		6E6A94BA27C26BFF002DB431 /* LevelDesignerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelDesignerViewModel.swift; sourceTree = "<group>"; };
-		6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObstacleBlueprint+Displayable.swift"; sourceTree = "<group>"; };
+		6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PegBlueprint+Displayable.swift"; sourceTree = "<group>"; };
 		6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ball+Displayable.swift"; sourceTree = "<group>"; };
 		6E6A94BE27C26BFF002DB431 /* Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Displayable.swift; sourceTree = "<group>"; };
 		6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Peg+Displayable.swift"; sourceTree = "<group>"; };
@@ -358,7 +358,7 @@
 			isa = PBXGroup;
 			children = (
 				6E6A94BE27C26BFF002DB431 /* Displayable.swift */,
-				6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */,
+				6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */,
 				6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */,
 				6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */,
 				6E6A94C027C26BFF002DB431 /* Cannon+Displayable.swift */,
@@ -613,7 +613,7 @@
 				6E6A943627BE4257002DB431 /* RelativelySized.swift in Sources */,
 				6E6A94A727BE5859002DB431 /* LoseConditions.swift in Sources */,
 				6EA7E8A927C4020B00B40B57 /* ErrorHandler.swift in Sources */,
-				6E6A94C527C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift in Sources */,
+				6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */,
 				6E8E0E1627C2A02E00F6F405 /* MenuView.swift in Sources */,
 				6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */,
 				6E6E5CDF27C61E0000D147E6 /* Selection.swift in Sources */,

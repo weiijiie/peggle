@@ -18,9 +18,9 @@ struct Peg: Equatable, Identifiable {
     private(set) var hasBeenHit = false
     private(set) var removed = false
 
-    init(blueprint: PegBlueprint, interactive: Bool) {
-        self.color = blueprint.color
-        self.hitBox = blueprint.hitBox
+    init(color: PegColor, hitBox: Geometry, interactive: Bool) {
+        self.color = color
+        self.hitBox = hitBox
         self.interactive = interactive
     }
 

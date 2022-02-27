@@ -296,8 +296,8 @@ class PeggleGameEngine: PeggleState {
     }
 
     private func initializePegsAndBlocks(levelBlueprint: LevelBlueprint) {
-        for obstacleBlueprint in levelBlueprint.pegBlueprints {
-            let peg = Peg(blueprint: obstacleBlueprint, interactive: obstacleBlueprint.interactive)
+        for blueprint in levelBlueprint.pegBlueprints {
+            let peg = Peg(color: blueprint.color, hitBox: blueprint.hitBox, interactive: blueprint.interactive)
             pegs[peg.id] = peg
 
             bridge.addPeg(peg, onCollide: pegCollisionCallback(id: peg.id))

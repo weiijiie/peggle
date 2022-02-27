@@ -1,5 +1,5 @@
 //
-//  ObstacleBlueprint+Displayable.swift
+//  PegBlueprint+Displayable.swift
 //  Peggle
 
 import UIKit

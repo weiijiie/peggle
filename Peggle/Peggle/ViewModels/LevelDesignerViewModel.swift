@@ -71,16 +71,13 @@ class LevelDesignerViewModel: ObservableObject {
     /// at that location, this function does nothing.
     func tryMovePeg(_ peg: PegBlueprint, newLocation: CGPoint) {
         let pegAtNewLocation = peg.centeredAt(point: Point(cgPoint: newLocation))
-
-        guard let canPlace = blueprint?.canPlace(peg: pegAtNewLocation) else {
-            return
-        }
-
-        if !canPlace {
-            return
-        }
-
         blueprint?.removePeg(peg)
+
+        guard let canPlace = blueprint?.canPlace(peg: pegAtNewLocation), canPlace else {
+            blueprint?.addPeg(peg)
+            return
+        }
+
         blueprint?.addPeg(pegAtNewLocation)
     }
 

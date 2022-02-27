@@ -52,7 +52,7 @@ struct Explosion: Identifiable {
             },
             // use a restitution over 1 to simulate the explosive force when in contact
             // with another rigid body
-            material: .solid(restitution: 1.7)
+            material: .solid(restitution: 1.5)
         )
     }
 

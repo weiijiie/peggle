@@ -19,7 +19,7 @@ struct ExplosionView: View {
                 .frame(width: width - 7, height: height - 7)
             Circle()
                 .fill(.orange)
-                .frame(width: width - 15, height: height - 15)
+                .frame(width: width - 18, height: height - 18)
             Circle()
                 .fill(.yellow)
                 .frame(width: width - 30, height: height - 30)

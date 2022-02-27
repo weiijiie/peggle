@@ -125,7 +125,7 @@ class PeggleGameEngine: PeggleState {
         self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
 
         initializeBucket()
-        initializePegs(levelBlueprint: levelBlueprint)
+        initializePegsAndBlocks(levelBlueprint: levelBlueprint)
         onUpdate?(self)
     }
 
@@ -188,16 +188,6 @@ class PeggleGameEngine: PeggleState {
             self.handleBallOutOfBounds()
         }
 
-        let newStatus = PeggleGameStatus.getStatusFor(
-            state: self,
-            winConditions: winConditions,
-            loseConditions: loseConditions
-        )
-
-        if status != newStatus {
-            status = newStatus
-        }
-
         checkIfBallStuckAndResolve()
     }
 
@@ -247,9 +237,11 @@ class PeggleGameEngine: PeggleState {
         })
     }
 
-    func removePeg(_ peg: Peg) {
-        pegs[peg.id]?.remove()
-        bridge.removePeg(peg)
+    func removePeg(_ peg: Peg, force: Bool = false) {
+        let removed = pegs[peg.id]?.remove(force: force)
+        if let removed = removed, removed {
+            bridge.removePeg(peg)
+        }
     }
 
     // MARK: Helper Functions
@@ -278,6 +270,17 @@ class PeggleGameEngine: PeggleState {
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(700)) {
             self.cannon.reload()
         }
+
+        // check whether the game has been won or lost
+        let newStatus = PeggleGameStatus.getStatusFor(
+            state: self,
+            winConditions: winConditions,
+            loseConditions: loseConditions
+        )
+
+        if status != newStatus {
+            status = newStatus
+        }
     }
 
     private func initializeBall(position: Point, velocity: Vector2D, radius: Float) {
@@ -292,9 +295,9 @@ class PeggleGameEngine: PeggleState {
             })
     }
 
-    private func initializePegs(levelBlueprint: LevelBlueprint) {
-        for pegBlueprint in levelBlueprint.pegBlueprints {
-            let peg = Peg(blueprint: pegBlueprint)
+    private func initializePegsAndBlocks(levelBlueprint: LevelBlueprint) {
+        for obstacleBlueprint in levelBlueprint.obstacleBlueprints {
+            let peg = Peg(blueprint: obstacleBlueprint, interactive: obstacleBlueprint.interactive)
             pegs[peg.id] = peg
 
             bridge.addPeg(peg, onCollide: pegCollisionCallback(id: peg.id))
@@ -339,7 +342,7 @@ class PeggleGameEngine: PeggleState {
         }
 
         lastNewPegCollisionTime = elapsedTime
-        removePeg(randomHitPeg)
+        removePeg(randomHitPeg, force: true)
     }
 
     private func pegCollisionCallback(id: Peg.ID) -> (Collision) -> Void {
@@ -366,16 +369,13 @@ class PeggleGameEngine: PeggleState {
                 self.lastNewPegCollisionTime = self.elapsedTime
 
                 // activate powerup if powerup peg was hit for the first time
-                if peg.type.isPowerup() {
-                    self.powerupManager.activatePowerup(
-                        self.selectedPowerup,
-                        hitPeg: peg
-                    )
+                if peg.isPowerup() {
+                    self.powerupManager.activatePowerup(self.selectedPowerup, hitPeg: peg)
                 }
             }
 
             if isExplosionCollision {
-                self.removePeg(peg)
+                self.removePeg(peg, force: true)
             }
         }
     }

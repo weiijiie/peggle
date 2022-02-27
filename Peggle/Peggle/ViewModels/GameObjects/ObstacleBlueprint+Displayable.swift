@@ -1,10 +1,10 @@
 //
-//  Peg+Displayable.swift
+//  ObstacleBlueprint+Displayable.swift
 //  Peggle
 
 import UIKit
 
-extension Peg: Displayable {
+extension ObstacleBlueprint: Displayable {
 
     var viewCenter: CGPoint {
         // we need to handle the case of a triangle specially, as the center of
@@ -31,36 +31,20 @@ extension Peg: Displayable {
     }
 
     var image: UIImage {
-        let litUp = self.interactive && self.hasBeenHit
-
-        switch (self.color, self.hitBox, litUp) {
-        case (.blue, .circle, false):
+        switch (self.color, self.hitBox) {
+        case (.blue, .circle):
             return #imageLiteral(resourceName: "PegBlue")
-        case (.blue, .circle, true):
-            return #imageLiteral(resourceName: "PegBlueGlow")
-        case (.orange, .circle, false):
+        case (.orange, .circle):
             return #imageLiteral(resourceName: "PegOrange")
-        case (.orange, .circle, true):
-            return #imageLiteral(resourceName: "PegOrangeGlow")
-        case (.green, .circle, false):
+        case (.green, .circle):
             return #imageLiteral(resourceName: "PegGreen")
-        case (.green, .circle, true):
-            return #imageLiteral(resourceName: "PegGreenGlow")
-
-        case (.blue, .triangle, false):
+        case (.blue, .triangle):
             return #imageLiteral(resourceName: "BlockBlue")
-        case (.blue, .triangle, true):
-            return #imageLiteral(resourceName: "BlockBlueGlow")
-        case (.orange, .triangle, false):
+        case (.orange, .triangle):
             return #imageLiteral(resourceName: "BlockOrange")
-        case (.orange, .triangle, true):
-            return #imageLiteral(resourceName: "BlockOrangeGlow")
-        case (.green, .triangle, false):
+        case (.green, .triangle):
             return #imageLiteral(resourceName: "BlockGreen")
-        case (.green, .triangle, true):
-            return #imageLiteral(resourceName: "BlockGreenGlow")
-
-        case (_, .axisAlignedRectangle, _):
+        case (_, .axisAlignedRectangle):
             // placeholder image since we do not support rectangular pegs
             return UIImage(systemName: "xmark.octagon")!
         }

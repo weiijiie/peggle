@@ -28,50 +28,51 @@ class LevelDesignerViewModel: ObservableObject {
         self.repo = repo
     }
 
-    var placedPegs: [PegBlueprint] {
-        blueprint?.pegBlueprints ?? []
+    var placedObstacles: [ObstacleBlueprint] {
+        blueprint?.obstacleBlueprints ?? []
     }
 
     /// Handles taps at an arbitary point on the background of the level designer.
-    /// Should only be called when tapping on an empty area of the background, ie. no pegs.
+    /// Should only be called when tapping on an empty area of the background, ie. not on obstacles.
     func tapAt(point: CGPoint) {
         switch selectedMode {
-        case let .addPeg(type, isInteractive):
-            blueprint?.addPegBlueprintCenteredAt(
+        case let .addObstacle(color, interactive):
+            blueprint?.addObstacleCenteredAt(
                 point: Point(cgPoint: point),
-                type: type,
-                isInteractive: isInteractive
+                color: color,
+                interactive: interactive
             )
 
         // If in remove mode when tapping at a point, then the tap must be at a location
-        // where there is no peg (if there was a peg, the peg would be tapped directly and
-        // this method should not be called). Therefore, we do not need to remove anything.
-        case .removePeg:
+        // where there is no obstacle (if there was a obstacle, the obstacle would be tapped
+        // directly andthis method should not be called). Therefore, we do not need to remove
+        // anything.
+        case .removeObstacle:
             break
         }
     }
 
-    /// Handles taps on any peg in the level designer.
-    func tapAt(peg: PegBlueprint) {
+    /// Handles taps on any obstacle in the level designer.
+    func tapAt(obstacle: ObstacleBlueprint) {
         switch selectedMode {
-        case .addPeg:
-            break // Tapping on an existing peg does not do anything
-        case .removePeg:
-            blueprint?.removePegBlueprint(peg)
+        case .addObstacle:
+            break // Tapping on an existing obstacle does not do anything
+        case .removeObstacle:
+            blueprint?.removeObstacle(obstacle)
         }
     }
 
-    func removePeg(_ peg: PegBlueprint) {
-        blueprint?.removePegBlueprint(peg)
+    func removeObstacle(_ obstacle: ObstacleBlueprint) {
+        blueprint?.removeObstacle(obstacle)
     }
 
-    /// Given a peg and the coordinates of a new location, tries to place the peg at the new location
-    /// by removing the peg and adding a new peg with the new location. If the peg cannot be placed
+    /// Given a obstacle and the coordinates of a new location, tries to place the obstacle at the new location
+    /// by removing the obstacle and adding a new obstacle with the new location. If the obstacle cannot be placed
     /// at that location, this function does nothing.
-    func tryMovePeg(_ peg: PegBlueprint, newLocation: CGPoint) {
-        let pegAtNewLocation = peg.centeredAt(point: Point(cgPoint: newLocation))
+    func tryMoveObstacle(_ obstacle: ObstacleBlueprint, newLocation: CGPoint) {
+        let obstacleAtNewLocation = obstacle.centeredAt(point: Point(cgPoint: newLocation))
 
-        guard let canPlace = blueprint?.canPlace(pegBlueprint: pegAtNewLocation) else {
+        guard let canPlace = blueprint?.canPlace(obstacle: obstacleAtNewLocation) else {
             return
         }
 
@@ -79,8 +80,8 @@ class LevelDesignerViewModel: ObservableObject {
             return
         }
 
-        blueprint?.removePegBlueprint(peg)
-        blueprint?.addPegBlueprint(pegAtNewLocation)
+        blueprint?.removeObstacle(obstacle)
+        blueprint?.addObstacle(obstacleAtNewLocation)
     }
 
     func resetLevelBlueprint() {
@@ -103,34 +104,6 @@ class LevelDesignerViewModel: ObservableObject {
 
         try repo.saveBlueprint(name: trimmedName, blueprint: blueprint)
     }
-//
-//    func loadLevelBlueprint() {
-//        tryAndSetAlertError {
-//            if levelName.isEmpty {
-//                throw LevelDesignerError.emptyBlueprintName
-//            }
-//
-//            do {
-//                blueprint = try repo.loadBlueprint(name: levelName)
-//            } catch let LevelBlueprintRepoError.blueprintNotFound(name) {
-//                throw LevelDesignerError.blueprintNotFound(name: name)
-//            }
-//        }
-//    }
-
-//    private func tryAndSetAlertError(action: () throws -> Void) {
-//        do {
-//            try action()
-//        } catch let error as LevelDesignerError {
-//            presentAlert = true
-//            alertError = error
-//        } catch {
-//            presentAlert = true
-//            print(error)
-//            alertError = LevelDesignerError.unexpectedIssue(
-//                msg: error.localizedDescription)
-//        }
-//    }
 }
 
 enum LevelDesignerError: LocalizedError {

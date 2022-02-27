@@ -32,7 +32,7 @@ extension LevelBlueprint: RelativelySized {
     }
 }
 
-extension PegBlueprint: RelativelySized {
+extension Peg: RelativelySized {
     static var relativeWidth: Float {
         levelWidth * 0.06
     }

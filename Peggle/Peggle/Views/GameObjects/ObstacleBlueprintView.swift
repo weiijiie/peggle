@@ -5,8 +5,8 @@
 import SwiftUI
 import Physics
 
-struct PegBlueprintView: View {
-    let pegBlueprint: PegBlueprint
+struct ObstacleBlueprintView: View {
+    let obstacleBlueprint: ObstacleBlueprint
 
     let onTap: () -> Void
     let onLongPress: () -> Void
@@ -15,8 +15,8 @@ struct PegBlueprintView: View {
     @GestureState var dragLocation: CGPoint?
 
     var body: some View {
-        DisplayableView(displayable: pegBlueprint)
-            // hide the actual peg while dragging so only the preview is seen
+        DisplayableView(displayable: obstacleBlueprint)
+            // hide the actual obstacle while dragging so only the preview is seen
             .opacity(dragLocation == nil ? 1 : 0)
             .onTapGesture(perform: onTap)
             .onLongPressGesture(perform: onLongPress)
@@ -29,22 +29,22 @@ struct PegBlueprintView: View {
                     }
             )
 
-        // while dragging, show a preview of the peg at the dragged location
+        // while dragging, show a preview of the obstacle at the dragged location
         if let dragLocation = dragLocation {
-            Image(uiImage: pegBlueprint.image)
+            Image(uiImage: obstacleBlueprint.image)
                 .resizable()
-                .frame(width: pegBlueprint.viewWidth, height: pegBlueprint.viewHeight)
+                .frame(width: obstacleBlueprint.viewWidth, height: obstacleBlueprint.viewHeight)
                 .position(dragLocation)
                 .opacity(0.5)
-                .zIndex(1) // show this preview above other pegs
+                .zIndex(1) // show this preview above other obstacles
         }
     }
 }
 
-struct PegBlueprintView_Previews: PreviewProvider {
+struct ObstacleBlueprintView_Previews: PreviewProvider {
     static var previews: some View {
-        PegBlueprintView(
-            pegBlueprint: PegBlueprint.round(type: .blue, center: Point(x: 250, y: 250), radius: 30),
+        ObstacleBlueprintView(
+            obstacleBlueprint: ObstacleBlueprint.round(color: .blue, center: Point(x: 250, y: 250), radius: 30),
             onTap: {},
             onLongPress: {},
             onDragEnd: { _ in }

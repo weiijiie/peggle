@@ -21,7 +21,7 @@ struct KaboomPowerup: Powerup {
             maxRadius: maxRadius
         )
         engine.startExplosion(explosion)
-        engine.removePeg(hitPeg)
+        engine.removePeg(hitPeg, force: true)
     }
 
     private func getExplosionRadius(hitBox: Geometry, scaleFactor: Double) -> Double {
@@ -31,7 +31,7 @@ struct KaboomPowerup: Powerup {
         case let .axisAlignedRectangle(_, width, height):
             return (width + height) / 4 * scaleFactor
         case .triangle:
-            return (hitBox.width + hitBox.height) / 8 * scaleFactor
+            return (hitBox.width + hitBox.height) / 4 * scaleFactor
         }
     }
 }

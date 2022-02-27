@@ -12,8 +12,8 @@
 		6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A940B27BE4169002DB431 /* PeggleApp.swift */; };
 		6E6A942F27BE4257002DB431 /* Cannon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942427BE4256002DB431 /* Cannon.swift */; };
 		6E6A943027BE4257002DB431 /* Peg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942527BE4256002DB431 /* Peg.swift */; };
-		6E6A943127BE4257002DB431 /* PegBlueprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942627BE4256002DB431 /* PegBlueprint.swift */; };
-		6E6A943227BE4257002DB431 /* PegType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942727BE4256002DB431 /* PegType.swift */; };
+		6E6A943127BE4257002DB431 /* ObstacleBlueprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942627BE4256002DB431 /* ObstacleBlueprint.swift */; };
+		6E6A943227BE4257002DB431 /* ObstacleColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942727BE4256002DB431 /* ObstacleColor.swift */; };
 		6E6A943327BE4257002DB431 /* LevelBlueprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942827BE4256002DB431 /* LevelBlueprint.swift */; };
 		6E6A943427BE4257002DB431 /* Ball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942927BE4256002DB431 /* Ball.swift */; };
 		6E6A943527BE4257002DB431 /* ProportionateCoordinateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A942A27BE4256002DB431 /* ProportionateCoordinateMapper.swift */; };
@@ -29,7 +29,7 @@
 		6E6A944E27BE42D0002DB431 /* PegView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944327BE42CF002DB431 /* PegView.swift */; };
 		6E6A944F27BE42D0002DB431 /* BallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944427BE42CF002DB431 /* BallView.swift */; };
 		6E6A945027BE42D0002DB431 /* CannonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944527BE42CF002DB431 /* CannonView.swift */; };
-		6E6A945127BE42D0002DB431 /* PegBlueprintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944627BE42CF002DB431 /* PegBlueprintView.swift */; };
+		6E6A945127BE42D0002DB431 /* ObstacleBlueprintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944627BE42CF002DB431 /* ObstacleBlueprintView.swift */; };
 		6E6A945227BE42D0002DB431 /* LevelDesignerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A944727BE42D0002DB431 /* LevelDesignerView.swift */; };
 		6E6A947427BE43CB002DB431 /* LevelBlueprintFileRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A947227BE43CB002DB431 /* LevelBlueprintFileRepo.swift */; };
 		6E6A947527BE43CB002DB431 /* LevelBlueprintRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A947327BE43CB002DB431 /* LevelBlueprintRepo.swift */; };
@@ -45,7 +45,7 @@
 		6E6A94B327C2572F002DB431 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94B227C2572F002DB431 /* GameOverView.swift */; };
 		6E6A94C327C26BFF002DB431 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94B927C26BFF002DB431 /* AppState.swift */; };
 		6E6A94C427C26BFF002DB431 /* LevelDesignerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BA27C26BFF002DB431 /* LevelDesignerViewModel.swift */; };
-		6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */; };
+		6E6A94C527C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */; };
 		6E6A94C627C26BFF002DB431 /* Ball+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */; };
 		6E6A94C727C26BFF002DB431 /* Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BE27C26BFF002DB431 /* Displayable.swift */; };
 		6E6A94C827C26BFF002DB431 /* Peg+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */; };
@@ -77,6 +77,10 @@
 		6EC4024B27C64D2F00102210 /* DisplayableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024A27C64D2F00102210 /* DisplayableView.swift */; };
 		6EC4024D27C83F8D00102210 /* ExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024C27C83F8D00102210 /* ExplosionView.swift */; };
 		6EC4024F27C8521900102210 /* PhysicsEngineBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */; };
+		6EC4025127CBBC9100102210 /* ObstacleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4025027CBBC9000102210 /* ObstacleType.swift */; };
+		6EC4025327CBBFF600102210 /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4025227CBBFF600102210 /* Block.swift */; };
+		6EC4025527CBC29C00102210 /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4025427CBC29C00102210 /* BlockView.swift */; };
+		6EC4025727CBC2E800102210 /* Block+Displayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4025627CBC2E800102210 /* Block+Displayable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,8 +109,8 @@
 		6E6A940B27BE4169002DB431 /* PeggleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeggleApp.swift; sourceTree = "<group>"; };
 		6E6A942427BE4256002DB431 /* Cannon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cannon.swift; sourceTree = "<group>"; };
 		6E6A942527BE4256002DB431 /* Peg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peg.swift; sourceTree = "<group>"; };
-		6E6A942627BE4256002DB431 /* PegBlueprint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PegBlueprint.swift; sourceTree = "<group>"; };
-		6E6A942727BE4256002DB431 /* PegType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PegType.swift; sourceTree = "<group>"; };
+		6E6A942627BE4256002DB431 /* ObstacleBlueprint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObstacleBlueprint.swift; sourceTree = "<group>"; };
+		6E6A942727BE4256002DB431 /* ObstacleColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObstacleColor.swift; sourceTree = "<group>"; };
 		6E6A942827BE4256002DB431 /* LevelBlueprint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelBlueprint.swift; sourceTree = "<group>"; };
 		6E6A942927BE4256002DB431 /* Ball.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ball.swift; sourceTree = "<group>"; };
 		6E6A942A27BE4256002DB431 /* ProportionateCoordinateMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProportionateCoordinateMapper.swift; sourceTree = "<group>"; };
@@ -122,7 +126,7 @@
 		6E6A944327BE42CF002DB431 /* PegView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PegView.swift; sourceTree = "<group>"; };
 		6E6A944427BE42CF002DB431 /* BallView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallView.swift; sourceTree = "<group>"; };
 		6E6A944527BE42CF002DB431 /* CannonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CannonView.swift; sourceTree = "<group>"; };
-		6E6A944627BE42CF002DB431 /* PegBlueprintView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PegBlueprintView.swift; sourceTree = "<group>"; };
+		6E6A944627BE42CF002DB431 /* ObstacleBlueprintView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObstacleBlueprintView.swift; sourceTree = "<group>"; };
 		6E6A944727BE42D0002DB431 /* LevelDesignerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelDesignerView.swift; sourceTree = "<group>"; };
 		6E6A947227BE43CB002DB431 /* LevelBlueprintFileRepo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelBlueprintFileRepo.swift; sourceTree = "<group>"; };
 		6E6A947327BE43CB002DB431 /* LevelBlueprintRepo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelBlueprintRepo.swift; sourceTree = "<group>"; };
@@ -137,7 +141,7 @@
 		6E6A94B227C2572F002DB431 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 		6E6A94B927C26BFF002DB431 /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		6E6A94BA27C26BFF002DB431 /* LevelDesignerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelDesignerViewModel.swift; sourceTree = "<group>"; };
-		6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PegBlueprint+Displayable.swift"; sourceTree = "<group>"; };
+		6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObstacleBlueprint+Displayable.swift"; sourceTree = "<group>"; };
 		6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Ball+Displayable.swift"; sourceTree = "<group>"; };
 		6E6A94BE27C26BFF002DB431 /* Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Displayable.swift; sourceTree = "<group>"; };
 		6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Peg+Displayable.swift"; sourceTree = "<group>"; };
@@ -169,6 +173,10 @@
 		6EC4024A27C64D2F00102210 /* DisplayableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayableView.swift; sourceTree = "<group>"; };
 		6EC4024C27C83F8D00102210 /* ExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplosionView.swift; sourceTree = "<group>"; };
 		6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsEngineBridge.swift; sourceTree = "<group>"; };
+		6EC4025027CBBC9000102210 /* ObstacleType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleType.swift; sourceTree = "<group>"; };
+		6EC4025227CBBFF600102210 /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
+		6EC4025427CBC29C00102210 /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockView.swift; sourceTree = "<group>"; };
+		6EC4025627CBC2E800102210 /* Block+Displayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Block+Displayable.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,10 +281,12 @@
 			isa = PBXGroup;
 			children = (
 				6E6A942827BE4256002DB431 /* LevelBlueprint.swift */,
-				6E6A942727BE4256002DB431 /* PegType.swift */,
-				6E6A942627BE4256002DB431 /* PegBlueprint.swift */,
+				6E6A942727BE4256002DB431 /* ObstacleColor.swift */,
+				6EC4025027CBBC9000102210 /* ObstacleType.swift */,
+				6E6A942627BE4256002DB431 /* ObstacleBlueprint.swift */,
 				6E6A942927BE4256002DB431 /* Ball.swift */,
 				6E6A942527BE4256002DB431 /* Peg.swift */,
+				6EC4025227CBBFF600102210 /* Block.swift */,
 				6E6A942427BE4256002DB431 /* Cannon.swift */,
 				6EA7E8AE27C43B0700B40B57 /* Bucket.swift */,
 				6EC4024627C6344B00102210 /* Explosion.swift */,
@@ -305,8 +315,9 @@
 			isa = PBXGroup;
 			children = (
 				6E6A944227BE42CF002DB431 /* GameBackgroundView.swift */,
-				6E6A944627BE42CF002DB431 /* PegBlueprintView.swift */,
+				6E6A944627BE42CF002DB431 /* ObstacleBlueprintView.swift */,
 				6E6A944327BE42CF002DB431 /* PegView.swift */,
+				6EC4025427CBC29C00102210 /* BlockView.swift */,
 				6E6A944427BE42CF002DB431 /* BallView.swift */,
 				6E6A944527BE42CF002DB431 /* CannonView.swift */,
 				6EA7E8B227C4480900B40B57 /* BucketView.swift */,
@@ -358,8 +369,9 @@
 			isa = PBXGroup;
 			children = (
 				6E6A94BE27C26BFF002DB431 /* Displayable.swift */,
-				6E6A94BC27C26BFF002DB431 /* PegBlueprint+Displayable.swift */,
+				6E6A94BC27C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift */,
 				6E6A94BF27C26BFF002DB431 /* Peg+Displayable.swift */,
+				6EC4025627CBC2E800102210 /* Block+Displayable.swift */,
 				6E6A94BD27C26BFF002DB431 /* Ball+Displayable.swift */,
 				6E6A94C027C26BFF002DB431 /* Cannon+Displayable.swift */,
 				6EA7E8B027C446A100B40B57 /* Bucket+Displayable.swift */,
@@ -582,6 +594,7 @@
 				6E6A944827BE42D0002DB431 /* AppView.swift in Sources */,
 				6EC4024527C62DCB00102210 /* KaboomPowerup.swift in Sources */,
 				6E6A943027BE4257002DB431 /* Peg.swift in Sources */,
+				6EC4025127CBBC9100102210 /* ObstacleType.swift in Sources */,
 				6E6A944F27BE42D0002DB431 /* BallView.swift in Sources */,
 				6EB924CC27C2C5BA0037CC6D /* Navigator.swift in Sources */,
 				6E6A943927BE4257002DB431 /* PeggleGameEngine.swift in Sources */,
@@ -595,6 +608,7 @@
 				6EA7E8AF27C43B0700B40B57 /* Bucket.swift in Sources */,
 				6E6E5CD927C583AB00D147E6 /* PowerupManager.swift in Sources */,
 				6E6A944C27BE42D0002DB431 /* OnTapView.swift in Sources */,
+				6EC4025527CBC29C00102210 /* BlockView.swift in Sources */,
 				6EB924C927C2C3BA0037CC6D /* Stack.swift in Sources */,
 				6E6E5CDD27C61D8900D147E6 /* PowerupSelectionView.swift in Sources */,
 				6EA7E8A427C2DF7300B40B57 /* GameMenuView.swift in Sources */,
@@ -607,13 +621,13 @@
 				6E6A947427BE43CB002DB431 /* LevelBlueprintFileRepo.swift in Sources */,
 				6E6A942F27BE4257002DB431 /* Cannon.swift in Sources */,
 				6E6A944A27BE42D0002DB431 /* Router.swift in Sources */,
-				6E6A943127BE4257002DB431 /* PegBlueprint.swift in Sources */,
+				6E6A943127BE4257002DB431 /* ObstacleBlueprint.swift in Sources */,
 				6E8E0E1827C2B81D00F6F405 /* LevelSelectionView.swift in Sources */,
-				6E6A945127BE42D0002DB431 /* PegBlueprintView.swift in Sources */,
+				6E6A945127BE42D0002DB431 /* ObstacleBlueprintView.swift in Sources */,
 				6E6A943627BE4257002DB431 /* RelativelySized.swift in Sources */,
 				6E6A94A727BE5859002DB431 /* LoseConditions.swift in Sources */,
 				6EA7E8A927C4020B00B40B57 /* ErrorHandler.swift in Sources */,
-				6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */,
+				6E6A94C527C26BFF002DB431 /* ObstacleBlueprint+Displayable.swift in Sources */,
 				6E8E0E1627C2A02E00F6F405 /* MenuView.swift in Sources */,
 				6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */,
 				6E6E5CDF27C61E0000D147E6 /* Selection.swift in Sources */,
@@ -621,17 +635,19 @@
 				6EA7E8B327C4480900B40B57 /* BucketView.swift in Sources */,
 				6EA7E8A227C2CF2400B40B57 /* NavigateToMenuButton.swift in Sources */,
 				6E6A943327BE4257002DB431 /* LevelBlueprint.swift in Sources */,
+				6EC4025327CBBFF600102210 /* Block.swift in Sources */,
 				6EC4024B27C64D2F00102210 /* DisplayableView.swift in Sources */,
 				6E6A943427BE4257002DB431 /* Ball.swift in Sources */,
 				6EC4024727C6344B00102210 /* Explosion.swift in Sources */,
 				6EA7E8B127C446A100B40B57 /* Bucket+Displayable.swift in Sources */,
-				6E6A943227BE4257002DB431 /* PegType.swift in Sources */,
+				6E6A943227BE4257002DB431 /* ObstacleColor.swift in Sources */,
 				6EB924C627C2BC100037CC6D /* LevelSelectionViewModel.swift in Sources */,
 				6E6A94AB27BE58CD002DB431 /* WinConditions.swift in Sources */,
 				6EB924CE27C2C7140037CC6D /* NavigateTo.swift in Sources */,
 				6E6E5CDB27C58AAF00D147E6 /* SpookyPowerup.swift in Sources */,
 				6E6A94CB27C26BFF002DB431 /* GameViewModel.swift in Sources */,
 				6E6A94B327C2572F002DB431 /* GameOverView.swift in Sources */,
+				6EC4025727CBC2E800102210 /* Block+Displayable.swift in Sources */,
 				6E6A94A527BE5608002DB431 /* PeggleState.swift in Sources */,
 				6E6A944B27BE42D0002DB431 /* GameView.swift in Sources */,
 				6EA7E8AB27C4124400B40B57 /* OverlayIf.swift in Sources */,

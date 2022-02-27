@@ -7,8 +7,8 @@ import Physics
 
 struct PegView: View {
     let peg: Peg
-    let randSeed = 2
 
+    @State private(set) var randSeed = Int.random(in: 0...10)
     @State var rotationDegrees: Double = 0
     @State var show = true
 
@@ -41,9 +41,10 @@ struct PegView: View {
 struct PegView_Previews: PreviewProvider {
     static var previews: some View {
         PegView(peg: Peg(
-            blueprint: PegBlueprint.round(type: .blue,
-                                          center: Point(x: 400, y: 200),
-                                          radius: 10))
-        )
+            blueprint: ObstacleBlueprint.round(color: .blue,
+                                               center: Point(x: 400, y: 200),
+                                               radius: 10),
+            interactive: false
+        ))
     }
 }

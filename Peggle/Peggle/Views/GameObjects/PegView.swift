@@ -28,6 +28,7 @@ struct PegView: View {
                 )
             )
             .frame(width: peg.viewWidth, height: peg.viewHeight)
+            .scaleEffect(peg.scale)
             .position(peg.center.toCGPoint())
             .opacity(show ? 1 : 0)
             .onChange(of: peg) { newValue in
@@ -49,6 +50,7 @@ struct PegView_Previews: PreviewProvider {
             color: .blue,
             hitBox: .circle(center: Point(x: 100, y: 100), radius: 10),
             rotation: 0,
+            scale: 1,
             interactive: false
         ))
     }

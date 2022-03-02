@@ -77,35 +77,21 @@ class LevelDesignerViewModel: ObservableObject {
         blueprint?.removePeg(peg)
     }
 
-    /// Given a peg and the coordinates of a new location, tries to place the peg at the new location
-    /// by removing the peg and adding a new peg with the new location. If the peg cannot be placed
-    /// at that location, this function does nothing.
-    func tryMovePeg(_ peg: PegBlueprint, newLocation: CGPoint) {
-        let pegAtNewLocation = peg.centeredAt(point: Point(cgPoint: newLocation))
-
-        // Remove the original peg momentarily to check if the new peg can be placed
-        removePeg(peg)
-
-        guard let canPlace = blueprint?.canPlace(peg: pegAtNewLocation), canPlace else {
-            // if it cannot be placed, then we re-add the original peg
-            blueprint?.addPeg(peg)
-            return
-        }
-
-        blueprint?.addPeg(pegAtNewLocation)
-    }
-
-    func tryUpdatePeg(old: PegBlueprint, new: PegBlueprint) {
+    /// Given an old peg and a new version of the peg, tries to place to place the new peg
+    /// by removing the old peg and adding a new peg. If the new peg can be placed, places
+    /// it and returns true. Otherwise, simply returns false
+    func tryUpdatePeg(old: PegBlueprint, new: PegBlueprint) -> Bool {
         // Remove the original peg momentarily to check if the new peg can be placed
         removePeg(old)
 
         guard let canPlace = blueprint?.canPlace(peg: new), canPlace else {
             // if the new peg cannot be placed, then we re-add the original peg
             blueprint?.addPeg(old)
-            return
+            return false
         }
 
         blueprint?.addPeg(new)
+        return true
     }
 
     func resetLevelBlueprint() {

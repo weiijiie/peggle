@@ -17,12 +17,14 @@ struct PegBlueprint {
     let center: Point
 
     let rotation: Degrees
+    let scale: Double
 
     private init(
         color: PegColor,
         interactive: Bool,
         hitBox: Geometry,
         rotation: Degrees = 0,
+        scale: Double = 1.0,
         id: UUID = UUID()
     ) {
         self.color = color
@@ -30,11 +32,12 @@ struct PegBlueprint {
         self.initialHitBox = hitBox
         self.center = hitBox.center
         self.rotation = rotation
+        self.scale = scale
         self.id = id
     }
 
     var hitBox: Geometry {
-        initialHitBox.withRotation(rotation)
+        initialHitBox.withRotation(rotation).scaled(scale)
     }
 
     static func round(color: PegColor, center: Point, radius: Double) -> PegBlueprint {
@@ -67,6 +70,7 @@ struct PegBlueprint {
             interactive: interactive,
             hitBox: initialHitBox.withCenter(newCenter),
             rotation: rotation,
+            scale: scale,
             id: id
         )
     }
@@ -77,6 +81,18 @@ struct PegBlueprint {
             interactive: interactive,
             hitBox: initialHitBox,
             rotation: degrees,
+            scale: scale,
+            id: id
+        )
+    }
+
+    func scaled(_ scaleFactor: Double) -> PegBlueprint {
+        PegBlueprint(
+            color: color,
+            interactive: interactive,
+            hitBox: initialHitBox,
+            rotation: rotation,
+            scale: scaleFactor,
             id: id
         )
     }

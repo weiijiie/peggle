@@ -301,6 +301,7 @@ class PeggleGameEngine: PeggleState {
                 color: blueprint.color,
                 hitBox: blueprint.initialHitBox,
                 rotation: blueprint.rotation,
+                scale: blueprint.scale,
                 interactive: blueprint.interactive
             )
             pegs[peg.id] = peg

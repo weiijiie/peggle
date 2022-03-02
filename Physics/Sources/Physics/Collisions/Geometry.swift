@@ -112,6 +112,38 @@ public enum Geometry {
             )
         }
     }
+    
+    /// Returns a new geometry which is the old geometry scaled by the given amount.
+    public func scaled(_ scale: Double) -> Geometry {
+        switch self {
+        case let .circle(center, radius):
+            return .circle(center: center, radius: radius * scale)
+
+        case let .axisAlignedRectangle(center, width, height):
+            return .axisAlignedRectangle(
+                center: center,
+                width: width * scale,
+                height: height * scale
+            )
+
+        case let .triangle(a, b, c):
+            // we simulate centering the triangle at the origin then scaling
+            // each vector about the origin for easier math
+            let centerToA = Vector2D.from(center, to: a)
+            let centerToB = Vector2D.from(center, to: b)
+            let centerToC = Vector2D.from(center, to: c)
+
+            let aRotated = centerToA * scale
+            let bRotated = centerToB * scale
+            let cRotated = centerToC * scale
+            
+            return .triangle(
+                center.addVector(aRotated),
+                center.addVector(bRotated),
+                center.addVector(cRotated)
+            )
+        }
+    }
 
     /// Checks if there is any any collision between the two given geometries. Edges/corners that are touching
     /// do not count as colliding.

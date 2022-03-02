@@ -14,6 +14,7 @@ struct Peg: Equatable, Identifiable {
     let hitBox: Geometry
 
     let rotation: Degrees
+    let scale: Double
 
     /// Blocks are just pegs that are not interactive
     let interactive: Bool
@@ -21,11 +22,18 @@ struct Peg: Equatable, Identifiable {
     private(set) var hasBeenHit = false
     private(set) var removed = false
 
-    init(color: PegColor, hitBox: Geometry, rotation: Degrees, interactive: Bool) {
+    init(
+        color: PegColor,
+        hitBox: Geometry,
+        rotation: Degrees,
+        scale: Double,
+        interactive: Bool
+    ) {
         self.color = color
         self.initialHitBox = hitBox
-        self.hitBox = hitBox.withRotation(rotation)
+        self.hitBox = hitBox.withRotation(rotation).scaled(scale)
         self.rotation = rotation
+        self.scale = scale
         self.interactive = interactive
     }
 

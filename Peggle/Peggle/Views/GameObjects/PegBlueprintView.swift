@@ -13,10 +13,15 @@ struct PegBlueprintView: View {
 
     let onTap: () -> Void
     let onLongPress: () -> Void
-    let onUpdate: (PegBlueprint) -> Void
+    /// Callback that will be called when the peg blueprint is edited
+    /// by the user. Should return true if the update is "accepted", by
+    /// the parent component, and false otherwise.
+    let onUpdate: (PegBlueprint) -> Bool
 
     @State var isEditing = false
     @State var rotation: Degrees
+    @State var scale: Double
+
     @GestureState var dragLocation: CGPoint?
 
     init(
@@ -24,7 +29,7 @@ struct PegBlueprintView: View {
         showEditPanel: Bool,
         onTap: @escaping () -> Void,
         onLongPress: @escaping () -> Void,
-        onUpdate: @escaping (PegBlueprint) -> Void
+        onUpdate: @escaping (PegBlueprint) -> Bool
     ) {
         self.pegBlueprint = pegBlueprint
         self.showEditPanel = showEditPanel
@@ -33,9 +38,14 @@ struct PegBlueprintView: View {
         self.onUpdate = onUpdate
 
         self._rotation = State(initialValue: pegBlueprint.rotation)
+        self._scale = State(initialValue: pegBlueprint.scale)
     }
 
-    func peg(at position: CGPoint, rotation: Degrees? = nil) -> some View {
+    func peg(
+        at position: CGPoint,
+        rotation: Degrees? = nil,
+        scale: Double? = nil
+    ) -> some View {
         // since the actual center and the view center are not aligned if the hitbox
         // is a triangle, naively rotating leads to odd rotations. instead we
         // incorporate a y offset to fix the rotation
@@ -46,6 +56,7 @@ struct PegBlueprintView: View {
             .offset(y: yOffset)
             .rotationEffect(.degrees(Double(rotation ?? pegBlueprint.rotation)))
             .frame(width: pegBlueprint.viewWidth, height: pegBlueprint.viewHeight)
+            .scaleEffect(scale ?? pegBlueprint.scale)
             .position(position)
     }
 
@@ -64,7 +75,7 @@ struct PegBlueprintView: View {
                     }.onEnded { value in
                         let updatedPeg = pegBlueprint
                             .centeredAt(point: Point(cgPoint: value.location))
-                        onUpdate(updatedPeg)
+                        _ = onUpdate(updatedPeg)
                     }
             )
 
@@ -73,7 +84,7 @@ struct PegBlueprintView: View {
                 HStack(spacing: 12) {
                     Label("Rotation", systemImage: "arrow.clockwise")
                         .labelStyle(.iconOnly)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .font(.headline)
                     Slider(
                         value: $rotation, in: 0...360,
@@ -81,12 +92,37 @@ struct PegBlueprintView: View {
                             // if the user has stopped adjust the slider, then call the
                             // onUpdate callback to propagate the changes to the parent
                             if !started {
-                                onUpdate(pegBlueprint.withRotation(rotation))
+                                let updated = onUpdate(pegBlueprint.withRotation(rotation))
+                                if !updated {
+                                    rotation = pegBlueprint.rotation
+                                }
                             }
 
                             isEditing = started
                         }
                     )
+                }
+                HStack(spacing: 12) {
+                    Label("Scale", systemImage: "arrow.up.left.and.arrow.down.right")
+                        .labelStyle(.iconOnly)
+                        .foregroundColor(.primary)
+                        .font(.headline)
+                    Slider(
+                        value: $scale, in: 1.0...2.5,
+                        onEditingChanged: { started in
+                            // if the user has stopped adjust the slider, then call the
+                            // onUpdate callback to propagate the changes to the parent
+                            if !started {
+                                let updated = onUpdate(pegBlueprint.scaled(scale))
+                                if !updated {
+                                    scale = pegBlueprint.scale
+                                }
+                            }
+
+                            isEditing = started
+                        }
+                    )
+
                 }
             }
             .padding()
@@ -94,8 +130,8 @@ struct PegBlueprintView: View {
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.thinMaterial)
-                    .shadow(color: .gray.opacity(0.9), radius: 6)
-                    .opacity(0.8)
+                    .shadow(color: .gray, radius: 6)
+                    .opacity(0.7)
             )
             .position(x: pegBlueprint.center.x + 180, y: pegBlueprint.center.y)
             .zIndex(1)
@@ -109,7 +145,7 @@ struct PegBlueprintView: View {
         }
 
         if isEditing {
-            peg(at: pegBlueprint.center.toCGPoint(), rotation: rotation)
+            peg(at: pegBlueprint.center.toCGPoint(), rotation: rotation, scale: scale)
                 .opacity(0.5)
                 .zIndex(1) // show this preview above other pegs
         }
@@ -123,7 +159,7 @@ struct PegBlueprintView_Previews: PreviewProvider {
             showEditPanel: false,
             onTap: {},
             onLongPress: {},
-            onUpdate: { _ in }
+            onUpdate: { _ in true }
         )
     }
 }

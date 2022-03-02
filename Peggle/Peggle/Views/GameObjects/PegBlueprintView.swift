@@ -53,7 +53,7 @@ struct PegBlueprintView: View {
         // hide the actual peg and show the preview if being dragtged or edited
         let opacity = dragLocation != nil || isEditing ? 0.0 : 1.0
 
-        peg(at: pegBlueprint.viewCenter)
+        peg(at: pegBlueprint.center.toCGPoint())
             .opacity(opacity)
             .onTapGesture(perform: onTap)
             .onLongPressGesture(perform: onLongPress)
@@ -94,7 +94,7 @@ struct PegBlueprintView: View {
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.thinMaterial)
-                    .shadow(color: .gray.opacity(0.8), radius: 8)
+                    .shadow(color: .gray.opacity(0.9), radius: 6)
                     .opacity(0.8)
             )
             .position(x: pegBlueprint.center.x + 180, y: pegBlueprint.center.y)
@@ -109,7 +109,7 @@ struct PegBlueprintView: View {
         }
 
         if isEditing {
-            peg(at: pegBlueprint.viewCenter, rotation: rotation)
+            peg(at: pegBlueprint.center.toCGPoint(), rotation: rotation)
                 .opacity(0.5)
                 .zIndex(1) // show this preview above other pegs
         }

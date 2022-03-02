@@ -13,8 +13,12 @@ struct PegView: View {
     @State var show = true
 
     var body: some View {
+        let yOffset = peg.viewCenter.y - peg.center.y
+
         Image(uiImage: peg.image)
             .resizable()
+            .offset(y: yOffset)
+            .rotationEffect(.degrees(Double(peg.rotation)))
             .rotation3DEffect(
                 Angle(degrees: rotationDegrees),
                 axis: (
@@ -23,7 +27,8 @@ struct PegView: View {
                     z: randSeed.isMultiple(of: 5) ? 1 : -1
                 )
             )
-            .atPositionFor(peg)
+            .frame(width: peg.viewWidth, height: peg.viewHeight)
+            .position(peg.center.toCGPoint())
             .opacity(show ? 1 : 0)
             .onChange(of: peg) { newValue in
                 if newValue.removed {
@@ -43,6 +48,7 @@ struct PegView_Previews: PreviewProvider {
         PegView(peg: Peg(
             color: .blue,
             hitBox: .circle(center: Point(x: 100, y: 100), radius: 10),
+            rotation: 0,
             interactive: false
         ))
     }

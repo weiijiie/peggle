@@ -101,7 +101,6 @@ class LevelDesignerViewModel: ObservableObject {
 
         guard let canPlace = blueprint?.canPlace(peg: new), canPlace else {
             // if the new peg cannot be placed, then we re-add the original peg
-            print("cant place")
             blueprint?.addPeg(old)
             return
         }

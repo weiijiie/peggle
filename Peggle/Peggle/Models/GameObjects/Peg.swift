@@ -4,13 +4,16 @@
 
 import Physics
 import Foundation
-
 struct Peg: Equatable, Identifiable {
 
     let id = UUID()
 
     let color: PegColor
+
+    let initialHitBox: Geometry
     let hitBox: Geometry
+
+    let rotation: Degrees
 
     /// Blocks are just pegs that are not interactive
     let interactive: Bool
@@ -18,9 +21,11 @@ struct Peg: Equatable, Identifiable {
     private(set) var hasBeenHit = false
     private(set) var removed = false
 
-    init(color: PegColor, hitBox: Geometry, interactive: Bool) {
+    init(color: PegColor, hitBox: Geometry, rotation: Degrees, interactive: Bool) {
         self.color = color
-        self.hitBox = hitBox
+        self.initialHitBox = hitBox
+        self.hitBox = hitBox.withRotation(rotation)
+        self.rotation = rotation
         self.interactive = interactive
     }
 

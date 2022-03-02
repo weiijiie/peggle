@@ -125,7 +125,7 @@ class PeggleGameEngine: PeggleState {
         self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
 
         initializeBucket()
-        initializePegsAndBlocks(levelBlueprint: levelBlueprint)
+        initializePegs(levelBlueprint: levelBlueprint)
         onUpdate?(self)
     }
 
@@ -295,9 +295,14 @@ class PeggleGameEngine: PeggleState {
             })
     }
 
-    private func initializePegsAndBlocks(levelBlueprint: LevelBlueprint) {
+    private func initializePegs(levelBlueprint: LevelBlueprint) {
         for blueprint in levelBlueprint.pegBlueprints.values {
-            let peg = Peg(color: blueprint.color, hitBox: blueprint.hitBox, interactive: blueprint.interactive)
+            let peg = Peg(
+                color: blueprint.color,
+                hitBox: blueprint.initialHitBox,
+                rotation: blueprint.rotation,
+                interactive: blueprint.interactive
+            )
             pegs[peg.id] = peg
 
             bridge.addPeg(peg, onCollide: pegCollisionCallback(id: peg.id))

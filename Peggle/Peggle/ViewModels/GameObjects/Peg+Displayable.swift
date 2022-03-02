@@ -9,13 +9,13 @@ extension Peg: Displayable {
     var viewCenter: CGPoint {
         // we need to handle the case of a triangle specially, as the center of
         // a triangle is different from the center of the view, which is a rectangle
-        if case let .triangle(a, b, c) = self.hitBox {
+        if case let .triangle(a, b, c) = self.initialHitBox {
             let minX = min(a.x, b.x, c.x)
             let minY = min(a.y, b.y, c.y)
 
             return CGPoint(
-                x: minX + self.hitBox.width / 2,
-                y: minY + self.hitBox.height / 2
+                x: minX + self.initialHitBox.width / 2,
+                y: minY + self.initialHitBox.height / 2
             )
         }
 
@@ -23,11 +23,11 @@ extension Peg: Displayable {
     }
 
     var viewWidth: CGFloat {
-        CGFloat(self.hitBox.width)
+        CGFloat(self.initialHitBox.width)
     }
 
     var viewHeight: CGFloat {
-        CGFloat(self.hitBox.height)
+        CGFloat(self.initialHitBox.height)
     }
 
     var image: UIImage {

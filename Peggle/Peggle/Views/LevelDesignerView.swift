@@ -56,23 +56,17 @@ struct LevelDesignerView: View {
             ForEach(viewModel.editModes, id: \.self) { mode in
                 let opacity = viewModel.selectedMode == mode ? 1 : 0.5
 
+                if case .removePeg = mode {
+                    Spacer()
+                }
+
                 Button {
                     viewModel.selectedMode = mode
                 } label: {
-                    switch mode {
-                    case let .addPeg(color, interactive):
-                        Image(uiImage: imageForColor(color, interactive: interactive))
-                            .resizable()
-                            .scaledToFit()
-                            .opacity(opacity)
-
-                    case .removePeg:
-                        Spacer()
-                        Image("DeleteButton")
-                            .resizable()
-                            .scaledToFit()
-                            .opacity(opacity)
-                    }
+                    imageFor(editMode: mode)
+                        .resizable()
+                        .scaledToFit()
+                        .opacity(opacity)
                 }
                 .disabled(mode == viewModel.selectedMode)
             }
@@ -86,13 +80,14 @@ struct LevelDesignerView: View {
                 GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
                     .overlay(OnTapView(tappedCallback: viewModel.tapAt))
 
-                ForEach(viewModel.placedPegs, id: \.center) { peg in
+                ForEach(viewModel.placedPegs, id: \.id) { peg in
                     PegBlueprintView(
                         pegBlueprint: peg,
+                        showEditPanel: peg.id == viewModel.currEditedPegID,
                         onTap: { viewModel.tapAt(peg: peg) },
                         onLongPress: { viewModel.removePeg(peg) },
-                        onDragEnd: { location in
-                            viewModel.tryMovePeg(peg, newLocation: location)
+                        onUpdate: { newPeg in
+                            viewModel.tryUpdatePeg(old: peg, new: newPeg)
                         }
                     )
                 }
@@ -141,6 +136,15 @@ struct LevelDesignerView: View {
             }
         }
 
+    }
+
+    private func imageFor(editMode: EditMode) -> Image {
+        switch editMode {
+        case let .addPeg(color, interactive):
+            return Image(uiImage: imageForColor(color, interactive: interactive))
+        case .removePeg:
+            return Image("DeleteButton")
+        }
     }
 
     private func imageForColor(_ color: PegColor, interactive: Bool) -> UIImage {

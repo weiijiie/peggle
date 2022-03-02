@@ -8,25 +8,33 @@ import Foundation
 /// Represents the blueprint of a peg in the level designer
 struct PegBlueprint {
 
+    let id: UUID
+
     let color: PegColor
     let interactive: Bool
 
     let initialHitBox: Geometry
-    var hitBox: Geometry
     let center: Point
 
-    var rotation: Degrees = 0 {
-        didSet {
-            hitBox = initialHitBox.withRotation(rotation)
-        }
-    }
+    let rotation: Degrees
 
-    private init(color: PegColor, interactive: Bool, hitBox: Geometry) {
+    private init(
+        color: PegColor,
+        interactive: Bool,
+        hitBox: Geometry,
+        rotation: Degrees = 0,
+        id: UUID = UUID()
+    ) {
         self.color = color
         self.interactive = interactive
         self.initialHitBox = hitBox
-        self.hitBox = hitBox
         self.center = hitBox.center
+        self.rotation = rotation
+        self.id = id
+    }
+
+    var hitBox: Geometry {
+        initialHitBox.withRotation(rotation)
     }
 
     static func round(color: PegColor, center: Point, radius: Double) -> PegBlueprint {
@@ -43,6 +51,9 @@ struct PegBlueprint {
     }
 
     static func equilateralTriangle(color: PegColor, center: Point, sideLength: Double) -> PegBlueprint {
+        // swiftlint:disable line_length
+        // Equation taken from:
+        // https://math.stackexchange.com/questions/1344690/is-it-possible-to-find-the-vertices-of-an-equilateral-triangle-given-its-center
         let a = Point(x: center.x, y: center.y - (sqrt(3) / 3) * sideLength)
         let b = Point(x: center.x - sideLength / 2, y: center.y + (sqrt(3) / 6) * sideLength)
         let c = Point(x: center.x + sideLength / 2, y: center.y + (sqrt(3) / 6) * sideLength)
@@ -54,9 +65,21 @@ struct PegBlueprint {
         PegBlueprint(
             color: color,
             interactive: interactive,
-            hitBox: hitBox.withCenter(newCenter)
+            hitBox: initialHitBox.withCenter(newCenter),
+            rotation: rotation,
+            id: id
+        )
+    }
+
+    func withRotation(_ degrees: Degrees) -> PegBlueprint {
+        PegBlueprint(
+            color: color,
+            interactive: interactive,
+            hitBox: initialHitBox,
+            rotation: degrees,
+            id: id
         )
     }
 }
 
-extension PegBlueprint: Equatable, Codable {}
+extension PegBlueprint: Equatable, Codable, Identifiable {}

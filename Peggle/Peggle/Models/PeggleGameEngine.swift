@@ -296,7 +296,7 @@ class PeggleGameEngine: PeggleState {
     }
 
     private func initializePegsAndBlocks(levelBlueprint: LevelBlueprint) {
-        for blueprint in levelBlueprint.pegBlueprints {
+        for blueprint in levelBlueprint.pegBlueprints.values {
             let peg = Peg(color: blueprint.color, hitBox: blueprint.hitBox, interactive: blueprint.interactive)
             pegs[peg.id] = peg
 

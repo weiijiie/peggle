@@ -11,12 +11,16 @@ class LevelDesignerViewModel: ObservableObject {
     @Published var showLevelSelect = false
     @Published var showSaveDialog = false
 
-    @Published var selectedMode = EditMode.allCases[0]
+    @Published var selectedMode = EditMode.allCases[0] {
+        didSet { currEditedPegID = nil }
+    }
 
     // Must be an optional as the width and height values for the blueprint are not
     // available at initialization.
     @Published var blueprint: LevelBlueprint?
     @Published var blueprintName: String?
+
+    @Published var currEditedPegID: PegBlueprint.ID?
 
     var levelName: String {
         blueprintName ?? "Custom Level"
@@ -29,12 +33,19 @@ class LevelDesignerViewModel: ObservableObject {
     }
 
     var placedPegs: [PegBlueprint] {
-        blueprint?.pegBlueprints ?? []
+        guard let blueprint = blueprint else {
+            return []
+        }
+
+        return Array(blueprint.pegBlueprints.values)
     }
 
     /// Handles taps at an arbitary point on the background of the level designer.
     /// Should only be called when tapping on an empty area of the background, ie. not on pegs.
     func tapAt(point: CGPoint) {
+        // dismiss peg editors
+        currEditedPegID = nil
+
         switch selectedMode {
         case let .addPeg(color, interactive):
             blueprint?.addPegCenteredAt(
@@ -56,7 +67,7 @@ class LevelDesignerViewModel: ObservableObject {
     func tapAt(peg: PegBlueprint) {
         switch selectedMode {
         case .addPeg:
-            break // Tapping on an existing peg does not do anything
+            currEditedPegID = peg.id
         case .removePeg:
             blueprint?.removePeg(peg)
         }
@@ -71,14 +82,31 @@ class LevelDesignerViewModel: ObservableObject {
     /// at that location, this function does nothing.
     func tryMovePeg(_ peg: PegBlueprint, newLocation: CGPoint) {
         let pegAtNewLocation = peg.centeredAt(point: Point(cgPoint: newLocation))
-        blueprint?.removePeg(peg)
+
+        // Remove the original peg momentarily to check if the new peg can be placed
+        removePeg(peg)
 
         guard let canPlace = blueprint?.canPlace(peg: pegAtNewLocation), canPlace else {
+            // if it cannot be placed, then we re-add the original peg
             blueprint?.addPeg(peg)
             return
         }
 
         blueprint?.addPeg(pegAtNewLocation)
+    }
+
+    func tryUpdatePeg(old: PegBlueprint, new: PegBlueprint) {
+        // Remove the original peg momentarily to check if the new peg can be placed
+        removePeg(old)
+
+        guard let canPlace = blueprint?.canPlace(peg: new), canPlace else {
+            // if the new peg cannot be placed, then we re-add the original peg
+            print("cant place")
+            blueprint?.addPeg(old)
+            return
+        }
+
+        blueprint?.addPeg(new)
     }
 
     func resetLevelBlueprint() {

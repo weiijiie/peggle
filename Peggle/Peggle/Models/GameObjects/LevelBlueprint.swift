@@ -15,14 +15,14 @@ import Physics
 ///   height and width, referred to as the "boundary" of the level.
 struct LevelBlueprint {
 
-    private(set) var pegBlueprints: [PegBlueprint] = []
+    private(set) var pegBlueprints: [PegBlueprint.ID: PegBlueprint]
 
     let width: Double
     let height: Double
     let center: Point
 
     init(width: Double, height: Double) {
-        self.pegBlueprints = []
+        self.pegBlueprints = [:]
         self.width = width
         self.height = height
         self.center = Point(x: width / 2, y: height / 2)
@@ -35,7 +35,7 @@ struct LevelBlueprint {
             return
         }
 
-        pegBlueprints.append(peg)
+        pegBlueprints[peg.id] = peg
     }
 
     mutating func addPegCenteredAt(
@@ -66,7 +66,7 @@ struct LevelBlueprint {
 
     /// Removes the given peg blueprint from the level blueprint.
     mutating func removePeg(_ peg: PegBlueprint) {
-        pegBlueprints.removeAll(where: { $0 == peg })
+        pegBlueprints.removeValue(forKey: peg.id)
     }
 
     /// Returns true if and only if the peg does not overlap with any existing peg,
@@ -82,7 +82,7 @@ struct LevelBlueprint {
             return false
         }
 
-        return pegBlueprints.contains { Geometry.overlaps($0.hitBox, peg.hitBox) }
+        return pegBlueprints.values.contains { Geometry.overlaps($0.hitBox, peg.hitBox) }
     }
 
     private var boundary: Geometry {

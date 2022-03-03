@@ -81,14 +81,17 @@ struct LevelDesignerView: View {
                     .overlay(OnTapView(tappedCallback: viewModel.tapAt))
 
                 ForEach(viewModel.placedPegs, id: \.id) { peg in
+                    let showEditPanelBinding = Binding(
+                        get: { viewModel.currEditedPegID == peg.id && viewModel.showEditPegView },
+                        set: { viewModel.showEditPegView = $0 }
+                    )
+
                     PegBlueprintView(
                         pegBlueprint: peg,
-                        showEditPanel: peg.id == viewModel.currEditedPegID,
+                        showEditPanel: showEditPanelBinding,
                         onTap: { viewModel.tapAt(peg: peg) },
                         onLongPress: { viewModel.removePeg(peg) },
-                        onUpdate: { newPeg in
-                            viewModel.tryUpdatePeg(old: peg, new: newPeg)
-                        }
+                        onUpdate: { viewModel.tryUpdatePeg(old: peg, new: $0) }
                     )
                 }
             }
@@ -97,10 +100,8 @@ struct LevelDesignerView: View {
                     viewModel.blueprint = levelBlueprint
                     viewModel.blueprintName = levelName
                 } else {
-                    viewModel.blueprint = LevelBlueprint(
-                        width: Double(geometry.size.width),
-                        height: Double(geometry.size.height)
-                    )
+                    viewModel.blueprint = LevelBlueprint(width: Double(geometry.size.width),
+                                                         height: Double(geometry.size.height))
                 }
             }
         }

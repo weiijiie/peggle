@@ -12,7 +12,7 @@ class LevelDesignerViewModel: ObservableObject {
     @Published var showSaveDialog = false
 
     @Published var selectedMode = EditMode.allCases[0] {
-        didSet { currEditedPegID = nil }
+        didSet { showEditPegView = false }
     }
 
     // Must be an optional as the width and height values for the blueprint are not
@@ -20,6 +20,7 @@ class LevelDesignerViewModel: ObservableObject {
     @Published var blueprint: LevelBlueprint?
     @Published var blueprintName: String?
 
+    @Published var showEditPegView = false
     @Published var currEditedPegID: PegBlueprint.ID?
 
     var levelName: String {
@@ -44,7 +45,7 @@ class LevelDesignerViewModel: ObservableObject {
     /// Should only be called when tapping on an empty area of the background, ie. not on pegs.
     func tapAt(point: CGPoint) {
         // dismiss peg editors
-        currEditedPegID = nil
+        showEditPegView = false
 
         switch selectedMode {
         case let .addPeg(color, interactive):
@@ -68,6 +69,7 @@ class LevelDesignerViewModel: ObservableObject {
         switch selectedMode {
         case .addPeg:
             currEditedPegID = peg.id
+            showEditPegView = true
         case .removePeg:
             blueprint?.removePeg(peg)
         }

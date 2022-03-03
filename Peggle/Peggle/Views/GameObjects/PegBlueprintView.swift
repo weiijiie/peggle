@@ -9,7 +9,7 @@ struct PegBlueprintView: View {
 
     let pegBlueprint: PegBlueprint
 
-    let showEditPanel: Bool
+    var showEditPanel: Binding<Bool>
 
     let onTap: () -> Void
     let onLongPress: () -> Void
@@ -26,7 +26,7 @@ struct PegBlueprintView: View {
 
     init(
         pegBlueprint: PegBlueprint,
-        showEditPanel: Bool,
+        showEditPanel: Binding<Bool>,
         onTap: @escaping () -> Void,
         onLongPress: @escaping () -> Void,
         onUpdate: @escaping (PegBlueprint) -> Bool
@@ -79,61 +79,15 @@ struct PegBlueprintView: View {
                     }
             )
 
-        if showEditPanel {
-            VStack {
-                HStack(spacing: 12) {
-                    Label("Rotation", systemImage: "arrow.clockwise")
-                        .labelStyle(.iconOnly)
-                        .foregroundColor(.primary)
-                        .font(.headline)
-                    Slider(
-                        value: $rotation, in: 0...360,
-                        onEditingChanged: { started in
-                            // if the user has stopped adjust the slider, then call the
-                            // onUpdate callback to propagate the changes to the parent
-                            if !started {
-                                let updated = onUpdate(pegBlueprint.withRotation(rotation))
-                                if !updated {
-                                    rotation = pegBlueprint.rotation
-                                }
-                            }
-
-                            isEditing = started
-                        }
-                    )
-                }
-                HStack(spacing: 12) {
-                    Label("Scale", systemImage: "arrow.up.left.and.arrow.down.right")
-                        .labelStyle(.iconOnly)
-                        .foregroundColor(.primary)
-                        .font(.headline)
-                    Slider(
-                        value: $scale, in: 1.0...2.5,
-                        onEditingChanged: { started in
-                            // if the user has stopped adjust the slider, then call the
-                            // onUpdate callback to propagate the changes to the parent
-                            if !started {
-                                let updated = onUpdate(pegBlueprint.scaled(scale))
-                                if !updated {
-                                    scale = pegBlueprint.scale
-                                }
-                            }
-
-                            isEditing = started
-                        }
-                    )
-
-                }
-            }
-            .padding()
-            .frame(width: 300, height: 150)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.thinMaterial)
-                    .shadow(color: .gray, radius: 6)
-                    .opacity(0.7)
+        if showEditPanel.wrappedValue {
+            EditPegView(
+                pegBlueprint: pegBlueprint,
+                show: showEditPanel,
+                isEditing: $isEditing,
+                rotation: $rotation,
+                scale: $scale,
+                onUpdate: onUpdate
             )
-            .position(x: pegBlueprint.center.x + 180, y: pegBlueprint.center.y)
             .zIndex(1)
         }
 
@@ -153,10 +107,12 @@ struct PegBlueprintView: View {
 }
 
 struct PegBlueprintView_Previews: PreviewProvider {
+    @State static var show = false
+
     static var previews: some View {
         PegBlueprintView(
             pegBlueprint: PegBlueprint.round(color: .blue, center: Point(x: 250, y: 250), radius: 30),
-            showEditPanel: false,
+            showEditPanel: $show,
             onTap: {},
             onLongPress: {},
             onUpdate: { _ in true }

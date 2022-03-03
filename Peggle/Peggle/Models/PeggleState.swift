@@ -6,6 +6,8 @@ protocol PeggleState {
     var width: Double { get }
     var height: Double { get }
 
+    var cameraOffsetY: Double { get }
+
     var ball: Ball? { get }
     var pegs: [Peg.ID: Peg] { get }
     var cannon: Cannon { get }

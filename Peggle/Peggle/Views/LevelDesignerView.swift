@@ -74,26 +74,49 @@ struct LevelDesignerView: View {
         .padding(.horizontal)
     }
 
+    var cameraControls: some View {
+        VStack(alignment: .center) {
+            let bg = Rectangle()
+                .fill(.white)
+                .padding()
+
+            if viewModel.cameraYOffSet > 0 {
+                Button {
+                    viewModel.panCameraUp()
+                } label: {
+                    Label("up", systemImage: "chevron.up.square.fill")
+                        .labelStyle(.iconOnly)
+                        .background(bg)
+                        .font(.system(size: 54))
+                }
+            }
+            Spacer()
+            Button {
+                viewModel.panCameraDown()
+            } label: {
+                Label("down", systemImage: "chevron.down.square.fill")
+                    .labelStyle(.iconOnly)
+                    .background(bg)
+                    .font(.system(size: 54))
+            }
+        }
+        .padding(.vertical)
+    }
+
     var levelPreview: some View {
         GeometryReader { geometry in
             ZStack {
                 GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
-                    .overlay(OnTapView(tappedCallback: viewModel.tapAt))
+                    .overlay {
+                        OnTapView(tappedCallback: { tappedAt in
+                            // take into account the camera offset
+                            let point = CGPoint(x: tappedAt.x, y: tappedAt.y + viewModel.cameraYOffSet)
+                            viewModel.tapAt(point: point)
+                        })
+                    }
 
-                ForEach(viewModel.placedPegs, id: \.id) { peg in
-                    let showEditPanelBinding = Binding(
-                        get: { viewModel.currEditedPegID == peg.id && viewModel.showEditPegView },
-                        set: { viewModel.showEditPegView = $0 }
-                    )
-
-                    PegBlueprintView(
-                        pegBlueprint: peg,
-                        showEditPanel: showEditPanelBinding,
-                        onTap: { viewModel.tapAt(peg: peg) },
-                        onLongPress: { viewModel.removePeg(peg) },
-                        onUpdate: { viewModel.tryUpdatePeg(old: peg, new: $0) }
-                    )
-                }
+                pegBlueprints(viewModel.placedPegs)
+                cameraControls
             }
             .onAppear {
                 if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
@@ -107,14 +130,37 @@ struct LevelDesignerView: View {
         }
     }
 
+    func pegBlueprints(_ pegBlueprints: [PegBlueprint]) -> some View {
+        ForEach(pegBlueprints, id: \.id) { peg in
+            let showEditPanelBinding = Binding(
+                get: { viewModel.currEditedPegID == peg.id && viewModel.showEditPegView },
+                set: { viewModel.showEditPegView = $0 }
+            )
+
+            PegBlueprintView(
+                pegBlueprint: peg,
+                showEditPanel: showEditPanelBinding,
+                onTap: { viewModel.tapAt(peg: peg) },
+                onLongPress: { viewModel.removePeg(peg) },
+                onUpdate: { viewModel.tryUpdatePeg(old: peg, new: $0) }
+            )
+            .offset(y: -viewModel.cameraYOffSet)
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                levelControls
-                editControls
-                    .frame(height: geometry.size.height * 0.075, alignment: .center)
-                    .padding(.vertical, 5)
+            VStack(spacing: 0) {
+                VStack {
+                    levelControls
+                    editControls
+                        .frame(height: geometry.size.height * 0.075, alignment: .center)
+                        .padding(.vertical, 10)
+                }
+                .background(.white)
+
                 levelPreview
+                    .zIndex(-1)
             }
         }
         .ignoresSafeArea(.keyboard)
@@ -136,7 +182,6 @@ struct LevelDesignerView: View {
                 }
             }
         }
-
     }
 
     private func imageFor(editMode: EditMode) -> Image {

@@ -23,14 +23,16 @@ class LevelDesignerViewModel: ObservableObject {
     @Published var showEditPegView = false
     @Published var currEditedPegID: PegBlueprint.ID?
 
-    var levelName: String {
-        blueprintName ?? "Custom Level"
-    }
+    @Published private(set) var cameraYOffSet: Double = 0
 
     private let repo: LevelBlueprintRepo
 
     init(repo: LevelBlueprintRepo) {
         self.repo = repo
+    }
+
+    var levelName: String {
+        blueprintName ?? "Custom Level"
     }
 
     var placedPegs: [PegBlueprint] {
@@ -39,6 +41,11 @@ class LevelDesignerViewModel: ObservableObject {
         }
 
         return Array(blueprint.pegBlueprints.values)
+    }
+
+    var cameraPanInterval: Double {
+        // pan 1/15th of the minHeight each time
+        (blueprint?.minHeight ?? 0) / 15
     }
 
     /// Handles taps at an arbitary point on the background of the level designer.
@@ -115,6 +122,28 @@ class LevelDesignerViewModel: ObservableObject {
         }
 
         try repo.saveBlueprint(name: trimmedName, blueprint: blueprint)
+    }
+
+    func panCameraDown() {
+        guard let blueprint = blueprint else {
+            return
+        }
+
+        withAnimation(.linear) {
+            cameraYOffSet += cameraPanInterval
+        }
+
+        // increase the height of the level if the user pans the camera down
+        // past the current height of the level
+        self.blueprint?.height = max(blueprint.height, cameraYOffSet + blueprint.minHeight)
+    }
+
+    func panCameraUp() {
+        let newOffset = max(0, cameraYOffSet - cameraPanInterval)
+
+        withAnimation(.linear) {
+            cameraYOffSet = newOffset
+        }
     }
 }
 

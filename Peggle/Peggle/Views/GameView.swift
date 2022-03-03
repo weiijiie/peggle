@@ -24,43 +24,53 @@ struct GameView: View {
         }
         .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background(.white)
     }
 
     func game(blueprint levelBlueprint: LevelBlueprint) -> some View {
         ZStack {
-            GameBackgroundView(width: levelBlueprint.width, height: levelBlueprint.height)
+            GameBackgroundView(width: levelBlueprint.width, height: levelBlueprint.minHeight)
 
-            if let (ball, pegs, cannon, bucket, explosions) = viewModel.gameObjects {
-                if let ball = ball {
-                    BallView(ball: ball)
-                }
+            if let objects = viewModel.gameObjects {
+                gameObjects(objects)
+                    .offset(y: -viewModel.cameraOffsetY)
+            }
+        }
+    }
 
-                ForEach(pegs, id: \.id) { peg in
-                    PegView(peg: peg)
-                }
+    func gameObjects(_ gameObjects: GameObjects) -> some View {
+        let (ball, pegs, cannon, bucket, explosions) = gameObjects
+        return Group {
+            if let ball = ball {
+                BallView(ball: ball)
+            }
 
-                ForEach(explosions, id: \.id) { explosion in
-                    ExplosionView(explosion: explosion)
-                }
+            ForEach(pegs, id: \.id) { peg in
+                PegView(peg: peg)
+            }
 
-                BucketView(bucket: bucket)
+            ForEach(explosions, id: \.id) { explosion in
+                ExplosionView(explosion: explosion)
+            }
 
-                CannonView(cannon: cannon) { cannon in
-                    _ = viewModel.fireBallWith(cannonAngle: cannon.currentAngle)
-                }
-                .onDisappear {
-                    viewModel.stopGame()
-                    appState.unsetActiveLevelBlueprint()
-                }
+            BucketView(bucket: bucket)
+
+            CannonView(cannon: cannon) { cannon in
+                _ = viewModel.fireBallWith(cannonAngle: cannon.currentAngle)
+            }
+            .onDisappear {
+                viewModel.stopGame()
+                appState.unsetActiveLevelBlueprint()
             }
         }
     }
 
     var body: some View {
         if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
-            VStack {
+            VStack(spacing: 0) {
                 topBar
                 game(blueprint: levelBlueprint)
+                    .zIndex(-1)
             }
             .ignoresSafeArea(.keyboard)
             .popup(isPresented: $viewModel.showSelectPowerupScreen) {

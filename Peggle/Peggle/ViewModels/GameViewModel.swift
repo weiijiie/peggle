@@ -23,6 +23,8 @@ class GameViewModel: ObservableObject {
 
     private var displayLink: CADisplayLink?
 
+    @Published var cameraOffsetY: Double = 0
+
     var gameObjects: GameObjects? {
         guard let gameEngine = gameEngine else {
             return nil
@@ -80,11 +82,13 @@ class GameViewModel: ObservableObject {
 
         let scaleFactor = GameViewModel.GameEngineScaleFactor
         let coordinateMapper = ProportionateCoordinateMapper(scale: scaleFactor).withFlippedYAxis()
+        let viewportHeight = levelBlueprint.minHeight
 
         self.gameEngine = PeggleGameEngine(
             levelBlueprint: levelBlueprint,
             maxX: levelBlueprint.width,
             maxY: 0, // in iOS, the 0 coordinate is towards the top of the screen
+            viewportHeight: viewportHeight,
             powerupManager: PowerupManager(),
             selectedPowerup: selectedPowerup,
             coordinateMapper: coordinateMapper,
@@ -95,6 +99,16 @@ class GameViewModel: ObservableObject {
             onUpdate: { state in
                 self.showGameOverScreen = state.status.isGameOver()
                 self.objectWillChange.send()
+
+                // only animate if the change in the camera offset is greater than
+                // a small percentage of the viewport height, for a smoother effect
+                if abs(self.cameraOffsetY - state.cameraOffsetY) > viewportHeight / 10 {
+                    withAnimation(.easeInOut(duration: 0.7)) {
+                        self.cameraOffsetY = state.cameraOffsetY
+                    }
+                }
+
+                self.cameraOffsetY = state.cameraOffsetY
             },
             winConditions: [ClearAllOrangePegsWinCondition()],
             loseConditions: [RanOutOfBallsLoseCondition()]

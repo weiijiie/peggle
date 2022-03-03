@@ -60,7 +60,7 @@ struct Ball {
             of: Ball.relativeWidth,
             relativeTo: LevelBlueprint.relativeWidth,
             withActualSize: Float(levelWidth)
-        ) / 2
+        ) * 7 / 12 // we want the ball to be slightly more than its radius below the top
 
         return Point(x: x, y: Double(y))
     }

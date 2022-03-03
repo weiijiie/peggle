@@ -13,21 +13,18 @@ class PeggleGameEngine: PeggleState {
 
     let width: Double
     let height: Double
+    let viewportHeight: Double
 
-    // The below 4 coordinates are relative to the coordinate system
-    // used by the physics engine. They are used to simplify game logic
-    // checks.
-    private let minX: Double
-    private let maxX: Double
-
+    // `minY` is relative to the coordinate system used by the physics engine.
     // Balls that fall below `minY` are considered "out of bounds"
     private let minY: Double
-    private let maxY: Double
-
-//    private let world: World<SpatialHash<RigidBody>, ImpulseCollisionResolver>
 
     private let mapper: CoordinateMapper
     private var onUpdateCallback: ((PeggleState) -> Void)?
+
+    private(set) var cameraOffsetY: Double = 0 {
+        willSet { onUpdateCallback?(self) }
+    }
 
     private(set) var pegs: [Peg.ID: Peg] = [:] {
         willSet { onUpdateCallback?(self) }
@@ -86,6 +83,7 @@ class PeggleGameEngine: PeggleState {
         levelBlueprint: LevelBlueprint,
         maxX: Double,
         maxY: Double,
+        viewportHeight: Double,
         powerupManager: PowerupManager,
         selectedPowerup: Powerup,
         coordinateMapper: CoordinateMapper = IdentityCoordinateMapper(),
@@ -94,15 +92,10 @@ class PeggleGameEngine: PeggleState {
         loseConditions: LoseConditions = []
     ) {
         self.width = levelBlueprint.width
-        self.height = levelBlueprint.height
+        self.height = levelBlueprint.gameplayHeight
+        self.viewportHeight = levelBlueprint.minHeight
 
         self.mapper = coordinateMapper
-
-        self.minX = mapper.localToExternal(x: maxX) - mapper.localToExternal(x: width).magnitude
-        self.maxX = mapper.localToExternal(x: maxX)
-
-        self.minY = mapper.localToExternal(y: maxY) - mapper.localToExternal(y: height).magnitude
-        self.maxY = mapper.localToExternal(y: maxY)
 
         self.onUpdateCallback = onUpdate
 
@@ -114,15 +107,17 @@ class PeggleGameEngine: PeggleState {
         let world = World(
             broadPhaseCollisionDetector: SpatialHash(cellSize: PeggleGameEngine.SpatialHashCellSize),
             collisionResolver: ImpulseCollisionResolver(),
-            minX: self.minX,
-            maxX: self.maxX,
-            maxY: self.maxY
+            minX: mapper.localToExternal(x: maxX) - mapper.localToExternal(x: width).magnitude,
+            maxX: mapper.localToExternal(x: maxX),
+            maxY: mapper.localToExternal(y: maxY)
         )
+
+        self.minY = mapper.localToExternal(y: maxY) - mapper.localToExternal(y: height).magnitude
 
         self.bridge = PhysicsEngineBridge(world: world, coordinateMapper: mapper)
 
         self.cannon = Cannon(forLevelWidth: levelBlueprint.width)
-        self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.height)
+        self.bucket = Bucket(forLevelWidth: levelBlueprint.width, forLevelHeight: levelBlueprint.gameplayHeight)
 
         initializeBucket()
         initializePegs(levelBlueprint: levelBlueprint)
@@ -142,11 +137,8 @@ class PeggleGameEngine: PeggleState {
         angle: Degrees,
         speed: Double = PeggleGameEngine.DefaultBallStartingSpeed
     ) -> Bool {
-        guard angle >= 0 && angle <= 180 else {
-            return false
-        }
-
-        guard status == .ongoing && ballsRemaining > 0 else {
+        guard angle >= 0 && angle <= 180,
+              status == .ongoing && ballsRemaining > 0 else {
             return false
         }
 
@@ -224,15 +216,13 @@ class PeggleGameEngine: PeggleState {
         self.activeExplosions[explosion.id] = explosion
 
         bridge.addExplosion(explosion, onUpdate: { body in
-
             if body.elapsedTime > explosion.duration {
                 // remove the explosion after its duration is up
                 self.activeExplosions.removeValue(forKey: explosion.id)
                 self.bridge.removeExplosion(explosion)
             } else {
                 // otherwise update the explosion struct
-                let radius = body.hitBox.width / 2
-                self.activeExplosions[explosion.id]?.radius = radius
+                self.activeExplosions[explosion.id]?.radius = body.hitBox.width / 2
             }
         })
     }
@@ -271,6 +261,9 @@ class PeggleGameEngine: PeggleState {
             self.cannon.reload()
         }
 
+        // reset the camera
+        cameraOffsetY = 0
+
         // check whether the game has been won or lost
         let newStatus = PeggleGameStatus.getStatusFor(
             state: self,
@@ -292,18 +285,36 @@ class PeggleGameEngine: PeggleState {
             initialVelocity: velocity,
             onUpdate: { body in
                 self.ball?.update(hitBox: body.hitBox)
+
+                if let ball = self.ball {
+                    self.adjustCameraOffset(ballY: ball.center.y)
+                }
             })
+    }
+
+    /// Adjusts the camera offset based on the current y position of the ball. The ball should always be between
+    /// the 30% to 50% height of the level, unless the ball is at the top or bottom of the level.
+    private func adjustCameraOffset(ballY: Double) {
+        let over = ballY - (self.cameraOffsetY + self.viewportHeight * 0.5)
+        if over > 0 {
+            // total height - viewport height is the camera offset such that the bottom of the level
+            // is positioned at the bottom of the screen
+            self.cameraOffsetY = min(self.height - self.viewportHeight, self.cameraOffsetY + over)
+        }
+
+        let under = (self.cameraOffsetY + self.viewportHeight * 0.3) - ballY
+        if under > 0 {
+            self.cameraOffsetY = max(0, self.cameraOffsetY - under)
+        }
     }
 
     private func initializePegs(levelBlueprint: LevelBlueprint) {
         for blueprint in levelBlueprint.pegBlueprints.values {
-            let peg = Peg(
-                color: blueprint.color,
-                hitBox: blueprint.initialHitBox,
-                rotation: blueprint.rotation,
-                scale: blueprint.scale,
-                interactive: blueprint.interactive
-            )
+            let peg = Peg(color: blueprint.color,
+                          hitBox: blueprint.initialHitBox,
+                          rotation: blueprint.rotation,
+                          scale: blueprint.scale,
+                          interactive: blueprint.interactive)
             pegs[peg.id] = peg
 
             bridge.addPeg(peg, onCollide: pegCollisionCallback(id: peg.id))
@@ -335,8 +346,7 @@ class PeggleGameEngine: PeggleState {
         // the ball as stuck. to remedy, we remove a randomly chosen peg
         // that has already been hit, hopefully giving a route for the ball
         // to be unstuck
-        let randomHitPeg = pegs
-            .values
+        let randomHitPeg = pegs.values
             .filter { $0.hasBeenHit }
             .randomElement()
 

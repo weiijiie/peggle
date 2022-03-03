@@ -51,7 +51,7 @@ struct LevelBlueprint {
         }
 
         // we use 0.3 * minHeight as a reasonable distance away from the lowest peg.
-        return min(resolvedHeight, highestPoint + 0.3 * minHeight)
+        return max(minHeight, min(height, highestPoint + 0.3 * minHeight))
     }
 
     var center: Point {

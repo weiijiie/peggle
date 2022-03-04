@@ -56,6 +56,11 @@ struct Peg: Equatable, Identifiable {
         return true
     }
 
+    mutating func reset() {
+        hasBeenHit = false
+        removed = false
+    }
+
     func isWinCondition() -> Bool {
         if !interactive {
             return false

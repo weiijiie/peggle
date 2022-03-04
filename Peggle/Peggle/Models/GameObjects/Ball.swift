@@ -6,7 +6,7 @@ import Physics
 
 struct Ball {
     static let DefaultMass = 10.0
-    static let DefaultMaterial = Material.solid(restitution: 0.94)
+    static let DefaultMaterial = Material.solid(restitution: 0.93)
 
     private(set) var hitBox: Geometry
 

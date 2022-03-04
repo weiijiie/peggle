@@ -16,7 +16,7 @@ struct Bucket {
     static let EdgeWidthToMidWidthRatio: Double = 1 / 12
     static let HeightToWidthRatio: Double = 9 / 7
 
-    static let DefaultEdgeRestitution = 0.90
+    static let DefaultEdgeRestitution = 0.8
 
     let midWidth: Double
     var position: Point

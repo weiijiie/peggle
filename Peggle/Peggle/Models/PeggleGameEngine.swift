@@ -5,12 +5,11 @@
 import Foundation
 import Physics
 
+let DefaultBallStartingSpeed = 400.0
+let SpatialHashCellSize = 8.0
+let DefaultNumStartingBalls = 10
+
 class PeggleGameEngine: PeggleState {
-
-    static let DefaultBallStartingSpeed = 450.0
-    static let SpatialHashCellSize = 8.0
-    static let DefaultNumStartingBalls = 5
-
     let width: Double
     let height: Double
     let viewportHeight: Double
@@ -46,7 +45,7 @@ class PeggleGameEngine: PeggleState {
         willSet { onUpdateCallback?(self) }
     }
 
-    private(set) var ballsRemaining = PeggleGameEngine.DefaultNumStartingBalls {
+    private(set) var ballsRemaining = DefaultNumStartingBalls {
         willSet { onUpdateCallback?(self) }
     }
 
@@ -96,7 +95,6 @@ class PeggleGameEngine: PeggleState {
         self.viewportHeight = levelBlueprint.minHeight
 
         self.mapper = coordinateMapper
-
         self.onUpdateCallback = onUpdate
 
         self.winConditions = winConditions
@@ -105,7 +103,7 @@ class PeggleGameEngine: PeggleState {
         self.selectedPowerup = selectedPowerup
 
         let world = World(
-            broadPhaseCollisionDetector: SpatialHash(cellSize: PeggleGameEngine.SpatialHashCellSize),
+            broadPhaseCollisionDetector: SpatialHash(cellSize: SpatialHashCellSize),
             collisionResolver: ImpulseCollisionResolver(),
             minX: mapper.localToExternal(x: maxX) - mapper.localToExternal(x: width).magnitude,
             maxX: mapper.localToExternal(x: maxX),
@@ -126,16 +124,14 @@ class PeggleGameEngine: PeggleState {
 
     /// Fires the cannon, and adds a ball that has been "fired" to the default location for the balls
     /// (top-center of the game).
-    ///
     /// The ball will be fired downwards with the given angle and speed.
     /// The angle must be between 0 and 180 degrees, with 0 corresponding to firing the ball parallel
     /// to the x-axis towards the right, and 180 corresponding to firing the ball parallel to the x-axis
     /// towards the left. If the angle is not between 0 and 180, the ball is not fired.
-    ///
     /// - Returns: `true` if the ball was fired, and `false` otherwise.
     func fireBallWith(
         angle: Degrees,
-        speed: Double = PeggleGameEngine.DefaultBallStartingSpeed
+        speed: Double = DefaultBallStartingSpeed
     ) -> Bool {
         guard angle >= 0 && angle <= 180,
               status == .ongoing && ballsRemaining > 0 else {
@@ -227,11 +223,14 @@ class PeggleGameEngine: PeggleState {
         })
     }
 
-    func removePeg(_ peg: Peg, force: Bool = false) {
+    /// Removes the given peg from the physics simulation and sets it to `removed`.
+    /// Returns true if the peg was successfully removed, and false otherwise.
+    func removePeg(_ peg: Peg, force: Bool = false) -> Bool {
         let removed = pegs[peg.id]?.remove(force: force)
         if let removed = removed, removed {
             bridge.removePeg(peg)
         }
+        return removed ?? false
     }
 
     // MARK: Helper Functions
@@ -247,20 +246,24 @@ class PeggleGameEngine: PeggleState {
             ballsRemaining += 1
         }
 
-        // remove all pegs that were hit and not yet removed
+        // remove all pegs that were hit and not yet removed.
+        // if they were not removed (ie. a non interactive peg),
+        // then we reset their hit status
         for peg in pegs.values {
             if !peg.hasBeenHit || peg.removed {
                 continue
             }
 
-            removePeg(peg)
+            let removed = removePeg(peg)
+            if !removed {
+                pegs[peg.id]?.reset()
+            }
         }
 
         // reset the cannon to allow players to fire another ball
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(700)) {
             self.cannon.reload()
         }
-
         // reset the camera
         cameraOffsetY = 0
 
@@ -324,9 +327,7 @@ class PeggleGameEngine: PeggleState {
     private func initializeBucket() {
         bridge.addBucket(
             bucket,
-            onUpdate: { body in
-                self.bucket.updatePosition(body.hitBox.center)
-            },
+            onUpdate: { self.bucket.updatePosition($0.hitBox.center) },
             onCollideWithInside: { collision in
                 guard let body = self.bridge.ballRigidBody, collision.involvesBody(body) else {
                     return
@@ -338,11 +339,11 @@ class PeggleGameEngine: PeggleState {
     }
 
     private func checkIfBallStuckAndResolve() {
-        if lastNewPegCollisionTime > elapsedTime - 10 {
+        if lastNewPegCollisionTime > elapsedTime - 15 {
             return
         }
 
-        // no new peg has been hit for the past 10 seconds, so we consider
+        // no new peg has been hit for the past 15 seconds, so we consider
         // the ball as stuck. to remedy, we remove a randomly chosen peg
         // that has already been hit, hopefully giving a route for the ball
         // to be unstuck
@@ -358,7 +359,7 @@ class PeggleGameEngine: PeggleState {
         }
 
         lastNewPegCollisionTime = elapsedTime
-        removePeg(randomHitPeg, force: true)
+        _ = removePeg(randomHitPeg, force: true)
     }
 
     private func pegCollisionCallback(id: Peg.ID) -> (Collision) -> Void {
@@ -375,8 +376,6 @@ class PeggleGameEngine: PeggleState {
             }
 
             let hasBeenHit = peg.hasBeenHit
-            // we need to access the peg directly from the dictionary, otherwise
-            // we will only mutate the copy
             self.pegs[id]?.hit()
 
             // we need to specially consider the case where the peg has been
@@ -391,7 +390,7 @@ class PeggleGameEngine: PeggleState {
             }
 
             if isExplosionCollision {
-                self.removePeg(peg, force: true)
+                _ = self.removePeg(peg, force: true)
             }
         }
     }

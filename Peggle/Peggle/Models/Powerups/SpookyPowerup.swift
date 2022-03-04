@@ -7,7 +7,7 @@ import Physics
 struct SpookyPowerup: Powerup {
     let name: String = "Spooky"
 
-    let duration: Float = 8 // 8 seconds
+    let duration: Float = 10 // 10 seconds
 
     func apply(to engine: PeggleGameEngine, hitPeg: Peg) {
         if !engine.isBallOutOfBounds() {

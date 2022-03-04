@@ -103,7 +103,7 @@ class GameViewModel: ObservableObject {
                 // only animate if the change in the camera offset is greater than
                 // a small percentage of the viewport height, for a smoother effect
                 if abs(self.cameraOffsetY - state.cameraOffsetY) > viewportHeight / 10 {
-                    withAnimation(.easeInOut(duration: 0.7)) {
+                    withAnimation(.easeInOut(duration: 0.5)) {
                         self.cameraOffsetY = state.cameraOffsetY
                     }
                 }

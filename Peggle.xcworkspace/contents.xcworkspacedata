@@ -4,6 +4,19 @@
    <FileRef
       location = "group:README.md">
    </FileRef>
+   <Group
+      location = "group:preloaded-levels"
+      name = "preloaded-levels">
+      <FileRef
+         location = "group:pinball.json">
+      </FileRef>
+      <FileRef
+         location = "group:bubbles.json">
+      </FileRef>
+      <FileRef
+         location = "group:pyramids-galore.json">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:assets">
    </FileRef>

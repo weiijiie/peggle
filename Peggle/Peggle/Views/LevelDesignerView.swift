@@ -87,7 +87,7 @@ struct LevelDesignerView: View {
                     Label("up", systemImage: "chevron.up.square.fill")
                         .labelStyle(.iconOnly)
                         .background(bg)
-                        .font(.system(size: 54))
+                        .font(.system(size: 48))
                 }
             }
             Spacer()
@@ -97,7 +97,7 @@ struct LevelDesignerView: View {
                 Label("down", systemImage: "chevron.down.square.fill")
                     .labelStyle(.iconOnly)
                     .background(bg)
-                    .font(.system(size: 54))
+                    .font(.system(size: 48))
             }
         }
         .padding(.vertical)

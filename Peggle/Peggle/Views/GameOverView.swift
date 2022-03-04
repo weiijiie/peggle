@@ -45,7 +45,6 @@ struct GameOverView: View {
             Text(levelName).font(.title)
             Spacer()
             resultMessage
-            Text("Score: 123")
             Spacer()
             buttons
         }

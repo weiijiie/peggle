@@ -357,38 +357,149 @@ Below is a high-level class diagram outlining the interactions between entities.
 
 
 ## Rules of the Game
-Please write the rules of your game here. This section should include the
-following sub-sections. You can keep the heading format here, and you can add
-more headings to explain the rules of your game in a structured manner.
-Alternatively, you can rewrite this section in your own style. You may also
-write this section in a new file entirely, if you wish.
 
 ### Cannon Direction
-Please explain how the player moves the cannon.
+
+The cannon is located at the top of the level and swivels from left to right repeatedly.
+
+To fire a ball in a particular direction, tap on the cannon as it swivels.
+The cannon should fire the ball in the direction where it was aiming when you tapped it.
 
 ### Win and Lose Conditions
-Please explain how the player wins/loses the game.
+
+At the start of each game, you are given 10 balls. A player wins by removing all
+orange pegs from the level before all 10 balls have run out. All pegs hit by the
+ball will be removed when the ball goes out of bounds.
+
+If all 10 balls have run out and there are still orange pegs on the level, the game
+is lost.
+
+### Explosions
+
+Explosions can be triggered by hitting a green peg with the "Kaboom" powerup selected.
+An explosion immediately removes all pegs *and* blocks in the area of effect of the explosion.
 
 ## Level Designer Additional Features
 
 ### Peg Rotation
-Please explain how the player rotates the triangular pegs.
+
+In the level designer, click on a peg to open up the peg edit panel. The top of the two
+sliders controls the rotation of the selected peg. Slide the slider to rotate the peg
+from 0 to 360 degrees.
 
 ### Peg Resizing
-Please explain how the player resizes the pegs.
+
+In the level designer, click on a peg to open up the peg edit panel. The bottom of the two
+sliders controls the scale of the selected peg. Slide the slider to scale the peg from 1x
+the area to 2.5x the area.
 
 ## Bells and Whistles
-Please write all of the additional features that you have implemented so that
-your grader can award you credit.
+
+### Sound and music
+
+Added background music for the level designer, menu, and game screens.
+
+Also added sound effects for various gameplay events, such as explosions, collisions,
+and win/loss sounds.
 
 ## Tests
-If you decide to write how you are going to do your tests instead of writing
-actual tests, please write in this section. If you decide to write all of your
-tests in code, please delete this section.
+
+### Integration Tests Palette
+
+The tests below should be done on different screen sizes in portrait and upside-down portrait orientations,
+for exhaustiveness (Game does not support landscape).
+
+#### Level Designer Tests
+
+- Level Blueprint (with background image and where pegs are placed), in add peg mode.
+  - When tapped at an arbitrary spot where the new peg would not overlap with anything, it should:
+    - Have a peg appear centered at the spot that was tapped
+    - The new peg that appears should be the same color as the one specified in the add peg mode.
+    
+  - When tapped at a spot where the new peg would overlap with the old peg, it should:
+    - Have nothing happen
+    
+  - When tapped at a spot where the new peg would overlap with the boundaries of the level, it should:
+    - Have nothing happen
+
+- Level Blueprint, in remove peg mode.
+  - When tapped at a spot with no pegs, it shoud:
+    - Have nothing happen
+    
+  - When tapped on top of an existing peg, it should:
+    - Cause the tapped peg to be removed
+    
+- Any arbitrary peg
+  - When long pressed on the peg, it should:
+    - Cause the long pressed peg to be removed
+
+  - When dragged, it should:
+    - Show a copy of the peg but with lighter opacity following the drag location
+    - Have the original peg disappear
+    - When the drag stops, it should:
+        - If the location where the drag stops overlaps with the boundaries of the level or another peg,
+          the peg with lighter opacity should disappear, while the original peg should appear back at its
+          previous location.
+        - If the location where the drag stops does not ovelap with the boundaries of the level or another peg,
+          the peg with lighter opacity should disappear, and a new peg should appear at the spot where the drag
+          stops.
+          
+- "Reset" button
+  - When tapped while there are pegs on the board, it should:
+    - Cause all existing pegs to be removed
+
+  - When tapped while there are no pegs on the board, it should:
+    - Have nothing happen
+    
+- "Save" and "Load" button
+  - When "Save" tapped when there is no text in the "Level Name" text field, it should:
+    - Have an alert should pop up with an error message, informing the user to enter a name
+    
+  - When "Load" tapped when there is no text in the "Level Name" text field, it should:
+    - Have an alert should pop up with an error message, informing the user to enter a name
+    
+  - When "Load" tapped when there is text in the "Level Name" text field, but the level
+    does not exist, it should:
+    - Have an alert should pop up with an error message, informing the user that no such
+      level exists
+    
+  - When "Save" tapped when there are pegs on the board and a name on the "Level Name" text field,
+    then changes are made to the board, then "Load" is tapped with the same pegs and the same name,
+    it should:
+    - Have the pegs on the board be reset to the configuration when save was pressed for the first time
+
+#### Game Tests
+
+- Game View
+  - When the game starts, the cannon should already be rotating back and forth at various angles
+
+  - When cannon is tapped at various angles, ball should:
+    - Be fired in the same direction as the cannon was facing
+    - Especially test the edge cases where the angle is near 0 or 180 degrees to ensure the ball cannot fire upwards
+
+  - When cannon is tapped, the cannon should:
+    - Disappear
+
+  - When ball hits a peg, the peg should:
+    - Not move
+    - Light up
+
+  - When ball hits the top, left, or bottom boundaries or a peg, the ball should:
+    - Bounce off in a sensible manner'
+
+  - When ball hits the bottom of the screen, the ball should:
+    - Not bounce off
+    - Disappear
+
+  - After ball disappears from the bottom of the screen:
+    - All pegs that were hit should disappaer
+    - No peg that was not hit should disappear
+    - The cannon should reappear and start rotating again
 
 ## Written Answers
 
 ### Reflecting on your Design
+
 > Now that you have integrated the previous parts, comment on your architecture
 > in problem sets 2 and 3. Here are some guiding questions:
 > - do you think you have designed your code in the previous problem sets well
@@ -397,4 +508,45 @@ tests in code, please delete this section.
 > - if you were to redo the entire application, is there anything you would
 >   have done differently?
 
-Your answer here
+In my opinion, my attempts at designing the code in PS2 and 3 were decent but not perfect.
+In general, most new requirements in problem set 4 could be implemented by extending the code
+instead of modifying it, such as when implementing the bucket's movement. When rewrites were
+needed, the logic was also generally simple and the files were the rewrites were required were
+rather localized.
+
+Nonetheless, there were definitely areas where the code could have been better organized and cleanly
+separated into smaller, more modular units. When nearing the end of the implementation, I began to
+feel the size of some classes started to push against my own cognitive limits and it was hard to quickly
+get a sensing of what the class did.
+
+Below are some specific points I think are worth highlighting.
+
+The good:
+
+- My usage of enums for a variety of entities like `Geometry` and `Motion` was a bit of an experiment, as the
+  previous time I had used enums like that was in Java a few years back. I did find it in generally to be quite
+  effective, with the compiler enforced exhaustiveness checks and refactorings making it very easy to add new 
+  cases to extend the behavior of my entities, such as when adding a `.triangle` geometry or a `.controlled` motion.
+  In a way, it worked a lot like discriminated union patterns from functional programming, which I quite like.
+
+- I made a point to avoid inheritance as much as possible for these problem sets and I felt it worked out well. I never
+  felt there was a situation where I would have needed to use inheritance to help make my code DRY, and I avoided many
+  of the pitfalls of using inheritance. Instead, the main technique I used was composing behaviors from various enums
+  and structs in a parent struct/class, which felt way more flexible.
+  
+The bad:
+
+- While I found that my idea to use a coordinate mapper was decent, my implementation of it was brittle and I did not
+  properly scope out the actual implications of using such a system. As a result, the usage of it is rather awkward
+  (many calls to `mapper.localToExternal` all over the place), and there were several many pitfalls regarding its usage
+  that I fell into, which I had to then spend time debugging.
+  
+- 
+  
+  
+
+The bad:
+
+Tech debt:
+coordinate mapper
+pegglegameengine code is rather bloated

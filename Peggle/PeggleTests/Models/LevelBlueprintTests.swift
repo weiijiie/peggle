@@ -27,19 +27,19 @@ class LevelBlueprintTests: XCTestCase {
         blueprint.addPeg(peg1)
         XCTAssertEqual(1, blueprint.pegBlueprints.count,
                        "Shoud have 1 obstacle in the blueprint after adding once")
-        XCTAssertTrue(blueprint.pegBlueprints.contains { $0 == peg1 },
+        XCTAssertTrue(blueprint.pegBlueprints.values.contains { $0 == peg1 },
                       "Should contain the peg after adding it" )
 
         blueprint.addPeg(peg2)
         XCTAssertEqual(2, blueprint.pegBlueprints.count,
                        "Shoud have 2 obstacles in the blueprint after adding twice")
-        XCTAssertTrue(blueprint.pegBlueprints.contains { $0 == peg2 },
+        XCTAssertTrue(blueprint.pegBlueprints.values.contains { $0 == peg2 },
                       "Should contain the peg after adding it" )
 
         blueprint.addPeg(block1)
         XCTAssertEqual(3, blueprint.pegBlueprints.count,
                        "Shoud have 3 obstacless in the blueprint after adding twice")
-        XCTAssertTrue(blueprint.pegBlueprints.contains { $0 == block1 },
+        XCTAssertTrue(blueprint.pegBlueprints.values.contains { $0 == block1 },
                       "Should contain the block after adding it" )
     }
 

@@ -115,7 +115,13 @@ struct LevelDesignerView: View {
                         })
                     }
 
-                pegBlueprints(viewModel.placedPegs)
+                if let blueprint = viewModel.blueprint {
+                    pegBlueprints(viewModel.placedPegs)
+                        // if the size of the blueprint and the actual size of the screen is different,
+                        // we can simply scale it to the correct size using the ratio of widths, since
+                        // we relatively size everything using width.
+                        .scaleEffect(geometry.size.width / blueprint.width, anchor: .topLeading)
+                }
                 cameraControls
             }
             .onAppear {
@@ -157,6 +163,7 @@ struct LevelDesignerView: View {
                         .frame(height: geometry.size.height * 0.075, alignment: .center)
                         .padding(.vertical, 10)
                 }
+                .frame(height: geometry.size.height * 0.18)
                 .background(.white)
 
                 levelPreview

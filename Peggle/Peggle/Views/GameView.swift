@@ -30,22 +30,25 @@ struct GameView: View {
     }
 
     func game(blueprint levelBlueprint: LevelBlueprint) -> some View {
-        ZStack {
-            GameBackgroundView(width: levelBlueprint.width, height: levelBlueprint.minHeight)
+        GeometryReader { geometry in
+            ZStack {
+                GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
 
-            if let objects = viewModel.gameObjects {
-                gameObjects(objects)
-                    .offset(y: -viewModel.cameraOffsetY)
-            }
-        }
-        .onChange(of: viewModel.gameStatus) { value in
-            if value == .won {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                    audioPlayer.playSound(.victory)
+                if let objects = viewModel.gameObjects {
+                    gameObjects(objects)
+                        .offset(y: -viewModel.cameraOffsetY)
+                        .scaleEffect(geometry.size.width / levelBlueprint.width, anchor: .topLeading)
                 }
-            } else if value == .lost {
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                    audioPlayer.playSound(.failure)
+            }
+            .onChange(of: viewModel.gameStatus) { value in
+                if value == .won {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                        audioPlayer.playSound(.victory)
+                    }
+                } else if value == .lost {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                        audioPlayer.playSound(.failure)
+                    }
                 }
             }
         }
@@ -80,38 +83,36 @@ struct GameView: View {
 
     var body: some View {
         if let (levelBlueprint, levelName) = appState.activeLevelBlueprint {
-            VStack(spacing: 0) {
-                topBar
-                game(blueprint: levelBlueprint)
-                    .zIndex(-1)
-            }
-            .ignoresSafeArea(.keyboard)
-            .popup(isPresented: $viewModel.showSelectPowerupScreen) {
-                PowerupSelectionView(
-                    availablePowerups: viewModel.availablePowerups,
-                    powerupSelectedCallback: { powerup in
-                        viewModel.selectedPowerup = powerup
-                        viewModel.showSelectPowerupScreen = false
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    topBar.frame(height: 0.18 * geometry.size.height)
+                    game(blueprint: levelBlueprint)
+                        .zIndex(-1)
+                }
+                .popup(isPresented: $viewModel.showSelectPowerupScreen) {
+                    PowerupSelectionView(
+                        availablePowerups: viewModel.availablePowerups,
+                        powerupSelectedCallback: { powerup in
+                            viewModel.selectedPowerup = powerup
+                            viewModel.showSelectPowerupScreen = false
+                            viewModel.initializeGame(blueprint: levelBlueprint)
+                        }
+                    )
+                } onDismiss: { viewModel.initializeGame(blueprint: levelBlueprint)
+                }
+                .popup(isPresented: $viewModel.paused) {
+                    GameMenuView(show: $viewModel.paused, restartCallback: {
                         viewModel.initializeGame(blueprint: levelBlueprint)
-                    }
-                )
-            } onDismiss: { viewModel.initializeGame(blueprint: levelBlueprint)
+                    })
+                }
+                .popup(isPresented: $viewModel.showGameOverScreen, tapOutsideToDismiss: false) {
+                    GameOverView(
+                        status: viewModel.gameStatus,
+                        levelName: levelName,
+                        playAgainCallback: { viewModel.initializeGame(blueprint: levelBlueprint) }
+                    )
+                }
             }
-            .popup(isPresented: $viewModel.paused) {
-                GameMenuView(show: $viewModel.paused, restartCallback: {
-                    viewModel.initializeGame(blueprint: levelBlueprint)
-                })
-            }
-            .popup(isPresented: $viewModel.showGameOverScreen, tapOutsideToDismiss: false) {
-                GameOverView(
-                    status: viewModel.gameStatus,
-                    levelName: levelName,
-                    playAgainCallback: {
-                        viewModel.initializeGame(blueprint: levelBlueprint)
-                    }
-                )
-            }
-
         } else {
             LevelSelectionView { blueprint, name in
                 appState.setActiveLevelBlueprint(blueprint, name: name)

@@ -75,7 +75,6 @@ class PeggleGameEngine: PeggleState {
     ///
     /// `maxX` and `maxY`, ie. the top-right point of the game in their coordinate
     /// system, is also required, to ensure the mapping of dimensions can be done correctly.
-    ///
     /// An `onUpdate` method can also be passed in, which will be called whenever any of
     /// the game objects receive updates.
     init(
@@ -129,10 +128,7 @@ class PeggleGameEngine: PeggleState {
     /// to the x-axis towards the right, and 180 corresponding to firing the ball parallel to the x-axis
     /// towards the left. If the angle is not between 0 and 180, the ball is not fired.
     /// - Returns: `true` if the ball was fired, and `false` otherwise.
-    func fireBallWith(
-        angle: Degrees,
-        speed: Double = DefaultBallStartingSpeed
-    ) -> Bool {
+    func fireBallWith(angle: Degrees, speed: Double = DefaultBallStartingSpeed) -> Bool {
         guard angle >= 0 && angle <= 180,
               status == .ongoing && ballsRemaining > 0 else {
             return false
@@ -140,6 +136,7 @@ class PeggleGameEngine: PeggleState {
 
         cannon.fire()
         ballsRemaining -= 1
+        AudioPlayer.default.playSound(.explosion)
 
         let velocity = Vector2D.from(angle: angle, magnitude: speed)
         let startingPos = Ball.startingPointFor(levelWidth: width)
@@ -296,22 +293,6 @@ class PeggleGameEngine: PeggleState {
         )
     }
 
-    /// Adjusts the camera offset based on the current y position of the ball. The ball should always be between
-    /// the 30% to 50% height of the level, unless the ball is at the top or bottom of the level.
-    private func adjustCameraOffset(ballY: Double) {
-        let over = ballY - (self.cameraOffsetY + self.viewportHeight * 0.5)
-        if over > 0 {
-            // total height - viewport height is the camera offset such that the bottom of the level
-            // is positioned at the bottom of the screen
-            self.cameraOffsetY = min(self.height - self.viewportHeight, self.cameraOffsetY + over)
-        }
-
-        let under = (self.cameraOffsetY + self.viewportHeight * 0.3) - ballY
-        if under > 0 {
-            self.cameraOffsetY = max(0, self.cameraOffsetY - under)
-        }
-    }
-
     private func initializePegs(levelBlueprint: LevelBlueprint) {
         for blueprint in levelBlueprint.pegBlueprints.values {
             let peg = Peg(color: blueprint.color,
@@ -337,6 +318,22 @@ class PeggleGameEngine: PeggleState {
                 self.obtainedBucketBonus = true
             }
         )
+    }
+
+    /// Adjusts the camera offset based on the current y position of the ball. The ball should always be between
+    /// the 30% to 50% height of the level, unless the ball is at the top or bottom of the level.
+    private func adjustCameraOffset(ballY: Double) {
+        let over = ballY - (self.cameraOffsetY + self.viewportHeight * 0.5)
+        if over > 0 {
+            // total height - viewport height is the camera offset such that the bottom of the level
+            // is positioned at the bottom of the screen
+            self.cameraOffsetY = min(self.height - self.viewportHeight, self.cameraOffsetY + over)
+        }
+
+        let under = (self.cameraOffsetY + self.viewportHeight * 0.3) - ballY
+        if under > 0 {
+            self.cameraOffsetY = max(0, self.cameraOffsetY - under)
+        }
     }
 
     private func checkIfBallStuckAndResolve() {

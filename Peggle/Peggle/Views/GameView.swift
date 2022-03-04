@@ -13,16 +13,54 @@ struct GameView: View {
     @ObservedObject var appState: AppState
     @StateObject var viewModel = GameViewModel()
 
+    var ballsLeftIndicator: some View {
+        HStack(alignment: .center, spacing: 8) {
+            Text("\(viewModel.ballsRemaining)".padding(toLength: 3, withPad: " ", startingAt: 0))
+                .font(.title)
+            Image("Ball")
+                .resizable()
+                .clipped()
+                .scaledToFill()
+                .frame(width: 32, height: 32)
+            Text("left")
+                .font(.title2)
+        }
+    }
+
+    var winConditionPegsLeftIndicator: some View {
+        HStack(alignment: .center, spacing: 8) {
+            Text("\(viewModel.winConditionPegsRemaining)".padding(toLength: 3, withPad: " ", startingAt: 0))
+                .font(.title)
+            Image("PegOrange")
+                .resizable()
+                .clipped()
+                .scaledToFill()
+                .frame(width: 36, height: 36)
+            Text("left to clear")
+                .font(.title2)
+        }
+    }
+
     var topBar: some View {
-        HStack(spacing: 15) {
-            Text("\(viewModel.ballsRemaining) balls remaining")
-            Spacer()
-            Button {
-                viewModel.paused = true
-            } label: {
-                Image(systemName: "pause")
-                    .font(.system(size: 36, weight: .heavy))
+        VStack {
+            HStack(spacing: 15) {
+                Spacer()
+                Button {
+                    viewModel.paused = true
+                } label: {
+                    Image(systemName: "pause")
+                        .font(.system(size: 36, weight: .heavy))
+                }
             }
+            Spacer()
+            HStack {
+                Spacer()
+                ballsLeftIndicator
+                Spacer()
+                winConditionPegsLeftIndicator
+                Spacer()
+            }
+            Spacer()
         }
         .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

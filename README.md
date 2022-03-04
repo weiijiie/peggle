@@ -374,6 +374,13 @@ ball will be removed when the ball goes out of bounds.
 If all 10 balls have run out and there are still orange pegs on the level, the game
 is lost.
 
+### Handing Ball Stuck
+
+If the ball has not hit a new peg in this round for more than 15 seconds, the engine will
+guess that the ball is stuck and randomly remove one peg that has already been hit, with
+the assumption that one of the pegs that has been hit must also be one of the pegs that
+is blocking the ball from advancing.
+
 ### Explosions
 
 Explosions can be triggered by hitting a green peg with the "Kaboom" powerup selected.
@@ -409,6 +416,15 @@ and win/loss sounds.
 The tests below should be done on different screen sizes in portrait and upside-down portrait orientations,
 for exhaustiveness (Game does not support landscape).
 
+#### General Tests
+
+- When clicking start game from the level designer, then opening the game menu and clicking back, should:
+  - Return to the level designer and still show the previous level blueprint that the user was editing
+  - Instead of going back to the menu
+  
+- When starting a game directly from the menu, then opening the game menu and clicking back, should:
+  - Navigate back to the menu instaed of going to the level designer
+  
 #### Level Designer Tests
 
 - Level Blueprint (with background image and where pegs are placed), in add peg mode.
@@ -430,6 +446,30 @@ for exhaustiveness (Game does not support landscape).
     - Cause the tapped peg to be removed
     
 - Any arbitrary peg
+  - When normal tap on the peg, it should:
+    - Open up the edit peg panel, with two sliders.
+    - When sliding the rotation slider, it should:
+        - Have a semi-transparent "peg preview" replace the peg view, and rotate along with the sliding
+        - When the slider is released, if the peg preview is not overlapping another peg or boundary, it should:
+            - Replace the preview with the actual peg, rotated the correct amount
+        - When the slider is released, if the peg preview *is* overlapping another peg or boundary, it should:
+            - Replace the preview with the actual peg, but not rotated
+            - Have the slider reset back to a valid configuration
+            
+    - When sliding the resizing slider, it should:
+        - Have a semi-transparent "peg preview" replace the peg view, and scale in size along with the sliding
+        - When the slider is released, if the peg preview is not overlapping another peg or boundary, it should:
+            - Replace the preview with the actual peg, scaled in size to the correct amount
+        - When the slider is released, if the peg preview *is* overlapping another peg or boundary, it should:
+            - Replace the preview with the actual peg, but not scaled in size
+            - Have the slider reset back to a valid configuration
+            
+    - When there is another tap outside of the slider in the blueprint, or a tap on the close button of the slider, it should:
+        - Close
+        
+    - If the user changes the edit mode, it should:
+        - Close the slider
+
   - When long pressed on the peg, it should:
     - Cause the long pressed peg to be removed
 
@@ -451,50 +491,72 @@ for exhaustiveness (Game does not support landscape).
   - When tapped while there are no pegs on the board, it should:
     - Have nothing happen
     
-- "Save" and "Load" button
-  - When "Save" tapped when there is no text in the "Level Name" text field, it should:
-    - Have an alert should pop up with an error message, informing the user to enter a name
+- "Load" button
+  - When "Load" tapped, it should:
+    - Display the level selection popup
+  - When level selected in the level selection popup and "Confirm" pressed, it should:
+    - Return to the level designer with the selected level blueprint on the screen
+  - When level not selected in the level selection popup and "Cancel" pressed, it should:
+    - Return to the level designer with the previous level blueprint on the screen
     
-  - When "Load" tapped when there is no text in the "Level Name" text field, it should:
-    - Have an alert should pop up with an error message, informing the user to enter a name
-    
-  - When "Load" tapped when there is text in the "Level Name" text field, but the level
-    does not exist, it should:
-    - Have an alert should pop up with an error message, informing the user that no such
-      level exists
-    
-  - When "Save" tapped when there are pegs on the board and a name on the "Level Name" text field,
-    then changes are made to the board, then "Load" is tapped with the same pegs and the same name,
-    it should:
-    - Have the pegs on the board be reset to the configuration when save was pressed for the first time
+- "Save" button
+    - When "Save" tapped, it should:
+        - Display a save dialog to enter the name of the level to be saved
+        - If the level blueprint already has a name (ie. if it was loaded), it should:
+            - Autofill the name text field with the name of the level blueprint
+        - If the level blueprint does not have a name, it should:
+            - Autofill the name text field with "Custom Level".
+        - When clicking "Save" with a level name field in, it should:
+            - Save the level, rename the current level blueprint to the saved name, and return
+        - When clicking "Save" with an empty or whitespace level name, it should:
+            - Not save the game, and show an error dialog
 
 #### Game Tests
 
 - Game View
   - When the game starts, the cannon should already be rotating back and forth at various angles
+  - When the game starts, the bucket should already be moving back and forth at the bottom of the leve.
 
   - When cannon is tapped at various angles, ball should:
     - Be fired in the same direction as the cannon was facing
     - Especially test the edge cases where the angle is near 0 or 180 degrees to ensure the ball cannot fire upwards
 
   - When cannon is tapped, the cannon should:
-    - Disappear
+    - Disappear partially
 
   - When ball hits a peg, the peg should:
     - Not move
-    - Light up
+    - Light up if it has not been hit before
+    - If the peg is green (a powerup peg) and has not been hit already,
+        - The selected powerup should activate
+    
+  - When ball hits a block, the block should:
+    - Not move
+    - Not light up
 
   - When ball hits the top, left, or bottom boundaries or a peg, the ball should:
-    - Bounce off in a sensible manner'
+    - Bounce off in a sensible manner
 
   - When ball hits the bottom of the screen, the ball should:
     - Not bounce off
     - Disappear
 
+
   - After ball disappears from the bottom of the screen:
-    - All pegs that were hit should disappaer
+    - All pegs that were hit should disappear
     - No peg that was not hit should disappear
     - The cannon should reappear and start rotating again
+    
+  - If the ball is stuck:
+    - After 15 seconds, a peg that haas been hit should be removed from the level
+    
+  - On levels where the height is taller than the screen height,
+    - When the ball falls below the top half on the screen, the camera should:
+      - Pan downwards to follow the ball such that the ball remains in the top half of the screen
+      - Unless the bottom of the level has been reached
+    - When the ball rises above the bottom 70% of the screen, the camera should:
+      - Pan upwards to follow the ball such that the ball remains in the bottom 70% of the screen
+      - Unless the top of the level has been reached
 
 ## Written Answers
 

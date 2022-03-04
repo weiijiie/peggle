@@ -43,6 +43,16 @@ class GameViewModel: ObservableObject {
         gameEngine?.ballsRemaining ?? 0
     }
 
+    var winConditionPegsRemaining: Int {
+        guard let gameEngine = gameEngine else {
+            return 0
+        }
+
+        return gameEngine.pegs.values
+            .filter { $0.isWinCondition() && !$0.removed }
+            .count
+    }
+
     var gameStatus: PeggleGameStatus {
         gameEngine?.status ?? .ongoing
     }

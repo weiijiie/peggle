@@ -6,13 +6,37 @@ import SwiftUI
 
 struct MenuView: View {
     @EnvironmentObject var navigator: Navigator<PeggleRoute>
+    @EnvironmentObject var audioPlayer: AudioPlayerViewModel
+
     @ObservedObject var appState: AppState
+
+    var settings: some View {
+        HStack {
+            Spacer()
+            Button {
+                audioPlayer.toggleMuted()
+            } label: {
+                if audioPlayer.muted {
+                    Label("Muted", systemImage: "speaker.slash.fill")
+                        .font(.title)
+                        .labelStyle(.iconOnly)
+                } else {
+                    Label("Sound On", systemImage: "speaker.wave.1")
+                        .font(.title)
+                        .labelStyle(.iconOnly)
+                }
+            }
+        }
+    }
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 GameBackgroundView(width: geometry.size.width, height: geometry.size.height)
+
                 VStack(spacing: 24) {
+                    settings
+                    Spacer()
                     Text("Peggle")
                         .font(.largeTitle)
 
@@ -26,15 +50,9 @@ struct MenuView: View {
                         navigator.navigateTo(route: .levelDesigner)
                     }
                     .buttonStyle(.borderedProminent)
+                    Spacer()
                 }
                 .padding()
-                .frame(height: 0.5 * geometry.size.height, alignment: .center)
-//                Image(uiImage: #imageLiteral(resourceName: "BlockBlue"))
-//                    .frame(width: 200, height: 200, alignment: .center)
-//                    .transformEffect(CGAffineTransform(a: 1, b: 0, c: 0.3, d: 1, tx: 0, ty: 0))
-//                Image(uiImage: #imageLiteral(resourceName: "BlockBlue"))
-//                    .opacity(0.5)
-//                    .frame(width: 200, height: 200, alignment: .center)
             }
             .onAppear {
                 appState.unsetActiveLevelBlueprint()

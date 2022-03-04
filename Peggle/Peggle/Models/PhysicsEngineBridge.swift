@@ -30,7 +30,8 @@ class PhysicsEngineBridge {
     func addBall(
         _ ball: Ball,
         initialVelocity: Vector2D,
-        onUpdate: @escaping World.UpdateCallback
+        onUpdate: @escaping World.UpdateCallback,
+        onCollide: @escaping World.CollisionCallback
     ) {
         let rigidBody = mapper.localToExternal(
             rigidBody: ball.makeRigidBody(initialVelocity: initialVelocity)
@@ -41,7 +42,8 @@ class PhysicsEngineBridge {
             rigidBody,
             onUpdate: { body in
                 onUpdate(self.mapper.externalToLocal(rigidBody: body))
-            }
+            },
+            onCollide: onCollide
         )
     }
 

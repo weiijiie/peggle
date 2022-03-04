@@ -234,7 +234,6 @@ class PeggleGameEngine: PeggleState {
     }
 
     // MARK: Helper Functions
-
     private func handleBallOutOfBounds() {
         // remove the current ball
         ball = nil
@@ -292,7 +291,9 @@ class PeggleGameEngine: PeggleState {
                 if let ball = self.ball {
                     self.adjustCameraOffset(ballY: ball.center.y)
                 }
-            })
+            },
+            onCollide: { _ in AudioPlayer.default.playSound(.collision) }
+        )
     }
 
     /// Adjusts the camera offset based on the current y position of the ball. The ball should always be between

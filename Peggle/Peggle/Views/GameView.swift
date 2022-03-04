@@ -8,6 +8,8 @@ import Physics
 struct GameView: View {
 
     @EnvironmentObject var navigator: Navigator<PeggleRoute>
+    @EnvironmentObject var audioPlayer: AudioPlayerViewModel
+
     @ObservedObject var appState: AppState
     @StateObject var viewModel = GameViewModel()
 
@@ -34,6 +36,17 @@ struct GameView: View {
             if let objects = viewModel.gameObjects {
                 gameObjects(objects)
                     .offset(y: -viewModel.cameraOffsetY)
+            }
+        }
+        .onChange(of: viewModel.gameStatus) { value in
+            if value == .won {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                    audioPlayer.playSound(.victory)
+                }
+            } else if value == .lost {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                    audioPlayer.playSound(.failure)
+                }
             }
         }
     }

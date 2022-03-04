@@ -102,7 +102,7 @@ enum LevelBlueprintFileRepoError: LocalizedError {
     var failureReason: String? {
         switch self {
         case .overridePreloadedLevel:
-            return "Trying to override a preloaded level"
+            return "Overriding a preloaded level"
         }
     }
 

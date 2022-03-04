@@ -15,6 +15,8 @@ struct KaboomPowerup: Powerup {
         let initialRadius = getExplosionRadius(hitBox: hitPeg.hitBox, scaleFactor: 1.5)
         let maxRadius = getExplosionRadius(hitBox: hitPeg.hitBox, scaleFactor: 4)
 
+        AudioPlayer.default.playSound(.explosion)
+
         let explosion = Explosion(
             center: center,
             initialRadius: initialRadius,

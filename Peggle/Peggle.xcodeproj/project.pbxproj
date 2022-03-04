@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6E66054927CFFCCF00D53DDA /* EditPegView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E66054827CFFCCF00D53DDA /* EditPegView.swift */; };
+		6E66054B27D201E600D53DDA /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E66054A27D201E600D53DDA /* AudioPlayer.swift */; };
+		6E66054D27D2028700D53DDA /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E66054C27D2028700D53DDA /* Sound.swift */; };
 		6E6A93E427BE4021002DB431 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E6A93E327BE4021002DB431 /* Assets.xcassets */; };
 		6E6A940C27BE4169002DB431 /* Preview Content in Resources */ = {isa = PBXBuildFile; fileRef = 6E6A940927BE4168002DB431 /* Preview Content */; };
 		6E6A940E27BE4169002DB431 /* PeggleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6A940B27BE4169002DB431 /* PeggleApp.swift */; };
@@ -78,6 +80,7 @@
 		6EC4024B27C64D2F00102210 /* DisplayableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024A27C64D2F00102210 /* DisplayableView.swift */; };
 		6EC4024D27C83F8D00102210 /* ExplosionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024C27C83F8D00102210 /* ExplosionView.swift */; };
 		6EC4024F27C8521900102210 /* PhysicsEngineBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */; };
+		6ED3224C27D211C500F0AD09 /* AudioPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED3224B27D211C500F0AD09 /* AudioPlayerViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +102,8 @@
 
 /* Begin PBXFileReference section */
 		6E66054827CFFCCF00D53DDA /* EditPegView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPegView.swift; sourceTree = "<group>"; };
+		6E66054A27D201E600D53DDA /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		6E66054C27D2028700D53DDA /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
 		6E6A93DC27BE401B002DB431 /* Peggle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Peggle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E6A93E327BE4021002DB431 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E6A93EC27BE4022002DB431 /* PeggleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeggleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -171,6 +176,7 @@
 		6EC4024A27C64D2F00102210 /* DisplayableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayableView.swift; sourceTree = "<group>"; };
 		6EC4024C27C83F8D00102210 /* ExplosionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplosionView.swift; sourceTree = "<group>"; };
 		6EC4024E27C8521900102210 /* PhysicsEngineBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsEngineBridge.swift; sourceTree = "<group>"; };
+		6ED3224B27D211C500F0AD09 /* AudioPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,6 +273,8 @@
 				6E6A94A827BE586C002DB431 /* PegglePredicate.swift */,
 				6E6A94A627BE5859002DB431 /* LoseConditions.swift */,
 				6E6A94AA27BE58CD002DB431 /* WinConditions.swift */,
+				6E66054A27D201E600D53DDA /* AudioPlayer.swift */,
+				6E66054C27D2028700D53DDA /* Sound.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -352,6 +360,7 @@
 				6EB924C527C2BC100037CC6D /* LevelSelectionViewModel.swift */,
 				6E6A94BA27C26BFF002DB431 /* LevelDesignerViewModel.swift */,
 				6E6A94C127C26BFF002DB431 /* EditMode.swift */,
+				6ED3224B27D211C500F0AD09 /* AudioPlayerViewModel.swift */,
 			);
 			name = ViewModels;
 			path = Peggle/ViewModels;
@@ -596,6 +605,7 @@
 				6E6A94C927C26BFF002DB431 /* Cannon+Displayable.swift in Sources */,
 				6E6A94C627C26BFF002DB431 /* Ball+Displayable.swift in Sources */,
 				6EA7E8AF27C43B0700B40B57 /* Bucket.swift in Sources */,
+				6E66054D27D2028700D53DDA /* Sound.swift in Sources */,
 				6E6E5CD927C583AB00D147E6 /* PowerupManager.swift in Sources */,
 				6E6A944C27BE42D0002DB431 /* OnTapView.swift in Sources */,
 				6EB924C927C2C3BA0037CC6D /* Stack.swift in Sources */,
@@ -615,6 +625,7 @@
 				6E6A945127BE42D0002DB431 /* PegBlueprintView.swift in Sources */,
 				6E66054927CFFCCF00D53DDA /* EditPegView.swift in Sources */,
 				6E6A943627BE4257002DB431 /* RelativelySized.swift in Sources */,
+				6E66054B27D201E600D53DDA /* AudioPlayer.swift in Sources */,
 				6E6A94A727BE5859002DB431 /* LoseConditions.swift in Sources */,
 				6EA7E8A927C4020B00B40B57 /* ErrorHandler.swift in Sources */,
 				6E6A94C527C26BFF002DB431 /* PegBlueprint+Displayable.swift in Sources */,
@@ -638,6 +649,7 @@
 				6E6A94B327C2572F002DB431 /* GameOverView.swift in Sources */,
 				6E6A94A527BE5608002DB431 /* PeggleState.swift in Sources */,
 				6E6A944B27BE42D0002DB431 /* GameView.swift in Sources */,
+				6ED3224C27D211C500F0AD09 /* AudioPlayerViewModel.swift in Sources */,
 				6EA7E8AB27C4124400B40B57 /* OverlayIf.swift in Sources */,
 				6EC4024F27C8521900102210 /* PhysicsEngineBridge.swift in Sources */,
 				6E6A944927BE42D0002DB431 /* PeggleRoute.swift in Sources */,

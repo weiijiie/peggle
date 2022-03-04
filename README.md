@@ -400,6 +400,11 @@ In the level designer, click on a peg to open up the peg edit panel. The bottom 
 sliders controls the scale of the selected peg. Slide the slider to scale the peg from 1x
 the area to 2.5x the area.
 
+### Scrolling Levels
+
+In the level designer, click on the downward arrow at the bottom of the screen to pan downwards
+and extend the height of the level.
+
 ## Bells and Whistles
 
 ### Sound and music

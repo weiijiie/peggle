@@ -541,12 +541,16 @@ The bad:
   (many calls to `mapper.localToExternal` all over the place), and there were several many pitfalls regarding its usage
   that I fell into, which I had to then spend time debugging.
   
-- 
+- The Peggle game engine's coded houses almost all of the game's logic, and thus got rather bloated near the end. While
+  I attempted to extract some code out (ie. `PhysicsEngineBridge` and `PowerupManager`), the bulk of the logic was still
+  inside that one class, and it was a little difficult to refactor.
   
-  
+In terms of tech debt, the most pressing tech debt I would like to address are the two bad points I mentioned above.
+Making the coordinate system a first class member of the mathematics of the physics and game engines may be a better
+approach compared to the tacked-on approach I went with. Also, making the Peggle game engine leaner from the start may be
+a better approach. Instead, the logic would live in the subcomponents like the ball, peg and bucket structs, and they would
+interact with the game engine by calling general purpose methods.
 
-The bad:
-
-Tech debt:
-coordinate mapper
-pegglegameengine code is rather bloated
+Other tech debt involves a rather messy design system for the UI, as I was very unfamiliar with how to create
+an extensible design system from scratch in SwiftUI. Given more time, that would be something I would focus on
+more, as it would give me the ability to more easily update and change the theme of the app.

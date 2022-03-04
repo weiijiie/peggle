@@ -126,14 +126,14 @@ class Vector2DTests: XCTestCase {
             assertVectorsEqual(vector, testCase.expected, accuracy: Epsilon)
         }
     }
-    
+
     func testRotateAboutOrigin() {
         struct TestCase {
             var vector: Vector2D
             var angle: Degrees
             var expected: Vector2D
         }
-        
+
         let testCases = [
             TestCase(
                 vector: Vector2D(x: 0, y: 2),
@@ -151,13 +151,13 @@ class Vector2DTests: XCTestCase {
                 expected: Vector2D(x: 6, y: -9)
             )
         ]
-        
+
         for testCase in testCases {
             let rotatedVector = testCase.vector.rotateAboutOrigin(degrees: testCase.angle)
 
             assertVectorsEqual(rotatedVector, testCase.expected, accuracy: Epsilon)
         }
-        
+
     }
 
     func testDotProduct() {

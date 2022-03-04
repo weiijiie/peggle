@@ -83,7 +83,7 @@ public enum Geometry {
 
         }
     }
-    
+
     /// Returns a new geometry which is the old geometry rotated anticlockwise by the given degrees.
     public func withRotation(_ degrees: Degrees) -> Geometry {
         switch self {
@@ -100,11 +100,11 @@ public enum Geometry {
             let centerToA = Vector2D.from(center, to: a)
             let centerToB = Vector2D.from(center, to: b)
             let centerToC = Vector2D.from(center, to: c)
-            
+
             let aRotated = centerToA.rotateAboutOrigin(degrees: degrees)
             let bRotated = centerToB.rotateAboutOrigin(degrees: degrees)
             let cRotated = centerToC.rotateAboutOrigin(degrees: degrees)
-            
+
             return .triangle(
                 center.addVector(aRotated),
                 center.addVector(bRotated),
@@ -112,7 +112,7 @@ public enum Geometry {
             )
         }
     }
-    
+
     /// Returns a new geometry which is the old geometry scaled by the given amount.
     public func scaled(_ scale: Double) -> Geometry {
         switch self {
@@ -136,7 +136,7 @@ public enum Geometry {
             let aRotated = centerToA * scale
             let bRotated = centerToB * scale
             let cRotated = centerToC * scale
-            
+
             return .triangle(
                 center.addVector(aRotated),
                 center.addVector(bRotated),

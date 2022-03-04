@@ -51,6 +51,7 @@ struct MenuView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     Spacer()
+                    Text("Sounds from ZapSplat.com")
                 }
                 .padding()
             }
